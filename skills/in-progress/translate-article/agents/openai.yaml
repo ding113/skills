@@ -1,0 +1,3 @@
+interface:
+  display_name: "Translate Article"
+  short_description: "zh/en article translation that keeps structure and voice"

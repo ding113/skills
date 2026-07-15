@@ -1,0 +1,3 @@
+interface:
+  display_name: "Translate Subtitle"
+  short_description: "zh/en subtitle translation, timing untouched"
