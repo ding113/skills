@@ -1,0 +1,20 @@
+{
+  "name": "ding113-skills",
+  "version": "0.1.0",
+  "description": "ding113's personal agent skills — article writing (zh/en), PR review-comment triage, CI fixing, and more as they graduate from drafts.",
+  "author": {
+    "name": "ding113",
+    "url": "https://github.com/ding113"
+  },
+  "homepage": "https://github.com/ding113/skills",
+  "repository": "https://github.com/ding113/skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "writing",
+    "github",
+    "ci",
+    "code-review"
+  ],
+  "skills": []
+}

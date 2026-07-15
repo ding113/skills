@@ -1,0 +1,8 @@
+node_modules
+drafts
+
+# macOS
+.DS_Store
+
+# Claude Code local project state
+.claude/

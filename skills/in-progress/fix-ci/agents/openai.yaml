@@ -1,0 +1,3 @@
+interface:
+  display_name: "Fix CI"
+  short_description: "Diagnose failing CI, reproduce locally, fix, push"

@@ -1,0 +1,23 @@
+{
+  "name": "ding113",
+  "owner": {
+    "name": "ding113",
+    "url": "https://github.com/ding113"
+  },
+  "description": "ding113's personal agent skills, as an installable Claude Code plugin.",
+  "plugins": [
+    {
+      "name": "ding113-skills",
+      "source": "./",
+      "description": "ding113's personal agent skills — article writing (zh/en), PR review-comment triage, and CI fixing as they graduate from drafts.",
+      "category": "productivity",
+      "keywords": [
+        "skills",
+        "writing",
+        "github",
+        "ci",
+        "code-review"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+name: Validate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  gate:
+    name: Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Validate skills tree, manifests, READMEs, docs pages
+        run: node scripts/validate-skills.mjs
+
+      - name: Validate Claude Code plugin
+        run: npx -y @anthropic-ai/claude-code@latest plugin validate . --strict

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Get PR Comments"
+  short_description: "Triage, address, and resolve PR review comments"
