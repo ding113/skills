@@ -1,0 +1,1618 @@
+{
+ "bundle": "en-blog",
+ "language": "en",
+ "genre": "blog",
+ "version": "1.0.0",
+ "compiled_by": "scripts/compile-article-rules.py",
+ "layering": "house > genre > universal; markdownlint applies to all genres at runtime",
+ "quote_convention": "Curly quotes “ ” ‘ ’ in prose; straight quotes only inside code.",
+ "sources": [
+  "审校工作规范.rules.json",
+  "msbias.rules.json",
+  "house"
+ ],
+ "counts": {
+  "total": 45,
+  "regex": 9,
+  "term": 9,
+  "llm": 27,
+  "must": 29
+ },
+ "rules": [
+  {
+   "id": "HOUSE-en-curly-quotes",
+   "name": "House rule: prose uses curly quotes, not straight",
+   "category": [
+    "punctuation",
+    "quotes"
+   ],
+   "layer": "house",
+   "strength": "must",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "pattern": "[A-Za-z,.;:!?)\\]]\\s*\"[A-Za-z(]|[A-Za-z]\\s\"|\"\\s[A-Za-z]",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "frontmatter",
+     "html_tag"
+    ],
+    "description": "Straight double quote in prose (use “ ”; apostrophes use ’)",
+    "confidence": "heuristic",
+    "python_ok": true
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q7"
+   },
+   "notes": "Unifies the Apple-vs-MDN conflict: Apple and the newsletter corpus mandate curly quotes; MDN mandates straight. House rule: curly across all three en genres, so the two MDN curly→straight rules are excluded.",
+   "replaces": [
+    "TW-mdnen-punct-curly-double-quote",
+    "TW-mdnen-punct-curly-single-quote",
+    "TW-mdnzh-punct-curly-double-quotes",
+    "TW-mdnzh-punct-curly-apostrophe"
+   ]
+  },
+  {
+   "id": "HOUSE-en-curly-apostrophe",
+   "name": "House rule: curly apostrophe ’ in prose contractions/possessives",
+   "category": [
+    "punctuation",
+    "quotes"
+   ],
+   "layer": "house",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "pattern": "[A-Za-z]'(?=[a-z])",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "frontmatter",
+     "html_tag"
+    ],
+    "description": "Straight apostrophe in prose (use ’, e.g. don’t / Erik’s)",
+    "confidence": "heuristic",
+    "python_ok": true
+   },
+   "fix": {
+    "auto": true,
+    "description": "' → ’"
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q7 (newsletter corpus convention)"
+   }
+  },
+  {
+   "id": "HOUSE-en-single-space-after-period",
+   "name": "House rule: single space after sentence period",
+   "category": [
+    "punctuation",
+    "spacing"
+   ],
+   "layer": "house",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "pattern": "[.!?][”’\"']?  +[A-Z“\"]",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "table"
+    ],
+    "description": "Two or more spaces after end-of-sentence punctuation",
+    "confidence": "exact",
+    "python_ok": true
+   },
+   "fix": {
+    "auto": true,
+    "description": "collapse to one space"
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q7 (newsletter corpus convention)"
+   }
+  },
+  {
+   "id": "HOUSE-en-oxford-comma",
+   "name": "House rule: use the Oxford comma in lists of three or more",
+   "category": [
+    "punctuation",
+    "comma"
+   ],
+   "layer": "house",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "pattern": ", (?:[\\w’']+ ){1,3}(?:and|or) [\\w’']+",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "heading"
+    ],
+    "description": "Possible missing serial comma before and/or (verify it is a 3+ item list)",
+    "confidence": "heuristic",
+    "python_ok": true
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q7 (newsletter corpus convention)"
+   }
+  },
+  {
+   "id": "F002-fact-principle",
+   "name": "凡事实必核",
+   "category": [
+    "事实核对"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "存在未经核实即保留的事实性陈述(默认假定其为错)",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-principle"
+   },
+   "notes": "总原则,统摄 F002-fact-* 各细则。",
+   "source_text": "凡事实必核。核对事实是审校工作的核心内容,也是不可或缺的工作步骤。你需要养成核对事实的习惯。这里的事实包括人物、时间、地点、事物等内容。你在审校稿件过程中,看到这些内容出现时,脑中需下意识地拉起警报。未经核实的事实,要假定它们都是错的。你既可以在当时就查阅相关资料核实,也可以先逐个高亮标出,最后再集中核对。"
+  },
+  {
+   "id": "F002-fact-person-name",
+   "name": "人物名字及古人字、号正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人名写错(如张冠李戴、译名错误),或将\"字\"与\"号\"混淆",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-name"
+   },
+   "examples": {
+    "positive": [
+     "明确提出保健因素的,是美国心理学家弗雷德里克·赫茨伯格(Fredrick Herzberg)。",
+     "苏东坡, 号东坡居士。"
+    ],
+    "negative": [
+     "明确提出保健因素的,是美国心理学家罗伯特·赫茨伯格(Robert Herzberg)。",
+     "苏东坡,字东坡。"
+    ]
+   },
+   "source_text": "名字以及古人的字、号等是否正确"
+  },
+  {
+   "id": "F002-fact-person-identity",
+   "name": "人物身份正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物的职务、党派、头衔等身份信息与事实不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-identity"
+   },
+   "examples": {
+    "positive": [
+     "特朗普,美国总统,美国共和党籍政治家。"
+    ],
+    "negative": [
+     "特朗普,美国总统,美国民主党籍政治家。"
+    ]
+   },
+   "source_text": "身份是否正确"
+  },
+  {
+   "id": "F002-fact-person-nationality",
+   "name": "人物国别正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物国籍/国别表述错误,或忽略移民、改籍等事实(必要时应写成\"X裔/X出生的Y国人\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-nationality"
+   },
+   "examples": {
+    "positive": [
+     "哈耶克, (奥地利裔 / 奥地利出生的) 英国经济学家。"
+    ],
+    "negative": [
+     "哈耶克,奥地利经济学家。"
+    ]
+   },
+   "source_text": "国别是否正确"
+  },
+  {
+   "id": "F002-fact-person-relation",
+   "name": "人物前后关系正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物间的影响、师承、时间先后等关系颠倒或错置",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-relation"
+   },
+   "examples": {
+    "positive": [
+     "亚当·斯密的《国富论》,为李嘉图的多理论提供了依据。"
+    ],
+    "negative": [
+     "李嘉图的很多理论,成为亚当·斯密写《国富论》的依据。"
+    ]
+   },
+   "source_text": "人物前后的关系是否正确"
+  },
+  {
+   "id": "F002-fact-time-event",
+   "name": "事件发生时间正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "时间"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "事件年份/日期与史实不符",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-time-event"
+   },
+   "examples": {
+    "positive": [
+     "1984年,新中国第一次参加奥运会,中国队获得15枚金牌。"
+    ],
+    "negative": [
+     "1983年,新中国第一次参加奥运会,中国队获得15枚金牌。"
+    ]
+   },
+   "source_text": "事件发生的时间是否正确"
+  },
+  {
+   "id": "F002-fact-time-publication",
+   "name": "出版/发表时间正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "时间"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "书籍出版年、论文/文章发表年与实际不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-time-publication"
+   },
+   "examples": {
+    "positive": [
+     "《傲慢与偏见》出版于1813年。",
+     "2014年,《科学》杂志发表了一项研究,它说肺癌可以潜伏二十多年,然后会突然转变为侵袭性的疾病。"
+    ],
+    "negative": [
+     "《傲慢与偏见》出版于1796年。",
+     "2018年,《科学》杂志发表了一项研究,它说肺癌可以潜伏二十多年,然后会突然转变为侵袭性的疾病。"
+    ]
+   },
+   "source_text": "书籍出版、文章发表的时间是否正确"
+  },
+  {
+   "id": "F002-fact-place-name",
+   "name": "地点名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "地名书写错误(错别字、同音混淆、行政区划名称错误)",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-name"
+   },
+   "examples": {
+    "positive": [
+     "山西省吕梁市。"
+    ],
+    "negative": [
+     "山西省吕梁市。"
+    ]
+   },
+   "notes": "源文件此条误/正示例文字相同,系转档失真(原意疑为省名或政区级别之误),保留原样。",
+   "source_text": "地点的名称是否正确"
+  },
+  {
+   "id": "F002-fact-place-relation",
+   "name": "地点之间关系正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "地理方位、隶属、相对位置关系与实际不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-relation"
+   },
+   "examples": {
+    "positive": [
+     "加拿大不列颠哥伦比亚省西部的温哥华岛上, 有一座叫维多利亚的小城, 往东和温哥华市隔海相望。"
+    ],
+    "negative": [
+     "加拿大不列颠哥伦比亚省的西部有一座叫维多利亚的岛, 往东和温哥华隔海相望。"
+    ]
+   },
+   "source_text": "地点之间的关系是否正确"
+  },
+  {
+   "id": "F002-fact-place-history",
+   "name": "地点历史沿革准确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "对地点历史状态的表述(曾经/一直/首个等限定词)与史实不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-history"
+   },
+   "examples": {
+    "positive": [
+     "维多利亚是哥伦比亚省的首府。(说明:不是曾经,一直都是首府)"
+    ],
+    "negative": [
+     "维多利亚曾经是哥伦比亚省第一个首府。"
+    ]
+   },
+   "source_text": "地点的历史沿革是否准确"
+  },
+  {
+   "id": "F002-fact-place-oldnew",
+   "name": "古今地名匹配",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "历史地名括注的今名对应错误",
+    "original_gate_types": [
+     "llm",
+     "regex"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-oldnew"
+   },
+   "examples": {
+    "positive": [
+     "广州湾(今湛江港)是1899年被法国强行租借的。"
+    ],
+    "negative": [
+     "广州湾(今广州)是1899年被法国强行租借的。"
+    ]
+   },
+   "source_text": "地点的历史名称与今天的名称是否匹配"
+  },
+  {
+   "id": "F002-fact-quote-classic",
+   "name": "传统文化经典引文与原文一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "引用的经典原文存在错字、语序颠倒、句序错乱",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-quote-classic"
+   },
+   "examples": {
+    "positive": [
+     "“天下有道,则礼乐征伐自天子出。”",
+     "“驾长车,踏破贺兰山缺。壮志饥餐胡虏肉,笑谈渴饮匈奴血。”"
+    ],
+    "negative": [
+     "“天下有道,礼伐征乐自天子出。”",
+     "“壮士饥餐胡虏肉,笑谈渴饮匈奴血,驾长车踏破贺兰山缺。”"
+    ]
+   },
+   "notes": "注意\"壮志\"与\"壮士\"这类单字之差。",
+   "source_text": "引用传统文化经典(国学经典、唐诗宋词等)原文"
+  },
+  {
+   "id": "F002-fact-quote-modern",
+   "name": "其他经典作品引文与原文一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "引用现当代作品原文与出版文本不一致(包括异体字、用字习惯,如鲁迅\"年青\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-quote-modern"
+   },
+   "examples": {
+    "positive": [
+     "“我在年青时候也曾做过许多梦”。(鲁迅《呐喊》)"
+    ],
+    "negative": [
+     "“我在年轻时候也曾做过许多梦”。(鲁迅《呐喊》)"
+    ]
+   },
+   "notes": "以已出版文本为准,不得\"顺手修正\"原作者用字。",
+   "source_text": "引用其他经典作品原文"
+  },
+  {
+   "id": "F002-fact-theory-name",
+   "name": "理论名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "学术理论/学说名称用词错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-theory-name"
+   },
+   "examples": {
+    "positive": [
+     "决定论,又称拉普拉斯信条。"
+    ],
+    "negative": [
+     "确定论, 又称拉普拉斯信条。"
+    ]
+   },
+   "source_text": "理论名称"
+  },
+  {
+   "id": "F002-fact-work-title",
+   "name": "书刊/文章/节目名称与已发表版本一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "作品标题与正式出版/发表的标题不一致(包括语序)",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-work-title"
+   },
+   "examples": {
+    "positive": [
+     "卢梭是深刻推动了平等的现代思想家,他的《论人类不平等的起源和基础》《社会契约论》都是对平等的经典赞歌。"
+    ],
+    "negative": [
+     "卢梭是深刻推动了平等的现代思想家,他的《论人类不平等的基础和起源》《社会契约论》都是对平等的经典赞歌。"
+    ]
+   },
+   "source_text": "书名、刊物名称、文章或论文标题、节目名称等是否与已发表或出版的一致"
+  },
+  {
+   "id": "F002-fact-org-name",
+   "name": "机构名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "机构缩写与全称/译名对应错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-org-name"
+   },
+   "examples": {
+    "positive": [
+     "NASD(全国证券交易商协会)。"
+    ],
+    "negative": [
+     "NASD (纳斯达克)。"
+    ]
+   },
+   "notes": "缩写首次出现时括注的展开必须是该缩写的真实全称。",
+   "source_text": "机构名称"
+  },
+  {
+   "id": "F002-fact-formula-unit",
+   "name": "公式、计量单位正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "数值的计量单位/币种错误(如\"元\"与\"美元\"混淆),公式书写错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-formula-unit"
+   },
+   "examples": {
+    "positive": [
+     "苹果公司的市值, 一度超过一万亿美元。"
+    ],
+    "negative": [
+     "苹果公司的市值, 一度超过一万亿元。"
+    ]
+   },
+   "source_text": "公式、计量单位"
+  },
+  {
+   "id": "F002-number-principle",
+   "name": "凡数字必核",
+   "category": [
+    "事实核对"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "抽取全文所有数字(含百分比、金额、年份),生成核对清单,逐一标记核实来源",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-principle"
+   },
+   "notes": "总原则,统摄 F002-number-* 各细则。",
+   "source_text": "凡数字必核。数字属于事实的一种,之所以提出来单独强调,是因为数字在文稿中太特殊了,一旦出错,会严重影响文稿的质量。文稿中出现的所有数字,你要逐一核对。"
+  },
+  {
+   "id": "F002-number-precision",
+   "name": "数字精确",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "将精确数值随手取整或凭记忆约写,与来源数据不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-precision"
+   },
+   "examples": {
+    "positive": [
+     "京东上市前, 刘强东只持股18.8%, 却有51.2%的投票权。"
+    ],
+    "negative": [
+     "京东上市前, 刘强东只持股20%, 却有50%的投票权。"
+    ]
+   },
+   "source_text": "精确"
+  },
+  {
+   "id": "F002-number-arithmetic",
+   "name": "核算无误",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "文中给出的合计/换算结果与按其自身分项数据重算的结果不一致",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-arithmetic"
+   },
+   "examples": {
+    "positive": [
+     "工位区、会议室、前台区,加在一起是90-110平方米。按65%的得房率计算,办公室建筑面积要达到140-170平方米。"
+    ],
+    "negative": [
+     "工位区、会议室、前台区,加在一起是100-120平方米。按65%的得房率计算,办公室建筑面积要达到150-160平方米。"
+    ]
+   },
+   "notes": "这是最可程序化的事实核对项:凡「合计/共/加在一起/按X%计算」处必重算。",
+   "source_text": "所有涉及运算的地方,都要演算核对。"
+  },
+  {
+   "id": "F002-number-freshness",
+   "name": "数字保持最新",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "llm",
+    "description": "文中统计数字的年份落后于发稿年份且已有更新数据可用",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-freshness"
+   },
+   "examples": {
+    "positive": [
+     "2018年, 阿里“双11”的销售额已经达到了2135亿元。(假设文稿发布在2018年年底)"
+    ],
+    "negative": [
+     "2017年,阿里“双11”的销售额已经达到了1682亿元。(假设文稿发布在2018年年底)"
+    ]
+   },
+   "notes": "手册措辞为\"尽可能\",故 level 为 should。",
+   "source_text": "数字在文稿发布的时间点, 尽可能保持最新。"
+  },
+  {
+   "id": "F002-style-person-name",
+   "name": "人名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一人物在同一文稿中出现两种及以上写法(如\"泰罗/泰勒\"),用 NER 聚类同指实体后比对字面",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-person-name"
+   },
+   "examples": {
+    "positive": [
+     "管理学的鼻祖是美国人泰勒。泰勒是一位“破局”的高手……泰勒在身体条件一般的情况下……"
+    ],
+    "negative": [
+     "管理学的鼻祖是美国人泰罗。泰罗是一位“破局”的高手……泰勒在身体条件一般的情况下……"
+    ]
+   },
+   "source_text": "同一文稿中的人名保持一致。"
+  },
+  {
+   "id": "F002-style-thing-name",
+   "name": "事物名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一机构/事物先后使用不同称名(如\"美国证监会\"与\"证券交易委员会\"),同指实体字面不一致",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-thing-name"
+   },
+   "examples": {
+    "positive": [
+     "证券交易委员会(Securities and Exchange Commission,SEC)是美国国会成立的政府委员会……证券交易委员会成立于1934年。"
+    ],
+    "negative": [
+     "美国证监会(Securities and Exchange Commission,SEC)是美国国会成立的政府委员会……证券交易委员会成立于1934年。"
+    ]
+   },
+   "notes": "首次定名后全篇沿用;如需换称,应显式交代。",
+   "source_text": "同一文稿中的事物名保持一致。"
+  },
+  {
+   "id": "F002-style-work-title",
+   "name": "作品名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "书名号内的同一作品标题在文中出现不同版本(编辑距离小但不相等的标题对)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-work-title"
+   },
+   "examples": {
+    "positive": [
+     "《我们从哪里来?我们是谁?我们向何处去?》……最出名的是《我们从哪里来?我们是谁?我们向何处去?》。"
+    ],
+    "negative": [
+     "《我们从哪里来?我们是谁?我们向何处去?》……最出名的是《我们从哪里来?我们是谁?我们往哪里去?》。"
+    ]
+   },
+   "notes": "书名号内容可直接抽取比对,是体例一致中最易程序化的一条。",
+   "source_text": "同一文稿中的作品名保持一致。"
+  },
+  {
+   "id": "F002-style-number",
+   "name": "数字前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一对象的数量在上下文中不一致且未交代变化原因(如\"买5架飞机\"与\"3架飞机已运到\")",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-number"
+   },
+   "examples": {
+    "positive": [
+     "假设你的公司要买5架飞机……现在,5架飞机已经运到公司了……",
+     "上市前, 马云持股8.9%……8.9%的股份减持之后,马云用仅仅7.8%的股份控制了一家市值几千亿美金的公司。"
+    ],
+    "negative": [
+     "假设你的公司要买5架飞机……现在, 3架飞机已经运到公司了……",
+     "上市前,马云持股8.9%……马云用仅仅7.8%的股份控制了一家市值几千亿美金的公司。"
+    ]
+   },
+   "source_text": "同一文稿中的相关材料和数据保持一致。如果条件或信息发生了变化, 要在文稿中交代清楚。"
+  },
+  {
+   "id": "F002-style-count-claim",
+   "name": "上下表述一致(声明数量与实际枚举一致)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "\"我有N个X\"式声明后,实际枚举的序次项数量 ≠ N(统计\"第一/第二/……\"或\"1. 2. ……\"的个数并与声明比对)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-count-claim"
+   },
+   "examples": {
+    "positive": [
+     "我有四个心得想和大家分享。第一,……第二,……第三,……第四,……"
+    ],
+    "negative": [
+     "我有三个心得想和大家分享。第一,……第二,……第三,……第四,……"
+    ]
+   },
+   "notes": "可完全程序化:声明数 vs 枚举数。",
+   "source_text": "上下表述一致"
+  },
+  {
+   "id": "F002-style-local-expression",
+   "name": "局部表述一致(同段落译名/称谓体例统一)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一语境中头衔或人名的中英文体例混用(如同段出现\"首席执行官\"与\"CEO\"、中译名与英文原名并存)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-local-expression"
+   },
+   "examples": {
+    "positive": [
+     "百度公司首席执行官李彦宏……微软的第二任首席执行官史蒂夫·鲍尔默、总裁布拉德·史密斯……"
+    ],
+    "negative": [
+     "百度公司首席执行官李彦宏……微软的第二任CEO 史蒂夫·鲍尔默、总裁Brad Smith……"
+    ]
+   },
+   "notes": "源文件正例中的间隔号被转档为\"*\",摘录时已复原为\"·\"。",
+   "source_text": "局部表述一致"
+  },
+  {
+   "id": "F002-style-hierarchy",
+   "name": "层级一致(序号体系与序次语成套使用)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "同级标题混用不同序号体系(如同级出现\"(一)\"与\"1、\");序次语不成套(如\"首先……第二……第三……最后\") / 检测\"首先\"与\"第二\"混搭的序次语断裂",
+    "original_gate_types": [
+     "code",
+     "regex"
+    ],
+    "pattern": "首先[\\s\\S]{0,120}?第二",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-hierarchy"
+   },
+   "examples": {
+    "positive": [
+     "首先……其次……再次……最后……",
+     "第一……第二……第三……第四……"
+    ],
+    "negative": [
+     "首先……第二……第三……最后……",
+     "一、……(一)……(二)……二、……1、……2、……"
+    ]
+   },
+   "source_text": "层级一致。同一文稿中的格式和层级等保持一致。"
+  },
+  {
+   "id": "TW-msbias-term-chairman",
+   "name": "包容性用语:chairman 改用 chair / moderator",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "出现性别限定词 chairman/chairmen,建议改用 chair 或 moderator",
+    "pattern": "\\bchairm[ae]n\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-chairman",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "chair",
+    "wrong_variants": [
+     "chairman",
+     "chairmen"
+    ],
+    "match_pattern": "\\bchairm[ae]n\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用性别中立词:chair 或 moderator(依语境择一)。直接引语、作品标题、或性别确有相关时可保留原词。"
+   },
+   "notes": "wrong_variants 含复数 chairmen。gendered 词在直接引语、作品标题、性别相关讨论中可豁免(见文末 real-person/quotation 例外)。Chairman 作正式头衔或专名一部分时需人工判断。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-man-mankind",
+   "name": "包容性用语:man / mankind 改用 humanity / people / humankind",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "泛指全人类时使用 man / mankind,建议改用 humanity、people 或 humankind",
+    "pattern": "\\b(?:mankind|man)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-man-mankind",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "humanity",
+    "wrong_variants": [
+     "man",
+     "mankind"
+    ],
+    "match_pattern": "\\b(?:mankind|man)\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "泛指人类时改用 humanity / people / humankind。指具体某位男性时不替换。"
+   },
+   "notes": "'mankind' 高置信;独立的 'man' 误报极高(指具体男性、Isle of Man、姓氏、句首 Man 均非违规,仅泛指人类时才需替换),故 auto=false 交人工复核。'humankind' 因词首 human 不含词边界 man,不会被误匹配。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-mans",
+   "name": "包容性用语:动词 mans 改用 operates / staffs",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "动词 mans(如 mans the desk),建议改用 operates 或 staffs",
+    "pattern": "\\bmans\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-mans",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "operates",
+    "wrong_variants": [
+     "mans"
+    ],
+    "match_pattern": "\\bmans\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用中立动词 operates 或 staffs(依语境择一)。"
+   },
+   "notes": "'mans' 作动词时替换;可能与专名或其他用法冲突,人工确认。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-salesman",
+   "name": "包容性用语:salesman 改用 sales representative",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "性别限定词 salesman/salesmen,建议改用 sales representative",
+    "pattern": "\\bsalesm[ae]n\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-salesman",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "sales representative",
+    "wrong_variants": [
+     "salesman",
+     "salesmen"
+    ],
+    "match_pattern": "\\bsalesm[ae]n\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用 sales representative。直接引语、作品标题等语境可保留。"
+   },
+   "notes": "wrong_variants 含复数 salesmen。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-manmade",
+   "name": "包容性用语:manmade 改用 synthetic / manufactured",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "manmade / man-made / man made,建议改用 synthetic 或 manufactured",
+    "pattern": "\\bman[\\s-]?made\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-manmade",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "synthetic",
+    "wrong_variants": [
+     "manmade",
+     "man-made",
+     "man made"
+    ],
+    "match_pattern": "\\bman[\\s-]?made\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用 synthetic 或 manufactured(依语境择一)。"
+   },
+   "notes": "覆盖连写、连字符、空格三种拼法。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-manpower",
+   "name": "包容性用语:manpower 改用 workforce / staff / personnel",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "manpower / man power,建议改用 workforce、staff 或 personnel",
+    "pattern": "\\bman[\\s-]?power\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-manpower",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "workforce",
+    "wrong_variants": [
+     "manpower",
+     "man power"
+    ],
+    "match_pattern": "\\bman[\\s-]?power\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用 workforce / staff / personnel(依语境择一)。"
+   },
+   "notes": "注意专有产品名 ManpowerGroup 等应经 exclude 或人工豁免。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-master-slave",
+   "name": "去偏见术语:master/slave 改用 primary/subordinate",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "去军事化/去偏见术语"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "master/slave 配对术语,或单独出现的 slave,建议改用 primary/subordinate",
+    "pattern": "\\b(?:master[\\s/-]?slave|slave)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-master-slave",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "primary/subordinate",
+    "wrong_variants": [
+     "master/slave",
+     "master-slave",
+     "master slave",
+     "slave"
+    ],
+    "match_pattern": "\\b(?:master[\\s/-]?slave|slave)\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用 primary/subordinate(或按技术语境用 primary/replica、leader/follower)。单独的 slave 建议改 subordinate/replica。"
+   },
+   "notes": "误报风险高:代码/URL 中的 master(git master、master key、master branch)刻意不进匹配,只匹配 master/slave 配对与独立 slave。exclude code_block/inline_code/url 关键。",
+   "source_text": "Don't use terms that may carry unconscious racial bias or terms associated with military actions, politics, or historical events and eras."
+  },
+  {
+   "id": "TW-msbias-term-dmz",
+   "name": "去军事化术语:demilitarized zone (DMZ) 改用 perimeter network",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "去军事化/去偏见术语"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "网络术语 demilitarized zone / DMZ,建议改用 perimeter network",
+    "pattern": "\\b(?:demilitari[sz]ed zone|DMZ)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-dmz",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "perimeter network",
+    "wrong_variants": [
+     "demilitarized zone",
+     "demilitarised zone",
+     "DMZ"
+    ],
+    "match_pattern": "\\b(?:demilitari[sz]ed zone|DMZ)\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "网络语境改用 perimeter network。"
+   },
+   "notes": "仅网络术语义替换;地理政治语境(如 Korean DMZ)非本规则对象,需人工判断。gi 下 dmz/Dmz 亦命中。",
+   "source_text": "Don't use terms that may carry unconscious racial bias or terms associated with military actions, politics, or historical events and eras."
+  },
+  {
+   "id": "TW-msbias-term-hang",
+   "name": "去偏见术语:hang 改用 stop responding",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "去军事化/去偏见术语"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "term",
+    "description": "描述程序/系统无响应时用 hang,建议改用 stop responding",
+    "pattern": "\\b(?:hang|hangs|hanging|hung)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-hang",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "stop responding",
+    "wrong_variants": [
+     "hang",
+     "hangs",
+     "hanging",
+     "hung"
+    ],
+    "match_pattern": "\\b(?:hang|hangs|hanging|hung)\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "描述软件无响应时改用 stop responding / stops responding / stopped responding;其余日常义不替换。"
+   },
+   "notes": "误报极高(hang up、hang on、日常悬挂义均非违规),故 severity=suggestion、auto=false,仅在描述软件无响应时替换。",
+   "source_text": "Don't use terms that may carry unconscious racial bias or terms associated with military actions, politics, or historical events and eras."
+  },
+  {
+   "id": "TW-msbias-style-he-she",
+   "name": "避免 he/she、s/he 等双性别并列写法",
+   "category": [
+    "style",
+    "包容性用语",
+    "代词"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现 he/she、s/he、he or she、his or her 等双性别并列构造",
+    "pattern": "\\b(?:s/he|he/she|she/he|his/her|him/her|he or she|his or her)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-style-he-she",
+    "doc": "Bias-free communication.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改写:优先第二人称 you、复数 they/their/them,或改用角色名词(reader、customer 等);单数 they 作兜底。"
+   },
+   "notes": "he/she 与 s/he 有明确原文依据;'his or her'/'he or she' 依据文中示例行(…dial his or her phone number → …dial their phone number)。exclude URL/code 防误伤路径中的 s/he 之类。",
+   "source_text": "Don't use constructions like *he/she* and *s/he.*"
+  },
+  {
+   "id": "TW-msbias-style-spirit-animal",
+   "name": "避免俚语/文化挪用词,如 spirit animal",
+   "category": [
+    "style",
+    "包容性用语",
+    "俚语与文化挪用"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现俚语 spirit animal(可能构成文化挪用)",
+    "pattern": "\\bspirit animal\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-style-spirit-animal",
+    "doc": "Bias-free communication.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "删除或改写为直白表达(如 favorite、inspiration),避免俚语与文化挪用。"
+   },
+   "notes": "原文仅举 spirit animal 为例;泛化的'俚语'需语义判断,本规则只精确匹配该示例词。",
+   "source_text": "Don't use slang, especially if it could be considered cultural appropriation, such as *spirit animal.*"
+  },
+  {
+   "id": "TW-msbias-style-profanity",
+   "name": "避免粗俗/贬损词,如 pimp、bitch",
+   "category": [
+    "style",
+    "包容性用语",
+    "粗俗与贬损词"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现粗俗或贬损词 pimp / bitch",
+    "pattern": "\\b(?:pimp|bitch)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-style-profanity",
+    "doc": "Bias-free communication.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "删除或改写为中性表达。"
+   },
+   "notes": "原文示例为 pimp、bitch;直接引语、作品标题等语境需人工判断。",
+   "source_text": "Don't use profane or derogatory terms, such as *pimp* or *bitch.*"
+  },
+  {
+   "id": "TW-msbias-style-pity-words",
+   "name": "避免带怜悯色彩的表述,如 stricken with、suffering from",
+   "category": [
+    "style",
+    "包容性用语",
+    "以人为本(残障)"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现带怜悯色彩的表述 stricken with / suffering from",
+    "pattern": "\\b(?:stricken with|suffering from)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-style-pity-words",
+    "doc": "Bias-free communication.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用以人为本、中性的表述(如 who has… / who is…),聚焦于人而非残障。"
+   },
+   "notes": "配合'以人为本'(focus on people, not disabilities)原则;仅在描述残障语境替换。",
+   "source_text": "Don't use words that imply pity, such as *stricken with* or *suffering from.*"
+  }
+ ]
+}

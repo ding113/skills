@@ -1,0 +1,6387 @@
+{
+ "bundle": "zh-techdoc",
+ "language": "zh",
+ "genre": "techdoc",
+ "version": "1.0.0",
+ "compiled_by": "scripts/compile-article-rules.py",
+ "layering": "house > genre > universal; markdownlint applies to all genres at runtime",
+ "quote_convention": "直角引号「」为主引号，嵌套用『』；禁用弯引号与 ASCII 直引号（代码除外）。",
+ "sources": [
+  "审校工作规范.rules.json",
+  "zhtech.rules.json",
+  "mdnzh.rules.json",
+  "zhcopy.rules.json",
+  "sspai.rules.json",
+  "house"
+ ],
+ "counts": {
+  "total": 169,
+  "regex": 75,
+  "term": 26,
+  "llm": 68,
+  "must": 116
+ },
+ "rules": [
+  {
+   "id": "HOUSE-zh-quote-corner",
+   "name": "家规:正文统一直角引号「」(嵌套『』)",
+   "category": [
+    "标点符号",
+    "引号"
+   ],
+   "layer": "house",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "pattern": "[“”‘’]",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "frontmatter",
+     "html_tag"
+    ],
+    "description": "中文博客/技术文档正文出现弯引号（应改为「」/『』）",
+    "confidence": "exact",
+    "python_ok": true
+   },
+   "fix": {
+    "auto": false,
+    "description": "主引号改「」，引号内再引用改『』"
+   },
+   "examples": {
+    "positive": [
+     "他说：「先跑通再谈优雅。」",
+     "所谓「幂等」，指的是重复执行结果不变。"
+    ],
+    "negative": [
+     "他说：“先跑通再谈优雅。”"
+    ]
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q6"
+   },
+   "notes": "覆盖 GB/T 弯引号建议与 zhtech 弯引号规则；引语、术语、强调一律「」。",
+   "replaces": [
+    "TW-sspai-punct-cjk-quote-corner",
+    "TW-zhcopy-style-corner-quotes",
+    "TW-zhtech-punct-straight-quotes"
+   ]
+  },
+  {
+   "id": "HOUSE-zh-no-ascii-quote",
+   "name": "家规:中文正文禁用 ASCII 直引号",
+   "category": [
+    "标点符号",
+    "引号"
+   ],
+   "layer": "house",
+   "strength": "must",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "pattern": "[一-鿿][\"']|[\"'][一-鿿]",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "frontmatter",
+     "html_tag"
+    ],
+    "description": "紧邻汉字的 ASCII 直引号（应改为「」）",
+    "confidence": "heuristic",
+    "python_ok": true
+   },
+   "examples": {
+    "positive": [
+     "配置里的 \"debug\" 字段保持原样（代码语境）"
+    ],
+    "negative": [
+     "他说:\"没问题\"就走了"
+    ]
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q6"
+   }
+  },
+  {
+   "id": "F002-fact-principle",
+   "name": "凡事实必核",
+   "category": [
+    "事实核对"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "存在未经核实即保留的事实性陈述(默认假定其为错)",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-principle"
+   },
+   "notes": "总原则,统摄 F002-fact-* 各细则。",
+   "source_text": "凡事实必核。核对事实是审校工作的核心内容,也是不可或缺的工作步骤。你需要养成核对事实的习惯。这里的事实包括人物、时间、地点、事物等内容。你在审校稿件过程中,看到这些内容出现时,脑中需下意识地拉起警报。未经核实的事实,要假定它们都是错的。你既可以在当时就查阅相关资料核实,也可以先逐个高亮标出,最后再集中核对。"
+  },
+  {
+   "id": "F002-fact-person-name",
+   "name": "人物名字及古人字、号正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人名写错(如张冠李戴、译名错误),或将\"字\"与\"号\"混淆",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-name"
+   },
+   "examples": {
+    "positive": [
+     "明确提出保健因素的,是美国心理学家弗雷德里克·赫茨伯格(Fredrick Herzberg)。",
+     "苏东坡, 号东坡居士。"
+    ],
+    "negative": [
+     "明确提出保健因素的,是美国心理学家罗伯特·赫茨伯格(Robert Herzberg)。",
+     "苏东坡,字东坡。"
+    ]
+   },
+   "source_text": "名字以及古人的字、号等是否正确"
+  },
+  {
+   "id": "F002-fact-person-identity",
+   "name": "人物身份正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物的职务、党派、头衔等身份信息与事实不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-identity"
+   },
+   "examples": {
+    "positive": [
+     "特朗普,美国总统,美国共和党籍政治家。"
+    ],
+    "negative": [
+     "特朗普,美国总统,美国民主党籍政治家。"
+    ]
+   },
+   "source_text": "身份是否正确"
+  },
+  {
+   "id": "F002-fact-person-nationality",
+   "name": "人物国别正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物国籍/国别表述错误,或忽略移民、改籍等事实(必要时应写成\"X裔/X出生的Y国人\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-nationality"
+   },
+   "examples": {
+    "positive": [
+     "哈耶克, (奥地利裔 / 奥地利出生的) 英国经济学家。"
+    ],
+    "negative": [
+     "哈耶克,奥地利经济学家。"
+    ]
+   },
+   "source_text": "国别是否正确"
+  },
+  {
+   "id": "F002-fact-person-relation",
+   "name": "人物前后关系正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物间的影响、师承、时间先后等关系颠倒或错置",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-relation"
+   },
+   "examples": {
+    "positive": [
+     "亚当·斯密的《国富论》,为李嘉图的多理论提供了依据。"
+    ],
+    "negative": [
+     "李嘉图的很多理论,成为亚当·斯密写《国富论》的依据。"
+    ]
+   },
+   "source_text": "人物前后的关系是否正确"
+  },
+  {
+   "id": "F002-fact-time-event",
+   "name": "事件发生时间正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "时间"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "事件年份/日期与史实不符",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-time-event"
+   },
+   "examples": {
+    "positive": [
+     "1984年,新中国第一次参加奥运会,中国队获得15枚金牌。"
+    ],
+    "negative": [
+     "1983年,新中国第一次参加奥运会,中国队获得15枚金牌。"
+    ]
+   },
+   "source_text": "事件发生的时间是否正确"
+  },
+  {
+   "id": "F002-fact-time-publication",
+   "name": "出版/发表时间正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "时间"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "书籍出版年、论文/文章发表年与实际不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-time-publication"
+   },
+   "examples": {
+    "positive": [
+     "《傲慢与偏见》出版于1813年。",
+     "2014年,《科学》杂志发表了一项研究,它说肺癌可以潜伏二十多年,然后会突然转变为侵袭性的疾病。"
+    ],
+    "negative": [
+     "《傲慢与偏见》出版于1796年。",
+     "2018年,《科学》杂志发表了一项研究,它说肺癌可以潜伏二十多年,然后会突然转变为侵袭性的疾病。"
+    ]
+   },
+   "source_text": "书籍出版、文章发表的时间是否正确"
+  },
+  {
+   "id": "F002-fact-place-name",
+   "name": "地点名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "地名书写错误(错别字、同音混淆、行政区划名称错误)",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-name"
+   },
+   "examples": {
+    "positive": [
+     "山西省吕梁市。"
+    ],
+    "negative": [
+     "山西省吕梁市。"
+    ]
+   },
+   "notes": "源文件此条误/正示例文字相同,系转档失真(原意疑为省名或政区级别之误),保留原样。",
+   "source_text": "地点的名称是否正确"
+  },
+  {
+   "id": "F002-fact-place-relation",
+   "name": "地点之间关系正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "地理方位、隶属、相对位置关系与实际不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-relation"
+   },
+   "examples": {
+    "positive": [
+     "加拿大不列颠哥伦比亚省西部的温哥华岛上, 有一座叫维多利亚的小城, 往东和温哥华市隔海相望。"
+    ],
+    "negative": [
+     "加拿大不列颠哥伦比亚省的西部有一座叫维多利亚的岛, 往东和温哥华隔海相望。"
+    ]
+   },
+   "source_text": "地点之间的关系是否正确"
+  },
+  {
+   "id": "F002-fact-place-history",
+   "name": "地点历史沿革准确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "对地点历史状态的表述(曾经/一直/首个等限定词)与史实不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-history"
+   },
+   "examples": {
+    "positive": [
+     "维多利亚是哥伦比亚省的首府。(说明:不是曾经,一直都是首府)"
+    ],
+    "negative": [
+     "维多利亚曾经是哥伦比亚省第一个首府。"
+    ]
+   },
+   "source_text": "地点的历史沿革是否准确"
+  },
+  {
+   "id": "F002-fact-place-oldnew",
+   "name": "古今地名匹配",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "历史地名括注的今名对应错误",
+    "original_gate_types": [
+     "llm",
+     "regex"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-oldnew"
+   },
+   "examples": {
+    "positive": [
+     "广州湾(今湛江港)是1899年被法国强行租借的。"
+    ],
+    "negative": [
+     "广州湾(今广州)是1899年被法国强行租借的。"
+    ]
+   },
+   "source_text": "地点的历史名称与今天的名称是否匹配"
+  },
+  {
+   "id": "F002-fact-quote-classic",
+   "name": "传统文化经典引文与原文一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "引用的经典原文存在错字、语序颠倒、句序错乱",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-quote-classic"
+   },
+   "examples": {
+    "positive": [
+     "“天下有道,则礼乐征伐自天子出。”",
+     "“驾长车,踏破贺兰山缺。壮志饥餐胡虏肉,笑谈渴饮匈奴血。”"
+    ],
+    "negative": [
+     "“天下有道,礼伐征乐自天子出。”",
+     "“壮士饥餐胡虏肉,笑谈渴饮匈奴血,驾长车踏破贺兰山缺。”"
+    ]
+   },
+   "notes": "注意\"壮志\"与\"壮士\"这类单字之差。",
+   "source_text": "引用传统文化经典(国学经典、唐诗宋词等)原文"
+  },
+  {
+   "id": "F002-fact-quote-modern",
+   "name": "其他经典作品引文与原文一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "引用现当代作品原文与出版文本不一致(包括异体字、用字习惯,如鲁迅\"年青\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-quote-modern"
+   },
+   "examples": {
+    "positive": [
+     "“我在年青时候也曾做过许多梦”。(鲁迅《呐喊》)"
+    ],
+    "negative": [
+     "“我在年轻时候也曾做过许多梦”。(鲁迅《呐喊》)"
+    ]
+   },
+   "notes": "以已出版文本为准,不得\"顺手修正\"原作者用字。",
+   "source_text": "引用其他经典作品原文"
+  },
+  {
+   "id": "F002-fact-theory-name",
+   "name": "理论名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "学术理论/学说名称用词错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-theory-name"
+   },
+   "examples": {
+    "positive": [
+     "决定论,又称拉普拉斯信条。"
+    ],
+    "negative": [
+     "确定论, 又称拉普拉斯信条。"
+    ]
+   },
+   "source_text": "理论名称"
+  },
+  {
+   "id": "F002-fact-work-title",
+   "name": "书刊/文章/节目名称与已发表版本一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "作品标题与正式出版/发表的标题不一致(包括语序)",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-work-title"
+   },
+   "examples": {
+    "positive": [
+     "卢梭是深刻推动了平等的现代思想家,他的《论人类不平等的起源和基础》《社会契约论》都是对平等的经典赞歌。"
+    ],
+    "negative": [
+     "卢梭是深刻推动了平等的现代思想家,他的《论人类不平等的基础和起源》《社会契约论》都是对平等的经典赞歌。"
+    ]
+   },
+   "source_text": "书名、刊物名称、文章或论文标题、节目名称等是否与已发表或出版的一致"
+  },
+  {
+   "id": "F002-fact-org-name",
+   "name": "机构名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "机构缩写与全称/译名对应错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-org-name"
+   },
+   "examples": {
+    "positive": [
+     "NASD(全国证券交易商协会)。"
+    ],
+    "negative": [
+     "NASD (纳斯达克)。"
+    ]
+   },
+   "notes": "缩写首次出现时括注的展开必须是该缩写的真实全称。",
+   "source_text": "机构名称"
+  },
+  {
+   "id": "F002-fact-formula-unit",
+   "name": "公式、计量单位正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "数值的计量单位/币种错误(如\"元\"与\"美元\"混淆),公式书写错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-formula-unit"
+   },
+   "examples": {
+    "positive": [
+     "苹果公司的市值, 一度超过一万亿美元。"
+    ],
+    "negative": [
+     "苹果公司的市值, 一度超过一万亿元。"
+    ]
+   },
+   "source_text": "公式、计量单位"
+  },
+  {
+   "id": "F002-number-principle",
+   "name": "凡数字必核",
+   "category": [
+    "事实核对"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "抽取全文所有数字(含百分比、金额、年份),生成核对清单,逐一标记核实来源",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-principle"
+   },
+   "notes": "总原则,统摄 F002-number-* 各细则。",
+   "source_text": "凡数字必核。数字属于事实的一种,之所以提出来单独强调,是因为数字在文稿中太特殊了,一旦出错,会严重影响文稿的质量。文稿中出现的所有数字,你要逐一核对。"
+  },
+  {
+   "id": "F002-number-precision",
+   "name": "数字精确",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "将精确数值随手取整或凭记忆约写,与来源数据不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-precision"
+   },
+   "examples": {
+    "positive": [
+     "京东上市前, 刘强东只持股18.8%, 却有51.2%的投票权。"
+    ],
+    "negative": [
+     "京东上市前, 刘强东只持股20%, 却有50%的投票权。"
+    ]
+   },
+   "source_text": "精确"
+  },
+  {
+   "id": "F002-number-arithmetic",
+   "name": "核算无误",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "文中给出的合计/换算结果与按其自身分项数据重算的结果不一致",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-arithmetic"
+   },
+   "examples": {
+    "positive": [
+     "工位区、会议室、前台区,加在一起是90-110平方米。按65%的得房率计算,办公室建筑面积要达到140-170平方米。"
+    ],
+    "negative": [
+     "工位区、会议室、前台区,加在一起是100-120平方米。按65%的得房率计算,办公室建筑面积要达到150-160平方米。"
+    ]
+   },
+   "notes": "这是最可程序化的事实核对项:凡「合计/共/加在一起/按X%计算」处必重算。",
+   "source_text": "所有涉及运算的地方,都要演算核对。"
+  },
+  {
+   "id": "F002-number-freshness",
+   "name": "数字保持最新",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "llm",
+    "description": "文中统计数字的年份落后于发稿年份且已有更新数据可用",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-freshness"
+   },
+   "examples": {
+    "positive": [
+     "2018年, 阿里“双11”的销售额已经达到了2135亿元。(假设文稿发布在2018年年底)"
+    ],
+    "negative": [
+     "2017年,阿里“双11”的销售额已经达到了1682亿元。(假设文稿发布在2018年年底)"
+    ]
+   },
+   "notes": "手册措辞为\"尽可能\",故 level 为 should。",
+   "source_text": "数字在文稿发布的时间点, 尽可能保持最新。"
+  },
+  {
+   "id": "F002-style-person-name",
+   "name": "人名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一人物在同一文稿中出现两种及以上写法(如\"泰罗/泰勒\"),用 NER 聚类同指实体后比对字面",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-person-name"
+   },
+   "examples": {
+    "positive": [
+     "管理学的鼻祖是美国人泰勒。泰勒是一位“破局”的高手……泰勒在身体条件一般的情况下……"
+    ],
+    "negative": [
+     "管理学的鼻祖是美国人泰罗。泰罗是一位“破局”的高手……泰勒在身体条件一般的情况下……"
+    ]
+   },
+   "source_text": "同一文稿中的人名保持一致。"
+  },
+  {
+   "id": "F002-style-thing-name",
+   "name": "事物名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一机构/事物先后使用不同称名(如\"美国证监会\"与\"证券交易委员会\"),同指实体字面不一致",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-thing-name"
+   },
+   "examples": {
+    "positive": [
+     "证券交易委员会(Securities and Exchange Commission,SEC)是美国国会成立的政府委员会……证券交易委员会成立于1934年。"
+    ],
+    "negative": [
+     "美国证监会(Securities and Exchange Commission,SEC)是美国国会成立的政府委员会……证券交易委员会成立于1934年。"
+    ]
+   },
+   "notes": "首次定名后全篇沿用;如需换称,应显式交代。",
+   "source_text": "同一文稿中的事物名保持一致。"
+  },
+  {
+   "id": "F002-style-work-title",
+   "name": "作品名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "书名号内的同一作品标题在文中出现不同版本(编辑距离小但不相等的标题对)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-work-title"
+   },
+   "examples": {
+    "positive": [
+     "《我们从哪里来?我们是谁?我们向何处去?》……最出名的是《我们从哪里来?我们是谁?我们向何处去?》。"
+    ],
+    "negative": [
+     "《我们从哪里来?我们是谁?我们向何处去?》……最出名的是《我们从哪里来?我们是谁?我们往哪里去?》。"
+    ]
+   },
+   "notes": "书名号内容可直接抽取比对,是体例一致中最易程序化的一条。",
+   "source_text": "同一文稿中的作品名保持一致。"
+  },
+  {
+   "id": "F002-style-number",
+   "name": "数字前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一对象的数量在上下文中不一致且未交代变化原因(如\"买5架飞机\"与\"3架飞机已运到\")",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-number"
+   },
+   "examples": {
+    "positive": [
+     "假设你的公司要买5架飞机……现在,5架飞机已经运到公司了……",
+     "上市前, 马云持股8.9%……8.9%的股份减持之后,马云用仅仅7.8%的股份控制了一家市值几千亿美金的公司。"
+    ],
+    "negative": [
+     "假设你的公司要买5架飞机……现在, 3架飞机已经运到公司了……",
+     "上市前,马云持股8.9%……马云用仅仅7.8%的股份控制了一家市值几千亿美金的公司。"
+    ]
+   },
+   "source_text": "同一文稿中的相关材料和数据保持一致。如果条件或信息发生了变化, 要在文稿中交代清楚。"
+  },
+  {
+   "id": "F002-style-count-claim",
+   "name": "上下表述一致(声明数量与实际枚举一致)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "\"我有N个X\"式声明后,实际枚举的序次项数量 ≠ N(统计\"第一/第二/……\"或\"1. 2. ……\"的个数并与声明比对)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-count-claim"
+   },
+   "examples": {
+    "positive": [
+     "我有四个心得想和大家分享。第一,……第二,……第三,……第四,……"
+    ],
+    "negative": [
+     "我有三个心得想和大家分享。第一,……第二,……第三,……第四,……"
+    ]
+   },
+   "notes": "可完全程序化:声明数 vs 枚举数。",
+   "source_text": "上下表述一致"
+  },
+  {
+   "id": "F002-style-local-expression",
+   "name": "局部表述一致(同段落译名/称谓体例统一)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一语境中头衔或人名的中英文体例混用(如同段出现\"首席执行官\"与\"CEO\"、中译名与英文原名并存)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-local-expression"
+   },
+   "examples": {
+    "positive": [
+     "百度公司首席执行官李彦宏……微软的第二任首席执行官史蒂夫·鲍尔默、总裁布拉德·史密斯……"
+    ],
+    "negative": [
+     "百度公司首席执行官李彦宏……微软的第二任CEO 史蒂夫·鲍尔默、总裁Brad Smith……"
+    ]
+   },
+   "notes": "源文件正例中的间隔号被转档为\"*\",摘录时已复原为\"·\"。",
+   "source_text": "局部表述一致"
+  },
+  {
+   "id": "F002-style-hierarchy",
+   "name": "层级一致(序号体系与序次语成套使用)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "同级标题混用不同序号体系(如同级出现\"(一)\"与\"1、\");序次语不成套(如\"首先……第二……第三……最后\") / 检测\"首先\"与\"第二\"混搭的序次语断裂",
+    "original_gate_types": [
+     "code",
+     "regex"
+    ],
+    "pattern": "首先[\\s\\S]{0,120}?第二",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-hierarchy"
+   },
+   "examples": {
+    "positive": [
+     "首先……其次……再次……最后……",
+     "第一……第二……第三……第四……"
+    ],
+    "negative": [
+     "首先……第二……第三……最后……",
+     "一、……(一)……(二)……二、……1、……2、……"
+    ]
+   },
+   "source_text": "层级一致。同一文稿中的格式和层级等保持一致。"
+  },
+  {
+   "id": "F002-grammar-subj-pred",
+   "name": "主语与谓语搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "句法分析中主语与谓语语义不能搭配(如\"社交…提升\"缺中心语\"能力\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-subj-pred"
+   },
+   "examples": {
+    "positive": [
+     "自从参加了这个社团, 他的社交能力明显提升了。"
+    ],
+    "negative": [
+     "自从参加了这个社团, 他的社交明显提升了。"
+    ]
+   },
+   "source_text": "主语与谓语搭配不当"
+  },
+  {
+   "id": "F002-grammar-subj-obj",
+   "name": "主语与宾语搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "主语与宾语在判断句中范畴错位(如\"煤是……省份\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-subj-obj"
+   },
+   "examples": {
+    "positive": [
+     "山西是我国出产煤最多的省份之一。"
+    ],
+    "negative": [
+     "山西的煤是我国出产最多的省份之一。"
+    ]
+   },
+   "notes": "\"X的Y是……Z之一\"且 Y 与 Z 范畴不同,为高置信线索。",
+   "source_text": "主语与宾语搭配不当"
+  },
+  {
+   "id": "F002-grammar-verb-obj",
+   "name": "动宾搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "动词与宾语不能搭配(如\"奠基…基础\"应为\"奠定…基础\");并列宾语共用动词但动词只能支配其一(如\"听音乐和电影\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-verb-obj"
+   },
+   "examples": {
+    "positive": [
+     "莎士比亚奠定了英国文学的基础。",
+     "小明喜欢听音乐和看电影。"
+    ],
+    "negative": [
+     "莎士比亚奠基了英国文学的基础。",
+     "小明喜欢听音乐和电影。"
+    ]
+   },
+   "source_text": "动宾搭配不当"
+  },
+  {
+   "id": "F002-grammar-adj-noun",
+   "name": "形容词与名词搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "定语形容词与中心名词习惯搭配错位(如\"高超的功底\"应为\"深厚的功底\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-adj-noun"
+   },
+   "examples": {
+    "positive": [
+     "深厚的语言功底和高超的文字水平。"
+    ],
+    "negative": [
+     "高超的语言功底和文字水平。"
+    ]
+   },
+   "source_text": "形容词与名词搭配不当"
+  },
+  {
+   "id": "F002-grammar-classifier",
+   "name": "量词与名词搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "量词与名词不匹配(如\"一条钥匙\"应为\"一把钥匙\"),可用量词-名词搭配表校验",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-classifier"
+   },
+   "examples": {
+    "positive": [
+     "一把价值200元的钥匙。"
+    ],
+    "negative": [
+     "一条价值200元的钥匙。"
+    ]
+   },
+   "notes": "量词搭配表可程序化到较高覆盖率。",
+   "source_text": "量词与名词搭配不当"
+  },
+  {
+   "id": "F002-grammar-conjunction",
+   "name": "关联词搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "关联词不成对(如\"不仅……竟然\"应为\"不仅……还/而且\"),按关联词配对表扫描 / 依配对表校验:不仅/还、虽然/但是、因为/所以、即使/也 等",
+    "original_gate_types": [
+     "nlp",
+     "regex"
+    ],
+    "pattern": "不仅[^。;;]{1,40}竟然",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-conjunction"
+   },
+   "examples": {
+    "positive": [
+     "她不仅躲过了疫病, 还保存下希望的火种。"
+    ],
+    "negative": [
+     "她不仅躲过了疫病,竟然保存下希望的火种。"
+    ]
+   },
+   "source_text": "关联词搭配不当"
+  },
+  {
+   "id": "F002-order-inversion",
+   "name": "句子成分颠倒",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "语序不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "双宾语等成分语序颠倒(如\"给本钱你\"应为\"给你本钱\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-order-inversion"
+   },
+   "examples": {
+    "positive": [
+     "我给你本钱。"
+    ],
+    "negative": [
+     "我给本钱你。"
+    ]
+   },
+   "source_text": "句子成分颠倒"
+  },
+  {
+   "id": "F002-order-conjunction-position",
+   "name": "连词位置不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "语序不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "前后分句同主语时,关联词误置于主语之前(如\"不仅卡西莫多的脸……整个人\"应为\"卡西莫多不仅脸……\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-order-conjunction-position"
+   },
+   "examples": {
+    "positive": [
+     "卡西莫多不仅脸长得奇形怪状,整个人都是畸形的。"
+    ],
+    "negative": [
+     "不仅卡西莫多的脸长得奇形怪状, 整个人都是畸形的。"
+    ]
+   },
+   "notes": "判定规则:两分句主语相同→关联词放主语后;不同→放主语前。",
+   "source_text": "连词位置不当"
+  },
+  {
+   "id": "F002-order-logic",
+   "name": "语序不符合事物发展规律",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "语序不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "并列流程词未按事理/时间顺序排列(如\"推广、研发、设计、销售\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-order-logic"
+   },
+   "examples": {
+    "positive": [
+     "研发、设计、销售、推广产品。"
+    ],
+    "negative": [
+     "推广、研发、设计、销售产品。"
+    ]
+   },
+   "source_text": "语序不符合事物发展规律"
+  },
+  {
+   "id": "F002-missing-subject",
+   "name": "主语残缺",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "成分残缺"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "介宾/动宾短语开头后紧跟\"使/让/令\"造成全句无主语 / 句法分析检出无主句且非祈使/惯用省略",
+    "original_gate_types": [
+     "nlp",
+     "regex"
+    ],
+    "pattern": "(^|[。;;!?])(听了|通过|经过|由于|随着|在)[^。;;]{2,30},\\s*(使|让|令)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-missing-subject"
+   },
+   "examples": {
+    "positive": [
+     "听了这次演讲,我受到很大启发。/这次演讲使我受到很大启发。"
+    ],
+    "negative": [
+     "听了这次演讲,使我受到很大启发。"
+    ]
+   },
+   "notes": "\"X了……,使……\"是最高频的主语残缺模式,regex 线索可靠。",
+   "source_text": "主语残缺"
+  },
+  {
+   "id": "F002-missing-predicate",
+   "name": "谓语残缺",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "成分残缺"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "句中名词性成分前缺谓语动词(如\"去餐厅夜宵\"缺\"吃\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-missing-predicate"
+   },
+   "examples": {
+    "positive": [
+     "加完班后, 王玲就去餐厅吃夜宵。"
+    ],
+    "negative": [
+     "加完班后,王玲就去餐厅夜宵。"
+    ]
+   },
+   "source_text": "谓语残缺"
+  },
+  {
+   "id": "F002-missing-object",
+   "name": "宾语残缺",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "成分残缺"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "及物动词的宾语中心语缺失(如\"勾勒了一个骑士和一个仆人\"缺\"的形象\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-missing-object"
+   },
+   "examples": {
+    "positive": [
+     "作家勾勒了一个骑士和一个仆人的形象。"
+    ],
+    "negative": [
+     "作家勾勒了一个骑士和一个仆人。"
+    ]
+   },
+   "source_text": "宾语残缺"
+  },
+  {
+   "id": "F002-mixed-structure",
+   "name": "结构混乱(句式杂糅)",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "结构混乱"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "\"是由于……的结果\"杂糅 / \"靠的是……取得的\"杂糅 / \"关键在于……是十分重要的\"杂糅 / \"围绕以……为中心\"杂糅 / \"成分是……配制而成的\"杂糅 / \"本着……为原则\"杂糅 / \"是为了……为目的\"杂糅 / \"原因是……造成的\"杂糅 / \"借口……为名\"杂糅 / \"有……组成\"应为\"由……组成\"",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "是?由于[^。;;]{1,40}的结果",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-mixed-structure"
+   },
+   "examples": {
+    "positive": [
+     "脑细胞无法工作,是由于免疫系统攻击脑细胞/是免疫系统攻击脑细胞的结果。",
+     "本着……的原则;以……为原则"
+    ],
+    "negative": [
+     "脑细胞无法工作,是由于免疫系统攻击脑细胞的结果。",
+     "本着……为原则"
+    ]
+   },
+   "notes": "手册给出 10 组固定杂糅模式,全部可正则化;\"有……组成\"匹配面宽,标 heuristic 需复核。",
+   "source_text": "结构混乱主要表现为既想用这种说法,又想用那种说法。"
+  },
+  {
+   "id": "F002-unclear-reference",
+   "name": "指代不明",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "表意不明"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "代词(他/她/它/这/其)或\"这一群人\"等指称在上下文中有多个可能先行词,或与作者本意不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-unclear-reference"
+   },
+   "examples": {
+    "positive": [
+     "塞万提斯为了不让堂吉柯德连续受打击,就在随后两页给他安排了一场胜利。",
+     "劳渥德学校就是为舅母这类人量身定制的。"
+    ],
+    "negative": [
+     "塞万提斯为了不让堂吉柯德连续受打击, 他就在随后两页给他安排了一场胜利。",
+     "劳渥德学校就是为这一群人量身定制的。"
+    ]
+   },
+   "source_text": "指代不明"
+  },
+  {
+   "id": "F002-ambiguity",
+   "name": "产生歧义",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "表意不明"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "句子存在两种及以上合理解读(如\"咬死了猎人的狗\")而未消歧",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-ambiguity"
+   },
+   "examples": {
+    "positive": [
+     "猎人的狗被咬死了 / 猎人被狗咬死了。"
+    ],
+    "negative": [
+     "咬死了猎人的狗。"
+    ]
+   },
+   "source_text": "产生歧义"
+  },
+  {
+   "id": "F002-self-contradiction",
+   "name": "自相矛盾",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "不合逻辑"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "同一句/同一语段中的表述互相矛盾(如\"买了……免费的\") / \"买\"与\"免费\"共现线索",
+    "original_gate_types": [
+     "llm",
+     "regex"
+    ],
+    "pattern": "买了[^。]{0,10}免费",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-self-contradiction"
+   },
+   "examples": {
+    "positive": [
+     "他买了一杯咖啡 / 他拿了一杯免费的咖啡。"
+    ],
+    "negative": [
+     "他买了一杯免费的咖啡。"
+    ]
+   },
+   "source_text": "自相矛盾"
+  },
+  {
+   "id": "F002-scope-confusion",
+   "name": "范围不清",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "不合逻辑"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "包含关系的概念并列(如\"科学家和人才\":前者是后者子集,应改为\"各类人才,尤其是科学家\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-scope-confusion"
+   },
+   "examples": {
+    "positive": [
+     "这个项目如果想取得成功, 还缺乏各类人才, 尤其是科学家。"
+    ],
+    "negative": [
+     "这个项目如果想取得成功, 还缺乏各类科学家和人才。"
+    ]
+   },
+   "source_text": "范围不清"
+  },
+  {
+   "id": "F002-redundancy",
+   "name": "前后重复",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "不合逻辑"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "同义成分叠用(可维护同义冗余词表:无偿+免费、大约+左右、亲眼+目睹 等)",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "无偿[^。]{0,6}免费|免费[^。]{0,6}无偿|大约[^。]{0,12}左右|凯旋归来|亲眼目睹",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-redundancy"
+   },
+   "examples": {
+    "positive": [
+     "无偿提供服务/提供免费服务。"
+    ],
+    "negative": [
+     "无偿提供免费服务。"
+    ]
+   },
+   "notes": "词表可持续扩充。",
+   "source_text": "前后重复"
+  },
+  {
+   "id": "F002-false-causality",
+   "name": "误用因果关系",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "不合逻辑"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "用\"所以/因此\"连接不构成因果的前后件(应为假设、转折等其他关系)",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-false-causality"
+   },
+   "examples": {
+    "positive": [
+     "船员能获得的经济回报很有限,如果纯粹为了经济利益,大可不必从事如此危险的职业。"
+    ],
+    "negative": [
+     "船员能获得的经济回报很有限, 所以纯粹为了经济利益, 大可不必从事如此危险的职业。"
+    ]
+   },
+   "source_text": "误用因果关系"
+  },
+  {
+   "id": "F002-pos-noun-as-verb",
+   "name": "名词误作动词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "名词占据谓语位置(如\"有条件大量阅读\"中\"阅读\"作名词用时需加\"进行\"类形式动词)。词性类门禁,按手册允许保留为自然语言/词性标注判定",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-noun-as-verb"
+   },
+   "examples": {
+    "positive": [
+     "他们在成长过程中都有条件进行大量阅读。"
+    ],
+    "negative": [
+     "他们在成长过程中都有条件大量阅读。"
+    ]
+   },
+   "notes": "词性门禁:需分词+词性标注辅助,机器判定后人工复核。",
+   "source_text": "名词误作动词"
+  },
+  {
+   "id": "F002-pos-noun-as-adj",
+   "name": "名词误作形容词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "程度副词直接修饰名词 / 程度副词+名词结构(\"很本事\"应为\"很有本事/很能干\")",
+    "original_gate_types": [
+     "nlp",
+     "regex"
+    ],
+    "pattern": "(很|非常|特别|十分|相当)(本事|能力|水平|素质)(?!强|高|好|差|低)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-noun-as-adj"
+   },
+   "examples": {
+    "positive": [
+     "这位医生很能干/这位医生很有本事。"
+    ],
+    "negative": [
+     "这位医生很本事。"
+    ]
+   },
+   "source_text": "名词误作形容词"
+  },
+  {
+   "id": "F002-pos-verb-as-noun",
+   "name": "动词误作名词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "动词占据名词位置(如\"还是个怀疑\"应为\"还是个疑问\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-verb-as-noun"
+   },
+   "examples": {
+    "positive": [
+     "这项研究对治疗癌症到底有没有用,还是个疑问。"
+    ],
+    "negative": [
+     "这项研究对治疗癌症到底有没有用,还是个怀疑。"
+    ]
+   },
+   "source_text": "动词误作名词"
+  },
+  {
+   "id": "F002-pos-verb-as-adj",
+   "name": "动词误作形容词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "动词直接作定语表性状(如\"感动的场面\"应为\"令人感动/感人的场面\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-verb-as-adj"
+   },
+   "examples": {
+    "positive": [
+     "那是个令人感动/感人的场面。"
+    ],
+    "negative": [
+     "那是个感动的场面。"
+    ]
+   },
+   "source_text": "动词误作形容词"
+  },
+  {
+   "id": "F002-pos-adj-as-verb",
+   "name": "形容词误作动词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "形容词带宾语/补语作谓语动词(如\"向组长抱歉\"应为\"向组长道歉\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-adj-as-verb"
+   },
+   "examples": {
+    "positive": [
+     "李平为自己的冲动向组长道歉。"
+    ],
+    "negative": [
+     "李平为自己的冲动向组长抱歉。"
+    ]
+   },
+   "source_text": "形容词误作动词"
+  },
+  {
+   "id": "F002-pos-adj-as-noun",
+   "name": "形容词误作名词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "形容词占据名词并列位置(如\"用勇气和鲁莽发起冲锋\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-adj-as-noun"
+   },
+   "examples": {
+    "positive": [
+     "骑士用巨大的勇气发起了鲁莽的冲锋。"
+    ],
+    "negative": [
+     "骑士用巨大的勇气和鲁莽发起了冲锋。"
+    ]
+   },
+   "source_text": "形容词误作名词"
+  },
+  {
+   "id": "F002-voice-error",
+   "name": "语态错误",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "语态错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "主动/被动(使动)标记缺失导致语态断裂(如\"反而中下层人民的居住环境遭到破坏\"缺\"使\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-voice-error"
+   },
+   "examples": {
+    "positive": [
+     "工业发展不仅没有让城市更美好,反而使中下层人民的居住环境遭到了严重破坏。"
+    ],
+    "negative": [
+     "工业发展不仅没有让城市更美好,反而中下层人民的居住环境遭到了严重破坏。"
+    ]
+   },
+   "source_text": "语态错误"
+  },
+  {
+   "id": "F002-punc-period-runon",
+   "name": "句号:一逗到底",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "句号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "单句(以句号/问号/叹号结尾的片段)内逗号数超过阈值(建议≥6)且含多个完整主谓结构",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-period-runon"
+   },
+   "examples": {
+    "positive": [
+     "我们把范围、时间和成本作为三条边,画一个三角形,然后把范围的边加长。有一定基础几何知识的人会知道,这时必须相应加长时间或者成本的边长,才能使三角形保持闭合。"
+    ],
+    "negative": [
+     "我们把范围、时间和成本作为三条边, 画一个三角形, 然后把范围的边加长, 有一定基础几何知识的人会知道, 这时必须相应加长时间或者成本的边长, 才能使三角形保持闭合, 如果想降低成本, 我们则需要调整另外两边, 这就是著名的“项目三角形”。"
+    ]
+   },
+   "notes": "阈值型门禁,命中后由人工/llm 决定断句点。",
+   "source_text": "该用句号的地方不用,一逗到底"
+  },
+  {
+   "id": "F002-punc-period-split",
+   "name": "句号:割裂句子",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "句号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "句号后紧跟转折/承接连词起头的残句 / 句号切分处前后仍是同一句法结构的两半(前半无法独立成句)",
+    "original_gate_types": [
+     "llm",
+     "regex"
+    ],
+    "pattern": "。(但在|但是在|而在|却在|但这|而这)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-period-split"
+   },
+   "examples": {
+    "positive": [
+     "免费虽然是“互联网思维”的核心方法,但在其他行业未必适用。"
+    ],
+    "negative": [
+     "免费虽然是“互联网思维”的核心方法。但在其他行业未必适用。"
+    ]
+   },
+   "notes": "\"虽然……。但……\"结构为高置信线索:regex 可加 虽然[^。]*。但。",
+   "source_text": "不该用句号的地方用了句号,割裂了句子"
+  },
+  {
+   "id": "F002-punc-comma-missing",
+   "name": "逗号漏用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "逗号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "两个完整主谓结构间无任何停顿标点(如\"找不到爸爸妈妈心里很着急\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-comma-missing"
+   },
+   "examples": {
+    "positive": [
+     "小朋友找不到爸爸妈妈, 心里很着急。"
+    ],
+    "negative": [
+     "小朋友找不到爸爸妈妈心里很着急。"
+    ]
+   },
+   "source_text": "逗号漏用"
+  },
+  {
+   "id": "F002-punc-comma-vs-dunhao",
+   "name": "\"以及/或者\"前误用顿号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "逗号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "顿号直接出现在\"以及/或者/或是\"之前",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "、(以及|或者|或是|抑或)",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-comma-vs-dunhao"
+   },
+   "examples": {
+    "positive": [
+     "一件事情的愿景和目标,以及对应的流程和方法,是否能释放他的能力?",
+     "这些人未来可能是公司的伙伴、客户,或者竞争对手。"
+    ],
+    "negative": [
+     "一件事情的愿景和目标、以及对应的流程和方法,是否能释放他的能力?",
+     "这些人未来可能是公司的伙伴、客户、或者竞争对手。"
+    ]
+   },
+   "notes": "完全可正则化,置信度高。",
+   "source_text": "该用逗号的地方(比如\"以及\"\"或者\"等词前)用了顿号"
+  },
+  {
+   "id": "F002-punc-semicolon-no-comma",
+   "name": "分号:句中未用逗号径直用分号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "分号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "以分号分隔的并列分句内部不含任何逗号(分号的层级作用不成立)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-semicolon-no-comma"
+   },
+   "examples": {
+    "positive": [
+     "学历史,使人更明智;学文学,使人更聪慧;学数学,使人更精细;学考古,使人更深沉。/学历史使人更明智,学文学使人更聪慧,学数学使人更精细,学考古使人更深沉。"
+    ],
+    "negative": [
+     "学历史使人更明智;学文学使人更聪慧;学数学使人更精细;学考古使人更深沉。"
+    ]
+   },
+   "notes": "判定:各并列分句内无逗号时,分号应降级为逗号,或在分句内补逗号。",
+   "source_text": "句中未用逗号径直用分号"
+  },
+  {
+   "id": "F002-punc-semicolon-after-period",
+   "name": "分号:并列分句已用句号后再用分号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "分号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "\"一是……。……;二是……\"式并列结构中,句号与分号混用作同级分隔 / 序次语并列中句号分号混用线索",
+    "original_gate_types": [
+     "code",
+     "regex"
+    ],
+    "pattern": "一是[^;;]*。[^;;]*;\\s*二是",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-semicolon-after-period"
+   },
+   "examples": {
+    "positive": [
+     "一是激发“产品功能”的需求。要想激发用户对功能的需求,最好的办法是体验。二是激发“情感诉求”的需求。要想激发用户对情感的需求,最好的办法是营销。"
+    ],
+    "negative": [
+     "一是激发“产品功能”的需求。要想激发用户对功能的需求,最好的办法是体验;二是激发“情感诉求”的需求。要想激发用户对情感的需求,最好的办法是营销。"
+    ]
+   },
+   "notes": "并列项内部已出现句号时,项与项之间只能用句号,不能回头用分号。",
+   "source_text": "在并列分句中使用句号后,再使用分号"
+  },
+  {
+   "id": "F002-punc-dunhao-titles",
+   "name": "顿号:书名号/引号并列时不用顿号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "顿号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "书名号之间用顿号且无插入成分 / 引号之间用顿号且无插入成分",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "》、《",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-dunhao-titles"
+   },
+   "examples": {
+    "positive": [
+     "中国的四大名著有《红楼梦》《水浒传》《西游记》《三国演义》。",
+     "李白的“白发三千丈”(《秋浦歌》)、“朝如青丝暮成雪”(《将进酒》)都是脍炙人口的诗句。"
+    ],
+    "negative": [
+     "中国的四大名著有《红楼梦》、《水浒传》、《西游记》、《三国演义》。",
+     "王刚有很多外号,比如“小胖子”、“冬瓜”、“王叮当”。"
+    ]
+   },
+   "notes": "例外(手册明示):并列项之间有括注等插入成分时宜用顿号——regex 命中后须排除\"》(……)、\"形态,故标 heuristic。",
+   "source_text": "多个书名号或引号并列时使用顿号分隔。值得注意的是,若有其他成分插在并列的引号之间或并列的书名号之间(如引语或书名号之后还有括注),宜用顿号。"
+  },
+  {
+   "id": "F002-punc-dunhao-approx",
+   "name": "顿号:概数中间不加顿号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "顿号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "相邻汉字数字构成概数时中间出现顿号",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "[一二三四五六七八九十]、[一二三四五六七八九十](?=[个岁人天年只件位名种])",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-dunhao-approx"
+   },
+   "examples": {
+    "positive": [
+     "四五个;二十五六岁"
+    ],
+    "negative": [
+     "四、五个;二十五、六岁"
+    ]
+   },
+   "notes": "真实的并列枚举(如\"三、五年后再看\"仍是概数;但\"第三、五章\"是并列)需复核,故 heuristic。",
+   "source_text": "表示概数、约数时,加了顿号"
+  },
+  {
+   "id": "F002-punc-colon-nested",
+   "name": "冒号:同一句内不套用两个冒号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "冒号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一句(句号间片段)内出现两个及以上提示性全角冒号",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-colon-nested"
+   },
+   "examples": {
+    "positive": [
+     "我还要正式宣布:何帆2019年-2020年年度报告的调研主题正式定为“寻找中国经济的基本盘”。"
+    ],
+    "negative": [
+     "我还要正式宣布:何帆2019年-2020年年度报告的调研主题正式定为:寻找中国经济的基本盘。"
+    ]
+   },
+   "notes": "统计时须排除表时间(12:30)、比分等半角冒号场景。",
+   "source_text": "同一句话中套用两个冒号"
+  },
+  {
+   "id": "F002-punc-colon-said",
+   "name": "冒号:\"某某说\"插在两段引语中间时用逗号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "冒号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "前引语收尾后\"某某说:\"再接后引语",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": ",”[^“”]{1,12}说:“",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-colon-said"
+   },
+   "examples": {
+    "positive": [
+     "“马上就要高考了,”王老师说,“请大家做好最后的冲刺。”"
+    ],
+    "negative": [
+     "“马上就要高考了,”王老师说:“请大家做好最后的冲刺。”"
+    ]
+   },
+   "source_text": "“某某说”在两个引语中间时错用了冒号"
+  },
+  {
+   "id": "F002-punc-colon-ratio",
+   "name": "冒号与比号不混用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "冒号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "比分/比例场景使用全角冒号",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "\\d+:\\d+",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-colon-ratio"
+   },
+   "examples": {
+    "positive": [
+     "比赛结果是1:3(比号)"
+    ],
+    "negative": [
+     "比赛结果是1:3(冒号)"
+    ]
+   },
+   "notes": "需上下文判断是否为比例/比分场景;时间(12:30)同样用半角冒号,不冲突。",
+   "source_text": "冒号和比号混用(冒号位于字的下标,比号位置居中)"
+  },
+  {
+   "id": "F002-punc-question-choice",
+   "name": "问号:选择问句中间不用问号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "问号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "\"?还是\"结构(选择问的前半误用问号)",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "？还是",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-question-choice"
+   },
+   "examples": {
+    "positive": [
+     "你是往南边走,还是往北边走?"
+    ],
+    "negative": [
+     "你是往南边走?还是往北边走?"
+    ]
+   },
+   "notes": "源文\"问题号\"疑为\"问号\"之误,按原文保留。",
+   "source_text": "选择问句中,句子中间出现问题号"
+  },
+  {
+   "id": "F002-punc-question-no-interrogative",
+   "name": "问号:有疑问词但无疑问语气不用问号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "问号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "宾语从句内含疑问词(谁/什么/多少/哪)但主句为祈使/陈述(看看/算出/知道),句末误用问号 / 祈使动词+疑问词从句+问号线索",
+    "original_gate_types": [
+     "nlp",
+     "regex"
+    ],
+    "pattern": "(看看|算算|算出|想想|知道|问问)[^。?]*?(是谁|是什么|是多少|在哪)[^。?]*?",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-question-no-interrogative"
+   },
+   "examples": {
+    "positive": [
+     "你去看看是谁在敲门。",
+     "最后要算出这道题的得数是多少。"
+    ],
+    "negative": [
+     "你去看看是谁在敲门?",
+     "最后要算出这道题的得数是多少?"
+    ]
+   },
+   "source_text": "句子中有疑问词,但没有疑问语气,不是疑问句,误用问号"
+  },
+  {
+   "id": "F002-punc-quote-partial",
+   "name": "引号:部分引用时句号放引号外",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "引号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "引文作为句子成分(非独立完整引用)时,句末点号进入了引号内",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-quote-partial"
+   },
+   "examples": {
+    "positive": [
+     "王羲之笔下的字,正如有的评论家说的那样,“以形写神,神形兼备”。"
+    ],
+    "negative": [
+     "王羲之笔下的字,正如有的评论家说的那样,“以形写神,神形兼备。”"
+    ]
+   },
+   "notes": "与 F002-punc-quote-full 互为镜像:判定核心是引文是否独立成句。",
+   "source_text": "引文只是整个句子的一部分,句号却放在了引号内"
+  },
+  {
+   "id": "F002-punc-quote-full",
+   "name": "引号:完整引用时句号放引号内",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "引号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "冒号引出的完整引用,句号落在引号外",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": ":“[^“”]+”。",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-quote-full"
+   },
+   "examples": {
+    "positive": [
+     "俗话说:“眉头一皱,计上心来。”就是说多想出智慧。"
+    ],
+    "negative": [
+     "俗话说:“眉头一皱,计上心来”。就是说多想出智慧。"
+    ]
+   },
+   "source_text": "直接引用一句完整的话,句号却放在了引号外"
+  },
+  {
+   "id": "F002-punc-quote-nested",
+   "name": "引号:双引号内再引用须用单引号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "引号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "双引号配对区间内再次出现双引号(应为单引号'')",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-quote-nested"
+   },
+   "examples": {
+    "positive": [
+     "父亲对我说:“《论语》里有句话叫‘知之为知之,不知为不知’。”"
+    ],
+    "negative": [
+     "父亲对我说:“《论语》里有句话叫“知之为知之,不知为不知。””"
+    ]
+   },
+   "notes": "手册例子同时演示了引号内句号位置(部分引用句号在单引号外)。",
+   "source_text": "双引号里出现引号,里面的引号没有变成单引号"
+  },
+  {
+   "id": "F002-punc-ellipsis-deng",
+   "name": "省略号不与\"等/等等/之类\"并用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "省略号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "省略号与\"等\"类词共现",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "(等等?……|……等等?|之类……|……之类)",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-ellipsis-deng"
+   },
+   "examples": {
+    "positive": [
+     "小万买了很多水果, 有苹果、橘子、西瓜、葡萄……/葡萄等。"
+    ],
+    "negative": [
+     "小万买了很多水果, 有苹果、橘子、西瓜、葡萄等……"
+    ]
+   },
+   "source_text": "省略号和“等”“等等”“之类”并列使用"
+  },
+  {
+   "id": "F002-punc-ellipsis-adjacent",
+   "name": "省略号前后不接顿号/逗号/分号,后不接句号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "省略号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "省略号紧邻其他点号",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "[、,;;,]……|……[、,;;,]|……。",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-ellipsis-adjacent"
+   },
+   "examples": {
+    "positive": [
+     "小万买了很多水果, 有苹果、橘子、西瓜、葡萄……",
+     "燕京八景有太液秋风、琼岛春阴、金台夕照、蓟门烟树……"
+    ],
+    "negative": [
+     "小万买了很多水果,有苹果、橘子、西瓜、葡萄、……",
+     "燕京八景有太液秋风、琼岛春阴、金台夕照、蓟门烟树……。"
+    ]
+   },
+   "source_text": "省略号前后出现顿号、逗号、分号,或者后面出现句号"
+  },
+  {
+   "id": "F002-punc-ellipsis-form",
+   "name": "省略号统一为六个点(……)",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "省略号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "半角三点作省略号 / 单个省略字符(三点)或四个及以上省略字符(≥十二点)",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "(?<!\\.)\\.{3}(?!\\.)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-ellipsis-form"
+   },
+   "examples": {
+    "positive": [
+     "小万买了很多水果, 有苹果、橘子、西瓜、葡萄……"
+    ],
+    "negative": [
+     "小万买了很多水果,有苹果、橘子、西瓜、葡萄…",
+     "小万买了很多水果,有苹果、橘子、西瓜、葡萄…………"
+    ]
+   },
+   "notes": "半角 ... 在代码/URL 场景需排除,故 heuristic。",
+   "source_text": "省略号用3个点(…)或12个点(……)表示"
+  },
+  {
+   "id": "F002-punc-booktitle-missing",
+   "name": "书名号:该用未用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "书名号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "已知报刊/影视/歌曲/艺术作品名出现时未加书名号(可维护知名作品名词表辅助)",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-booktitle-missing"
+   },
+   "examples": {
+    "positive": [
+     "《纽约时报》发布了一篇文章。"
+    ],
+    "negative": [
+     "纽约时报发布了一篇文章。"
+    ]
+   },
+   "notes": "适用范围(手册括注):报纸、杂志、电影、电视剧、电视节目、歌曲、舞蹈、摄影、绘画、雕塑作品。",
+   "source_text": "该用书名号(报纸、杂志、电影、电视剧、电视节目、歌曲以及舞蹈、摄影、绘画、雕塑作品)的地方没用"
+  },
+  {
+   "id": "F002-punc-booktitle-misuse",
+   "name": "书名号:不该用误用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "书名号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "书名号包裹证件/奖项/机构名",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "《[^《》]*(身份证|护照|驾驶证|奖|杯|大学|学院|公司|集团|委员会)》",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-booktitle-misuse"
+   },
+   "examples": {
+    "positive": [
+     "他把身份证递给了前台人员。",
+     "这部电影获得了奥斯卡金像奖。"
+    ],
+    "negative": [
+     "他把《身份证》递给了前台人员。",
+     "这部电影获得了《奥斯卡金像奖》。"
+    ]
+   },
+   "notes": "词表法覆盖高频误用;真书名含\"奖\"字(如小说《奖》)属罕见,命中后复核。",
+   "source_text": "不该用书名号(证件名、奖杯名、丛书名、机构名等)的地方误用"
+  },
+  {
+   "id": "F002-punc-paren-position",
+   "name": "括号:句内括号紧跟被注释内容",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "括号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "括注与其注释对象之间隔了其他成分(如\"集团的故事(旗下有肯德基和必胜客)\"——注释对象是\"集团\"而非\"故事\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-paren-position"
+   },
+   "examples": {
+    "positive": [
+     "百胜餐饮集团(旗下有肯德基和必胜客)的故事是理解愿望管理和动机管理的很好的例证。"
+    ],
+    "negative": [
+     "百胜餐饮集团的故事(旗下有肯德基和必胜客)是理解愿望管理和动机管理的很好的例证。"
+    ]
+   },
+   "source_text": "句内括号没有紧跟对应的内容"
+  },
+  {
+   "id": "F002-punc-paren-nested",
+   "name": "括号:同一形式的括号不得套用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "括号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同形括号嵌套(圆括号内再开圆括号),应改用方括号[]分层",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-paren-nested"
+   },
+   "examples": {
+    "positive": [
+     "PDCA[PDCA分别代表plan(计划)、do(行动)、check(检查)、adjust(纠正)]循环由美国学者爱德华兹·戴明提出,因此又称“戴明循环”。"
+    ],
+    "negative": [
+     "PDCA(PDCA分别代表plan(计划)、do(行动)、check(检查)、adjust(纠正))循环由美国学者爱德华兹·戴明提出,因此又称“戴明循环”。"
+    ]
+   },
+   "notes": "括号配对栈扫描即可精确判定。",
+   "source_text": "同一形式的括号套用"
+  },
+  {
+   "id": "F002-punc-dash-mismatch",
+   "name": "破折号:前后两部分所指须相同",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "破折号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "破折号用于解释说明时,后项与前项不同指(如\"庭园中央——这张X光片子的主人\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-dash-mismatch"
+   },
+   "examples": {
+    "positive": [
+     "他久久地凝视着庭园中央,这张X光片子的主人。"
+    ],
+    "negative": [
+     "他久久地凝视着庭园中央——这张X光片子的主人。(“庭园中央”与“这张X光片子的主人”所指的概念不相当。)"
+    ]
+   },
+   "source_text": "破折号的前后两部分所指不相同"
+  },
+  {
+   "id": "F002-punc-dash-missing",
+   "name": "破折号:补充说明前应用破折号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "破折号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同位复指的补充说明用逗号衔接造成并列误读(如\"在合成车间,叶绿体里\"应为\"合成车间——叶绿体\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-dash-missing"
+   },
+   "examples": {
+    "positive": [
+     "二氧化碳和水在合成车间——叶绿体里发生奇妙的变化。"
+    ],
+    "negative": [
+     "二氧化碳和水在合成车间, 叶绿体里发生奇妙的变化。"
+    ]
+   },
+   "source_text": "补充说明前未用破折号"
+  },
+  {
+   "id": "F002-punc-dash-glyph",
+   "name": "破折号字形:占两字位\"——\",不用一字线/半字线",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "破折号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "单个 em dash 或连字符串充当破折号",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "(?<!—)—(?!—)|(?<!-)-{2,4}(?!-)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-dash-glyph"
+   },
+   "examples": {
+    "positive": [
+     "二氧化碳和水在合成车间——叶绿体里发生奇妙的变化。"
+    ],
+    "negative": [
+     "二氧化碳和水在合成车间—叶绿体里发生奇妙的变化。",
+     "二氧化碳和水在合成车间----叶绿体里发生奇妙的变化。"
+    ]
+   },
+   "notes": "源文件此条误/正示例文字相同(字形差异在转档中丢失),负例按规则原意重构;规则原文保留原样。数学负号、区间连接号场景需排除。",
+   "source_text": "破折号误为一字线(一)、两个一字线(一)、四个半字线(——)"
+  },
+  {
+   "id": "F002-num-approx-chinese",
+   "name": "概数用汉字数字",
+   "category": [
+    "内容审校",
+    "数字及单位用法审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "阿拉伯数字+概数后缀 / \"40几岁\"式:阿拉伯数字直接接\"几\"",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "\\d+(几|来|多|上下|左右)?(?<=\\d几|\\d来)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-num-approx-chinese"
+   },
+   "examples": {
+    "positive": [
+     "四十几岁"
+    ],
+    "negative": [
+     "40几岁"
+    ]
+   },
+   "source_text": "表示概数用阿拉伯数字(此为要避免的错误)"
+  },
+  {
+   "id": "F002-num-nonad-chinese",
+   "name": "非公元纪年用汉字数字",
+   "category": [
+    "内容审校",
+    "数字及单位用法审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "年号/农历纪年接阿拉伯数字",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "(咸丰|康熙|乾隆|光绪|宣统|嘉庆|道光|同治|洪武|永乐|万历|贞观|开元|民国)\\s*\\d+年|(正月|腊月|冬月|初)\\s*\\d+",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-num-nonad-chinese"
+   },
+   "examples": {
+    "positive": [
+     "清咸丰十年",
+     "腊月初八"
+    ],
+    "negative": [
+     "清咸丰10年",
+     "腊月初8"
+    ]
+   },
+   "notes": "年号词表可扩充。",
+   "source_text": "非公元纪年用阿拉伯数字(此为要避免的错误)"
+  },
+  {
+   "id": "F002-num-range-unit",
+   "name": "数值范围不省略前一个数值的单位",
+   "category": [
+    "内容审校",
+    "数字及单位用法审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "范围表达仅末尾带百分号 / 范围表达仅末尾带\"万/亿\"等数量级单位",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "(?<![%\\d.])\\d+(\\.\\d+)?-\\d+(\\.\\d+)?%",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-num-range-unit"
+   },
+   "examples": {
+    "positive": [
+     "20%-30%",
+     "20万-30万人"
+    ],
+    "negative": [
+     "20-30%",
+     "20-30万人"
+    ]
+   },
+   "notes": "注意与\"60-70平方米\"(单位在末尾的普通量程,手册示例中允许)的区分:强制规则针对%和万/亿等数量级词。",
+   "source_text": "表示数值或量的范围时, 漏掉前面数值或量的单位"
+  },
+  {
+   "id": "TW-zhtech-space-cjk-latin",
+   "name": "中文与英文字母/阿拉伯数字之间加一个半角空格",
+   "category": [
+    "spacing",
+    "空格",
+    "中西文之间"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "汉字与紧邻的拉丁字母或阿拉伯数字之间缺少半角空格",
+    "pattern": "([\\u4e00-\\u9fff])([A-Za-z0-9])|([A-Za-z0-9])([\\u4e00-\\u9fff])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-space-cjk-latin",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1$3 $2$4"
+   },
+   "notes": "全角标点与其相邻字符之间不加空格,由 TW-zhtech-space-before/after-fullwidth-punct 处理;已成词的编号型专名(如 4G、MP4、维生素 B12、序列号)内部字母数字紧邻属正常,靠 exclude_scopes 与人工复核规避误伤。",
+   "source_text": "英文字符和阿拉伯数字 一般使用半角格式，所以应使用半角空格包围，以下情况例外：1）位于句首时，左边空格省略； 2）其右侧为半角标点或全角标点时，右边空格省略。",
+   "also_from": [
+    {
+     "file": "sspai.rules.json",
+     "id": "TW-sspai-space-cjk-alnum",
+     "doc": "风格指南¶.md"
+    }
+   ]
+  },
+  {
+   "id": "TW-zhtech-space-cjk-cjk",
+   "name": "汉字与汉字之间禁止出现半角空格",
+   "category": [
+    "spacing",
+    "空格",
+    "中文字符之间"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "两个汉字之间夹有一个或多个半角空格",
+    "pattern": "([\\u4e00-\\u9fff])[ ]+(?=[\\u4e00-\\u9fff])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-space-cjk-cjk",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1"
+   },
+   "notes": "只在空格两侧均为汉字时触发,汉字与英文/数字之间的空格是正确的,不会误删;表格单元格对齐用空格已排除。",
+   "source_text": "中文字符（包括汉字和中文标点符号）和中文字符之间禁止空半角空格。"
+  },
+  {
+   "id": "TW-zhtech-space-before-fullwidth-punct",
+   "name": "全角中文标点前禁止出现半角空格",
+   "category": [
+    "spacing",
+    "空格",
+    "全角标点两旁"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "全角中文标点符号(逗号、句号、括号、引号、书名号等)之前紧邻半角空格",
+    "pattern": "[ ]+(?=[，。、；：？！…“”‘’（）《》〈〉「」『』【】·—～])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-space-before-fullwidth-punct",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": ""
+   },
+   "notes": "行首缩进空格后紧跟全角开引号/开括号的罕见情形可能误删,若工具支持应跳过行首缩进。",
+   "source_text": "中文全角标点符号两旁禁止空半角空格。"
+  },
+  {
+   "id": "TW-zhtech-space-after-fullwidth-punct",
+   "name": "全角中文标点后禁止出现半角空格",
+   "category": [
+    "spacing",
+    "空格",
+    "全角标点两旁"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "全角中文标点符号之后紧邻半角空格",
+    "pattern": "([，。、；：？！…“”‘’（）《》〈〉「」『』【】·—～])[ ]+",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-space-after-fullwidth-punct",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1"
+   },
+   "notes": "与 TW-zhtech-space-before-fullwidth-punct 配合实现「全角标点两旁禁止空格」;破折号——两侧空格也由此规则与 TW-zhtech-punct-dash-no-space 共同清除。",
+   "source_text": "中文全角标点符号两旁禁止空半角空格。"
+  },
+  {
+   "id": "TW-zhtech-space-number-unit",
+   "name": "数值与计量单位符号之间空一个半角空格",
+   "category": [
+    "spacing",
+    "空格",
+    "数字与单位"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "阿拉伯数字与其后的字母型计量单位之间缺少半角空格",
+    "pattern": "(\\d)(KB|MB|GB|TB|PB|km|cm|mm|kg|mg|Hz|kHz|MHz|GHz|ms|ns)(?![A-Za-z])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-space-number-unit",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1 $2"
+   },
+   "notes": "例外:角度°、摄氏度°C、百分号 %、英尺′、英寸″ 与数值之间不空格,故未纳入单位表;单位表仅列常见字母单位,4G/5G 等代际名不在表中不会被拆开。",
+   "source_text": "大多数情况下，数值与单位符号之间需要空一个半角空格，如 7 kg、8 MB、10 GB。但有几种例外：单位是角度、摄氏度或百分号时，数值和单位之间不空格。如：60°、37°C、100% 等。"
+  },
+  {
+   "id": "TW-zhtech-space-fullwidth-forbidden",
+   "name": "禁止使用全角空格(U+3000)",
+   "category": [
+    "spacing",
+    "空格",
+    "全角空格"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "文本中出现全角空格字符 U+3000",
+    "pattern": "\\u3000",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-space-fullwidth-forbidden",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "全角空格应改为半角空格;若该全角空格位于两个汉字之间,则应直接删除(汉字之间不留空格)。因两种处理取决于上下文,不做自动替换。"
+   },
+   "notes": "auto=false:删除还是替换为半角空格取决于两侧字符,需结合 TW-zhtech-space-cjk-cjk / space-cjk-latin 判断。",
+   "source_text": "禁止使用全角空格，一律使用半角空格。"
+  },
+  {
+   "id": "TW-zhtech-space-multiple-halfwidth",
+   "name": "禁止连续出现两个及以上半角空格",
+   "category": [
+    "spacing",
+    "空格",
+    "连续空格"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "正文中(非行首缩进)非空白字符之间出现两个及以上连续半角空格",
+    "pattern": "\\S {2,}\\S",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-space-multiple-halfwidth",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "将连续多个半角空格合并为一个;但缩进、列表级别、代码块固有空格、Markdown 表格对齐用空格属例外,需人工确认后再合并。"
+   },
+   "notes": "auto=false:因缩进/对齐等合法多空格场景多,自动合并易误伤;pattern 已要求空格两侧为非空白以规避纯缩进行。",
+   "source_text": "除表示缩进、列表级别、代码块中固有空格、Markdown 表格中的空格外，禁止连续出现两个及以上的半角空格。"
+  },
+  {
+   "id": "TW-zhtech-punct-halfwidth-comma",
+   "name": "中文语境使用全角逗号,不用半角逗号",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "汉字后紧跟半角逗号,且其后(可含空格)仍为汉字,应改为全角逗号",
+    "pattern": "([\\u4e00-\\u9fff]),(?=[ \\t]*[\\u4e00-\\u9fff])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-halfwidth-comma",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1，"
+   },
+   "notes": "千分位分节符(如 2,345)前接数字而非汉字,不会误触;逗号后遗留的半角空格由 TW-zhtech-space-after-fullwidth-punct 清除。",
+   "source_text": "中文语境下的标点符号一律使用全角形式（即中文输入法下的标点符号），不得使用半角形式（即英文输入法下的标点符号）。"
+  },
+  {
+   "id": "TW-zhtech-punct-halfwidth-semicolon",
+   "name": "中文语境使用全角分号,不用半角分号",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "汉字后紧跟半角分号,应改为全角分号",
+    "pattern": "([\\u4e00-\\u9fff]);",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-halfwidth-semicolon",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1；"
+   },
+   "notes": "仅当半角分号紧跟汉字时触发,代码中的分号已由 exclude_scopes 排除。",
+   "source_text": "中文语境下的标点符号一律使用全角形式（即中文输入法下的标点符号），不得使用半角形式（即英文输入法下的标点符号）。"
+  },
+  {
+   "id": "TW-zhtech-punct-halfwidth-colon",
+   "name": "中文语境使用全角冒号,不用半角冒号",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "汉字后紧跟半角冒号(其后不是数字或斜杠),应改为全角冒号",
+    "pattern": "([\\u4e00-\\u9fff]):(?![0-9/])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-halfwidth-colon",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1："
+   },
+   "notes": "负向前瞻 (?![0-9/]) 规避时间 14:12、比例 1:500 及 URL 的 :// ;时间/比例中的冒号一般前接数字,本就不会命中。",
+   "source_text": "中文语境下的标点符号一律使用全角形式（即中文输入法下的标点符号），不得使用半角形式（即英文输入法下的标点符号）。"
+  },
+  {
+   "id": "TW-zhtech-punct-halfwidth-question",
+   "name": "中文语境使用全角问号,不用半角问号",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "汉字后紧跟半角问号,应改为全角问号",
+    "pattern": "([\\u4e00-\\u9fff])\\?",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-halfwidth-question",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1？"
+   },
+   "notes": "英文引文自带的结尾问号应保留(见原文「英文标题或引文中的结尾问号必须保留」),但那些问号前是英文字母而非汉字,不会被本规则命中。",
+   "source_text": "中文语境下的标点符号一律使用全角形式（即中文输入法下的标点符号），不得使用半角形式（即英文输入法下的标点符号）。",
+   "also_from": [
+    {
+     "file": "zhcopy.rules.json",
+     "id": "TW-zhcopy-punct-fullwidth-question",
+     "doc": "中文写作规范.md"
+    }
+   ]
+  },
+  {
+   "id": "TW-zhtech-punct-halfwidth-exclamation",
+   "name": "中文语境使用全角叹号,不用半角叹号",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "汉字后紧跟半角叹号(其后不是 [,规避 Markdown 图片语法),应改为全角叹号",
+    "pattern": "([\\u4e00-\\u9fff])!(?!\\[)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-halfwidth-exclamation",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1！"
+   },
+   "notes": "负向前瞻 (?!\\[) 避免破坏 Markdown 图片语法 ![alt](src);英文引文自带叹号前为英文字母,不会命中。",
+   "source_text": "中文语境下的标点符号一律使用全角形式（即中文输入法下的标点符号），不得使用半角形式（即英文输入法下的标点符号）。"
+  },
+  {
+   "id": "TW-zhtech-punct-halfwidth-period",
+   "name": "中文语境使用全角句号,不用半角句点",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "汉字后紧跟半角句点,且句点后不是单词字符(排除文件名.后缀、小数点、版本号),应改为全角句号",
+    "pattern": "([\\u4e00-\\u9fff])\\.(?!\\w)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-halfwidth-period",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1。"
+   },
+   "notes": "负向前瞻 (?!\\w) 排除「文档.md」「版本 2.0」等:句点后为 ASCII 字母/数字/下划线时不改;句点后为行尾或汉字时改为句号。",
+   "source_text": "中文语境下的标点符号一律使用全角形式（即中文输入法下的标点符号），不得使用半角形式（即英文输入法下的标点符号）。"
+  },
+  {
+   "id": "TW-zhtech-punct-dash-no-space",
+   "name": "破折号(——)前后不空格",
+   "category": [
+    "punctuation",
+    "标点",
+    "破折号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "中文破折号「——」与相邻字符之间存在半角空格",
+    "pattern": "[ ]+——|——[ ]+",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-dash-no-space",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1"
+   },
+   "notes": "pattern 会匹配到无空格的规范「——」(替换为其本身,幂等无副作用);真正违规的是两侧带空格者。",
+   "source_text": "破折号前后不空格。"
+  },
+  {
+   "id": "TW-zhtech-punct-slash-no-space",
+   "name": "斜杠(/)两旁不加空格",
+   "category": [
+    "punctuation",
+    "标点",
+    "斜杠"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "斜杠两侧均有半角空格(如 do / ignore)",
+    "pattern": "[ ]+/[ ]+",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-slash-no-space",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "/"
+   },
+   "notes": "仅在斜杠两侧都有空格时触发;除法 120/60、单位 60 km/h、他/她 本就无空格,不会误改;文件路径中的 / 位于代码块/行内代码,已排除。",
+   "source_text": "斜杠的两旁不建议加空格。"
+  },
+  {
+   "id": "TW-zhtech-punct-ellipsis-ascii-dots",
+   "name": "中文语境禁用 ASCII 省略号(...),须用六点中文省略号",
+   "category": [
+    "punctuation",
+    "标点",
+    "省略号"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "汉字后紧跟三个及以上 ASCII 句点,应改为中文六点省略号",
+    "pattern": "([\\u4e00-\\u9fff])\\.{3,}",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-ellipsis-ascii-dots",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1……"
+   },
+   "notes": "要求前置汉字,避免误伤英文语境的 so...that... 句型(原文明确允许英文夹用时保留英文标点)。",
+   "source_text": "一般而言，中文语境中禁止使用英文省略号，即三个小圆点“…”（占一个汉字的宽度），必须使用六个小圆点“……”或“⋯⋯”。"
+  },
+  {
+   "id": "TW-zhtech-punct-ellipsis-single",
+   "name": "中文语境的单个省略号(…)应为六点(……)",
+   "category": [
+    "punctuation",
+    "标点",
+    "省略号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "汉字后为单个 U+2026(…,三点省略号)且其后不再接省略号,应扩为六点「……」",
+    "pattern": "([\\u4e00-\\u9fff])…(?!…)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-ellipsis-single",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1……"
+   },
+   "notes": "负向前瞻 (?!…) 保证已规范的「……」(两个 U+2026)不被重复处理;仅补齐孤立的单个 U+2026。",
+   "source_text": "一般而言，中文语境中禁止使用英文省略号，即三个小圆点“…”（占一个汉字的宽度），必须使用六个小圆点“……”或“⋯⋯”。"
+  },
+  {
+   "id": "TW-zhtech-punct-exclamation-repeat",
+   "name": "禁止多个感叹号连用",
+   "category": [
+    "punctuation",
+    "标点",
+    "感叹号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "连续出现两个及以上全角感叹号",
+    "pattern": "！{2,}",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-exclamation-repeat",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "！"
+   },
+   "notes": "技术文档整体应少用感叹号(见原文语言风格「不要轻易使用感叹句」),连用尤须避免。",
+   "source_text": "禁止多个感叹号连用，比如“！！”等。"
+  },
+  {
+   "id": "TW-zhtech-punct-dunhao-between-quotes",
+   "name": "引号/书名号并列成分之间不用顿号",
+   "category": [
+    "punctuation",
+    "标点",
+    "顿号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "结束引号/结束书名号 与 紧邻的开始引号/开始书名号 之间夹有顿号",
+    "pattern": "([”’》」』])、([“‘《「『])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-dunhao-between-quotes",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1$2"
+   },
+   "notes": "例外:若并列引号/书名号之间插入了括注等其他成分则应保留顿号;本规则只处理二者直接相邻的情形。",
+   "source_text": "标有引号的并列成分之间、标有书名号的并列成分之间通常不用顿号。若有其他成分插在并列的引号之间或并列的书名号之间（如引语或书名号之后还有括注），宜用顿号。"
+  },
+  {
+   "id": "TW-zhtech-punct-dunhao-before-conjunction",
+   "name": "并列词语的连词前不用顿号",
+   "category": [
+    "punctuation",
+    "标点",
+    "顿号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "顿号后紧跟连词(和、与、或、及、跟、以及、或者)",
+    "pattern": "、(?=和|与|或|及|跟|以及|或者)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-dunhao-before-conjunction",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "删除连词前的顿号;如需停顿可将顿号改为逗号(原文:连词前可以加逗号,但不能使用顿号)。删除还是改逗号取决于并列项长度,交人工确认。"
+   },
+   "notes": "auto=false:「、和」→「和」或→「,和」二选一取决于语境;枚举项(甲、乙、丙)其后非连词,不会命中。",
+   "source_text": "连词前不能使用顿号。因为在并列词语中，连词的作用等同于顿号。如果在连词前使用顿号，就等于连用了两个顿号。"
+  },
+  {
+   "id": "TW-zhtech-punct-paren-cjk-fullwidth",
+   "name": "括号内含中文时应使用全角括号",
+   "category": [
+    "punctuation",
+    "标点",
+    "括号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "一对半角括号内包含任何汉字,应改为全角括号",
+    "pattern": "\\(([^()\\n]*[\\u4e00-\\u9fff][^()\\n]*)\\)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-paren-cjk-fullwidth",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "（$1）"
+   },
+   "notes": "括号内纯英文时应保留半角括号并前后空格(见 TW-zhtech-punct-paren-english-spacing);替换为全角括号后,其前后遗留的半角空格由 space-before/after-fullwidth-punct 清除。",
+   "source_text": "括号里既有中文又有英文（即只要括号内包含任何中文）时 建议使用全角括号，括号前后不空格。"
+  },
+  {
+   "id": "TW-zhtech-punct-paren-english-spacing",
+   "name": "括号内纯英文时用半角括号并与中文之间空格",
+   "category": [
+    "punctuation",
+    "标点",
+    "括号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "汉字紧邻半角开括号且括号内为英文/数字,括号前缺少半角空格",
+    "pattern": "([\\u4e00-\\u9fff])\\([A-Za-z0-9]",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-punct-paren-english-spacing",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "括号内全为英文时用半角括号,并在括号与相邻中文之间各补一个半角空格,如「数据定义语言(DDL)是」→「数据定义语言 (DDL) 是」;括号与括号内英文之间不空格。是否补空格及后括号侧同样处理,交人工/工具综合判断。"
+   },
+   "notes": "auto=false:需同时判断括号内是否纯英文(含中文则改全角,见上一条)以及前后两侧空格,单一正则难以无歧义完成,故仅报告。",
+   "source_text": "括号里全为英文时 建议使用半角括号，并在括号前后各空一个半角空格，括号和括号内的英文之间不需要空格。"
+  },
+  {
+   "id": "TW-zhtech-term-github",
+   "name": "专有名词:GitHub 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "产品名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "GitHub 的任何错误拼写/大小写/连字符/空格变体",
+    "pattern": "\\b(?!GitHub\\b)[Gg][Ii][Tt][ -]?[Hh][Uu][Bb]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-term-github",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "term": {
+    "canonical": "GitHub",
+    "wrong_variants": [
+     "Github",
+     "github",
+     "GITHUB",
+     "GitHUB",
+     "git hub",
+     "Git Hub",
+     "git-hub"
+    ],
+    "match_pattern": "\\b(?!GitHub\\b)[Gg][Ii][Tt][ -]?[Hh][Uu][Bb]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "GitHub"
+   },
+   "notes": "URL github.com、包名与代码标识符中的小写形式合法,靠 exclude_scopes 豁免;单独的 git(版本控制工具)不属本规则。",
+   "source_text": "对于 无中文官方译名 的公司、品牌或产品名称，建议直接用 英文 指称，且必须使用 正确的大小写 形式。【错误示例】mysql、github、tiktok、wechat 【正确示例】MySQL、GitHub、TikTok、WeChat"
+  },
+  {
+   "id": "TW-zhtech-term-mysql",
+   "name": "专有名词:MySQL 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "产品名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "MySQL 的错误大小写变体,以及错字 MySOL",
+    "pattern": "\\b(?!MySQL\\b)(?:[Mm][Yy][Ss][Qq][Ll]|[Mm][Yy][Ss][Oo][Ll])\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-term-mysql",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "term": {
+    "canonical": "MySQL",
+    "wrong_variants": [
+     "mysql",
+     "Mysql",
+     "MYSQL",
+     "MySql",
+     "mySQL",
+     "MySOL",
+     "mysoL"
+    ],
+    "match_pattern": "\\b(?!MySQL\\b)(?:[Mm][Yy][Ss][Qq][Ll]|[Mm][Yy][Ss][Oo][Ll])\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "MySQL"
+   },
+   "notes": "mysql 作为命令行工具名/库名/包名在代码语境合法,靠 exclude_scopes 豁免;MySOL 为原文点名的错字。",
+   "source_text": "英文大小写形式不能写错。如不能写成 mysql 数据库，应该写成 MySQL 数据库。(另:错字示例——如将 MySQL 写成 MySOL)"
+  },
+  {
+   "id": "TW-zhtech-term-tiktok",
+   "name": "专有名词:TikTok 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "产品名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "TikTok 的错误大小写/空格/连字符变体",
+    "pattern": "\\b(?!TikTok\\b)[Tt][Ii][Kk][ -]?[Tt][Oo][Kk]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-term-tiktok",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "term": {
+    "canonical": "TikTok",
+    "wrong_variants": [
+     "tiktok",
+     "Tiktok",
+     "TIKTOK",
+     "tik tok",
+     "Tik Tok",
+     "tik-tok"
+    ],
+    "match_pattern": "\\b(?!TikTok\\b)[Tt][Ii][Kk][ -]?[Tt][Oo][Kk]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "TikTok"
+   },
+   "notes": "原文名称使用规范以 tiktok→TikTok 作为大小写错误的直接示例。",
+   "source_text": "对于 无中文官方译名 的公司、品牌或产品名称，建议直接用 英文 指称，且必须使用 正确的大小写 形式。【错误示例】mysql、github、tiktok、wechat 【正确示例】MySQL、GitHub、TikTok、WeChat"
+  },
+  {
+   "id": "TW-zhtech-term-wechat",
+   "name": "专有名词:WeChat 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "产品名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "WeChat 的错误大小写/空格/连字符变体",
+    "pattern": "\\b(?!WeChat\\b)[Ww][Ee][ -]?[Cc][Hh][Aa][Tt]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-term-wechat",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "term": {
+    "canonical": "WeChat",
+    "wrong_variants": [
+     "wechat",
+     "Wechat",
+     "WECHAT",
+     "weChat",
+     "we chat",
+     "We Chat",
+     "we-chat"
+    ],
+    "match_pattern": "\\b(?!WeChat\\b)[Ww][Ee][ -]?[Cc][Hh][Aa][Tt]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "WeChat"
+   },
+   "notes": "原文名称使用规范以 wechat→WeChat 作为大小写错误的直接示例。",
+   "source_text": "对于 无中文官方译名 的公司、品牌或产品名称，建议直接用 英文 指称，且必须使用 正确的大小写 形式。【错误示例】mysql、github、tiktok、wechat 【正确示例】MySQL、GitHub、TikTok、WeChat"
+  },
+  {
+   "id": "TW-zhtech-term-tidb",
+   "name": "专有名词:TiDB 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "产品名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "TiDB 的错误大小写变体",
+    "pattern": "\\b(?!TiDB\\b)[Tt][Ii][Dd][Bb]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-term-tidb",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "term": {
+    "canonical": "TiDB",
+    "wrong_variants": [
+     "tidb",
+     "Tidb",
+     "TIDB",
+     "TiDb",
+     "TIDb",
+     "tiDB"
+    ],
+    "match_pattern": "\\b(?!TiDB\\b)[Tt][Ii][Dd][Bb]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "TiDB"
+   },
+   "notes": "TiDB 在文档中出现 23 次且写法一致,作为「专有名词须用正确大小写」的具体落地;tidb 在配置项/代码/URL 中合法,靠 exclude_scopes 豁免。",
+   "source_text": "对于 无中文官方译名 的公司、品牌或产品名称，建议直接用 英文 指称，且必须使用 正确的大小写 形式。(全篇一致写作 TiDB,如「此操作会关闭 TiDB、Pump、TiKV 和 PD 服务」)"
+  },
+  {
+   "id": "TW-zhtech-term-tikv",
+   "name": "专有名词:TiKV 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "产品名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "TiKV 的错误大小写变体",
+    "pattern": "\\b(?!TiKV\\b)[Tt][Ii][Kk][Vv]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-term-tikv",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "term": {
+    "canonical": "TiKV",
+    "wrong_variants": [
+     "tikv",
+     "Tikv",
+     "TIKV",
+     "TiKv",
+     "TIKv",
+     "tiKV"
+    ],
+    "match_pattern": "\\b(?!TiKV\\b)[Tt][Ii][Kk][Vv]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "TiKV"
+   },
+   "notes": "TiKV 在文档中出现 11 次且写法一致;tikv 在代码/配置/URL 中合法,靠 exclude_scopes 豁免。",
+   "source_text": "对于 无中文官方译名 的公司、品牌或产品名称，建议直接用 英文 指称，且必须使用 正确的大小写 形式。(全篇一致写作 TiKV,如「此操作会关闭 TiDB、Pump、TiKV 和 PD 服务」)"
+  },
+  {
+   "id": "TW-zhtech-term-markdown",
+   "name": "专有名词:Markdown 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "技术名词"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "作为专有名词的 Markdown 的错误大小写变体(排除文件后缀 .markdown)",
+    "pattern": "\\b(?<!\\.)(?!Markdown\\b)[Mm][Aa][Rr][Kk][Dd][Oo][Ww][Nn]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-term-markdown",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "term": {
+    "canonical": "Markdown",
+    "wrong_variants": [
+     "markdown",
+     "MarkDown",
+     "MARKDOWN",
+     "markDown"
+    ],
+    "match_pattern": "\\b(?<!\\.)(?!Markdown\\b)[Mm][Aa][Rr][Kk][Dd][Oo][Ww][Nn]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "Markdown"
+   },
+   "notes": "负向后顾 (?<!\\.) 保护文件后缀「.markdown」(原文允许);URL markdown.com.cn 与包名 markdown-it 等在代码/URL 语境合法,靠 exclude_scopes 豁免。",
+   "source_text": "Markdown 文件应当使用“.md”后缀，“.markdown”亦可接受，但要保证风格统一。"
+  },
+  {
+   "id": "TW-zhtech-term-haproxy",
+   "name": "专有名词:HAProxy 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "产品名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "HAProxy 的错误大小写变体",
+    "pattern": "\\b(?!HAProxy\\b)[Hh][Aa][Pp][Rr][Oo][Xx][Yy]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-term-haproxy",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "term": {
+    "canonical": "HAProxy",
+    "wrong_variants": [
+     "haproxy",
+     "Haproxy",
+     "HAPROXY",
+     "HAproxy",
+     "haProxy"
+    ],
+    "match_pattern": "\\b(?!HAProxy\\b)[Hh][Aa][Pp][Rr][Oo][Xx][Yy]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "HAProxy"
+   },
+   "notes": "HAProxy 在文档语法章节出现 8 次且写法一致,依据「专有名词须用正确大小写」建规则;haproxy 在命令/配置/URL 中合法,靠 exclude_scopes 豁免。",
+   "source_text": "对于 无中文官方译名 的公司、品牌或产品名称，建议直接用 英文 指称，且必须使用 正确的大小写 形式。(全篇一致写作 HAProxy,如「HAProxy 是由 Linux 内核的核心贡献者 Willy Tarreau 于 2000 年编写」)"
+  },
+  {
+   "id": "TW-zhtech-style-blank-lines",
+   "name": "禁止连续出现两个及以上空行",
+   "category": [
+    "style",
+    "文档内容元素",
+    "空白符号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现三个及以上连续换行(即两个及以上空行)",
+    "pattern": "\\n{3,}",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-style-blank-lines",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "\n\n"
+   },
+   "notes": "将 3+ 连续换行折叠为 2(保留一个空行);代码块内的空行属例外,已排除。",
+   "source_text": "禁止连续出现两个及以上的空行。"
+  },
+  {
+   "id": "TW-zhtech-style-fullwidth-digits",
+   "name": "禁止使用全角阿拉伯数字",
+   "category": [
+    "style",
+    "数字",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "出现全角阿拉伯数字(０-９,U+FF10–U+FF19)",
+    "pattern": "[０-９]",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-style-fullwidth-digits",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "将全角数字逐字符改为对应半角数字(０→0、１→1……９→9);正则单次替换无法完成逐字映射,需程序按字符转换。"
+   },
+   "notes": "auto=false 仅因替换串需逐字符映射;检测本身无歧义,可由代码用查表法自动修复。",
+   "source_text": "数字与英文字母一样，一律使用 半角形式 （即半个汉字位置），不得使用全角形式。"
+  },
+  {
+   "id": "TW-zhtech-style-file-extension-lowercase",
+   "name": "文件后缀名应使用小写形式",
+   "category": [
+    "style",
+    "名称与命名",
+    "文件命名"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "code",
+    "description": "检查文件名/链接目标中的后缀名是否为小写(如 .md 而非 .MD、.Markdown)。需解析文件名或链接路径的扩展名后判断,故用 code 而非纯正则。",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-style-file-extension-lowercase",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "将文件后缀名统一改为小写(.MD→.md);涉及实际文件重命名与引用更新,须人工执行。"
+   },
+   "notes": "Markdown 文件后缀应为 .md(.markdown 亦可,但需全库统一)。",
+   "source_text": "文件后缀名应当使用小写形式。"
+  },
+  {
+   "id": "TW-zhtech-style-heading-no-end-punct",
+   "name": "标题不以标点符号结尾",
+   "category": [
+    "style",
+    "文档结构样式",
+    "标题"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "Markdown 标题行(# 开头)以中文标点(句号、问号、叹号、逗号、顿号、分号、冒号)结尾",
+    "pattern": "^#{1,6} .*[。？！，、；：]\\s*$",
+    "flags": "gm",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-style-heading-no-end-punct",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "删除标题结尾的标点符号;疑问式标题(FAQ 场景)可能有意保留问号,故交人工确认。"
+   },
+   "notes": "auto=false:部分标题(如常见问题)可能有意以问号结尾,不宜一律删除。",
+   "source_text": "不建议标题以标点符号（如句号或问号）结尾。"
+  },
+  {
+   "id": "TW-zhtech-style-link-text-descriptive",
+   "name": "链接描述应具描述性,避免'这里''点击此处'",
+   "category": [
+    "style",
+    "文档内容元素",
+    "链接"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "Markdown 链接的描述文本为无意义指示词(这里、点击这里、此处、here 等)",
+    "pattern": "\\[\\s*(这里|点击这里|点这里|此处|请点击|戳这里|here|Here|HERE)\\s*\\]\\(",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-style-link-text-descriptive",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "将链接描述改写为能概括目标页面内容的文本(如目标页标题),有利于 SEO 与无障碍;须结合目标内容人工改写。"
+   },
+   "notes": "同一文档内同类链接描述还应统一风格(避免「详情参见/详情参阅/具体见」混用),该一致性需跨链接比对,属人工审校范畴。",
+   "source_text": "链接描述必须能概括所链文档或页面的大致内容，这有利于搜索引擎优化。【错误示例】详情请点击 [这里](trouble-shooting.md)"
+  },
+  {
+   "id": "TW-zhtech-style-line-width",
+   "name": "行宽原则上不超过 160 字符",
+   "category": [
+    "style",
+    "文档内容元素",
+    "空白符号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "code",
+    "description": "检查每行显示宽度是否超过 160 字符(汉字按 2 宽计);代码块、表格等排版格式内部按其自身一致性处理,可豁免。需逐行计算宽度,故用 code。",
+    "exclude_scopes": [
+     "code_block",
+     "table",
+     "url"
+    ]
+   },
+   "source": {
+    "file": "zhtech.rules.json",
+    "id": "TW-zhtech-style-line-width",
+    "doc": "中文技术文档写作风格指南.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "对超宽的正文行进行合理断行;须避免在词语/数值中间断开,故交人工处理。"
+   },
+   "notes": "行宽在相同排版格式内一致即可,可在 80/120 中择一;此为软约束,severity=suggestion。",
+   "source_text": "行宽：相同排版格式内保持一致即可，可自由在 80、120 字符中选择，原则上不超过 160 字符宽。"
+  },
+  {
+   "id": "TW-mdnzh-term-javascript",
+   "name": "专有名词:JavaScript 的拼写与大小写(甲骨文商标)",
+   "category": [
+    "terminology",
+    "专有名词",
+    "编程语言与框架"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "JavaScript 的任何错误大小写或空格变体(Javascript、javascript、java script 等)",
+    "pattern": "\\b(?!JavaScript\\b)[Jj][Aa][Vv][Aa] ?[Ss][Cc][Rr][Ii][Pp][Tt]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-term-javascript",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "term": {
+    "canonical": "JavaScript",
+    "wrong_variants": [
+     "Javascript",
+     "javascript",
+     "JAVASCRIPT",
+     "java script",
+     "Java Script",
+     "JavaScipt"
+    ],
+    "match_pattern": "\\b(?!JavaScript\\b)[Jj][Aa][Vv][Aa] ?[Ss][Cc][Rr][Ii][Pp][Tt]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "JavaScript"
+   },
+   "notes": "javascript: 伪协议、文件扩展名、代码标识符中的小写为正当用法,靠 exclude_scopes 豁免。负向前瞻确保不匹配正确的 JavaScript。",
+   "source_text": "某些单词应始终大写（例如商标中的大写字母），或源自某人姓名的单词（除非它在代码中使用，并且代码的语法要求小写）……JavaScript（甲骨文公司的商标，应始终写成商标的样式）"
+  },
+  {
+   "id": "TW-mdnzh-term-typescript",
+   "name": "专有名词:TypeScript 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "编程语言与框架"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "TypeScript 的任何错误大小写或空格变体",
+    "pattern": "\\b(?!TypeScript\\b)[Tt][Yy][Pp][Ee] ?[Ss][Cc][Rr][Ii][Pp][Tt]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-term-typescript",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "term": {
+    "canonical": "TypeScript",
+    "wrong_variants": [
+     "Typescript",
+     "typescript",
+     "TYPESCRIPT",
+     "type script",
+     "Type Script"
+    ],
+    "match_pattern": "\\b(?!TypeScript\\b)[Tt][Yy][Pp][Ee] ?[Ss][Cc][Rr][Ii][Pp][Tt]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "TypeScript"
+   },
+   "notes": "配置项、文件名、代码中的小写 typescript 由 exclude_scopes 豁免。",
+   "source_text": "Python、TypeScript、Django 以及其他编程语言和框架名称"
+  },
+  {
+   "id": "TW-mdnzh-term-python",
+   "name": "专有名词:Python 的大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "编程语言与框架"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "Python 语言名的小写/全大写误写",
+    "pattern": "\\b(?!Python\\b)[Pp][Yy][Tt][Hh][Oo][Nn]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-term-python",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "term": {
+    "canonical": "Python",
+    "wrong_variants": [
+     "python",
+     "PYTHON"
+    ],
+    "match_pattern": "\\b(?!Python\\b)[Pp][Yy][Tt][Hh][Oo][Nn]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": false,
+    "description": "散文中指编程语言时改为 Python;但 `python`/`python3` 作为命令名、可执行文件或包名时小写正确,需人工确认,故不自动替换。"
+   },
+   "notes": "命令名 python/python3 的小写为正当用法,与散文中的语言名区分需上下文判断,故 auto=false。",
+   "source_text": "Python、TypeScript、Django 以及其他编程语言和框架名称"
+  },
+  {
+   "id": "TW-mdnzh-term-django",
+   "name": "专有名词:Django 的大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "编程语言与框架"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "Django 框架名的小写/全大写误写",
+    "pattern": "\\b(?!Django\\b)[Dd][Jj][Aa][Nn][Gg][Oo]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-term-django",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "term": {
+    "canonical": "Django",
+    "wrong_variants": [
+     "django",
+     "DJANGO"
+    ],
+    "match_pattern": "\\b(?!Django\\b)[Dd][Jj][Aa][Nn][Gg][Oo]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": false,
+    "description": "散文中指框架时改为 Django;但模块导入路径、包名中的小写 django 正确,故不自动替换。"
+   },
+   "notes": "import 路径与包名中的小写 django 为正当用法,故 auto=false。",
+   "source_text": "Python、TypeScript、Django 以及其他编程语言和框架名称"
+  },
+  {
+   "id": "TW-mdnzh-term-www",
+   "name": "专有名词:World Wide Web 每词首字母大写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "大小写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "term",
+    "description": "短语 World Wide Web 未将每个单词首字母大写",
+    "pattern": "\\b(?!World Wide Web\\b)[Ww]orld [Ww]ide [Ww]eb\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-term-www",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "term": {
+    "canonical": "World Wide Web",
+    "wrong_variants": [
+     "world wide web",
+     "World wide web",
+     "world Wide Web",
+     "World Wide web"
+    ],
+    "match_pattern": "\\b(?!World Wide Web\\b)[Ww]orld [Ww]ide [Ww]eb\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": false,
+    "description": "作为完整专有短语时改为 World Wide Web。注意:单独或作修饰词的 web / internet 全小写是允许的;且原文备注该规范系后期修订,历史页面存在大量首字母大写的 Web/Internet,不必专门为此编辑,故仅作建议。"
+   },
+   "notes": "只针对完整短语 World Wide Web;单独的 web、internet 小写正当。原文对该规则态度宽松(见备注),故 severity=suggestion 且 auto=false。",
+   "source_text": "在文章内容中请使用标准英文大写规则，比如对于“World Wide Web”需大写每个单词的首字母。如果“web”和“internet”是单独使用或作为修饰词使用，那么将其全小写也可以。"
+  },
+  {
+   "id": "TW-mdnzh-punct-dunhao-parallel-clauses",
+   "name": "中文标点:并列分句译作顿号而非逗号",
+   "category": [
+    "punctuation",
+    "标点",
+    "顿号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "llm",
+    "description": "英文中由 and/but/or 连接的并列独立分句前的逗号,翻译成简体中文时应改为顿号（、）;需语义判断是否为并列项,纯正则无法可靠识别。"
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-punct-dunhao-parallel-clauses",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "并列词语/分句之间在中文里用顿号（、）而非逗号（，）。是否属\"并列\"需结合语义判断,中文标点细则以《简体中文翻译指南》为准。"
+   },
+   "notes": "本文对中文标点仅在此处以\"翻译指南\"名义带过,细则不在本文档内。需语义级判断并列关系,故 check.type=llm、auto=false、severity=suggestion。这是本文档中唯一有依据的中文排版规则。",
+   "source_text": "这种情况在翻译成简体中文时应将逗号翻译为顿号。“简体中文翻译指南”一文的标点符号一节中也提到了这个问题。"
+  },
+  {
+   "id": "TW-zhcopy-space-cjk-latin",
+   "name": "中文与英文字母之间加一个半角空格",
+   "category": [
+    "spacing",
+    "空格",
+    "中西文之间"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "汉字与紧邻的拉丁字母之间缺少空格(不含数字,数字另有规则)",
+    "pattern": "([\\u4e00-\\u9fff])([A-Za-z])|([A-Za-z])([\\u4e00-\\u9fff])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-space-cjk-latin",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1$3 $2$4"
+   },
+   "notes": "例外:「豆瓣FM」等产品名词,按照官方所定义的格式书写(原文例外条款);行内代码 `AVObject` 与汉字之间的空格由 inline_code 边界处理,勿改动反引号内部。",
+   "source_text": "中英文之间需要增加空格"
+  },
+  {
+   "id": "TW-zhcopy-space-cjk-digit",
+   "name": "中文与数字之间加一个半角空格",
+   "category": [
+    "spacing",
+    "空格",
+    "中文与数字之间"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "汉字与紧邻的阿拉伯数字之间缺少空格",
+    "pattern": "([\\u4e00-\\u9fff])([0-9])|([0-9])([\\u4e00-\\u9fff])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-space-cjk-digit",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1$3 $2$4"
+   },
+   "notes": "全角标点与数字之间不加空格由独立规则处理;度数、百分比是本规则/单位规则的例外,见 TW-zhcopy-space-num-nospace-degree-percent。",
+   "source_text": "中文与数字之间需要增加空格"
+  },
+  {
+   "id": "TW-zhcopy-space-num-unit",
+   "name": "数字与计量单位之间加一个半角空格",
+   "category": [
+    "spacing",
+    "空格",
+    "数字与单位之间"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "阿拉伯数字与其后紧邻的常见计量单位(多字母,白名单)之间缺少空格",
+    "pattern": "(\\d)(TiB|GiB|MiB|KiB|TB|GB|MB|KB|kB|Gbps|Mbps|Kbps|GHz|MHz|kHz|mAh|kWh|Wh|fps|dpi|ppi|nm|mm|cm|km|kg|mg|ms|ns)\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-space-num-unit",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1 $2"
+   },
+   "notes": "白名单只收多字母、无歧义的数据/频率/物理单位,以保证 auto=true 安全;单字母单位(m、g、B、W 等)与型号(3D、4K、5G)易误伤,不自动处理。度数(°)、百分比(%)是例外,见专门规则。",
+   "source_text": "数字与单位之间需要增加空格",
+   "also_from": [
+    {
+     "file": "sspai.rules.json",
+     "id": "TW-sspai-space-num-unit",
+     "doc": "风格指南¶.md"
+    }
+   ]
+  },
+  {
+   "id": "TW-zhcopy-space-num-nospace-degree-percent",
+   "name": "数字与度数/百分号之间不加空格",
+   "category": [
+    "spacing",
+    "空格",
+    "例外",
+    "度数与百分比"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "阿拉伯数字与其后的度数符号°或百分号%之间多出空格",
+    "pattern": "(\\d)\\s+([°%])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-space-num-nospace-degree-percent",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1$2"
+   },
+   "notes": "本规则删除数字与 °/% 之间的空格,是数字-单位加空格规则的明文例外。",
+   "source_text": "例外:度数／百分比与数字之间不需要增加空格"
+  },
+  {
+   "id": "TW-zhcopy-space-fullwidth-punct-nospace",
+   "name": "全角标点与其他字符之间不加空格",
+   "category": [
+    "spacing",
+    "空格",
+    "全角标点前后"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "全角标点符号紧邻的半角空白(前或后)应删除",
+    "pattern": "\\s+(?=[，。！？；：、（）【】「」『』《》〈〉])|(?<=[，。！？；：、（）【】「」『』《》〈〉])\\s+",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-space-fullwidth-punct-nospace",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": ""
+   },
+   "notes": "使用前后查找(lookbehind/lookahead)以在一次替换中同时清除全角标点两侧空格;不会误伤『部 iPhone』这类汉字与拉丁字母之间的正常空格。",
+   "source_text": "全角标点与其他字符之间不加空格"
+  },
+  {
+   "id": "TW-zhcopy-punct-no-repeat",
+   "name": "不重复使用相同标点符号",
+   "category": [
+    "punctuation",
+    "标点",
+    "重复标点"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "连续出现两个及以上相同的句末/句内标点(如！！、？？、。。),应合并为一个",
+    "pattern": "([。，、；：！？])\\1+",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-punct-no-repeat",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1"
+   },
+   "notes": "只安全合并『同一符号的连续重复』;交替式如『？！？！？？！！』中的 ？！ 交替不属同符号重复,本规则只会把其中的 ？？、！！ 压成单个,无法完全还原为『？！』,交替滥用需人工判断。原文允许『？！』并列。",
+   "source_text": "虽然中国大陆的标点符号用法允许重复使用标点符号，但是这么做会破坏句子的美观性。"
+  },
+  {
+   "id": "TW-zhcopy-punct-fullwidth-comma",
+   "name": "中文语境使用全角逗号",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "汉字后紧跟半角逗号(允许其后空格)再接汉字,应为全角逗号",
+    "pattern": "([\\u4e00-\\u9fff]),\\s*(?=[\\u4e00-\\u9fff])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-punct-fullwidth-comma",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1，"
+   },
+   "notes": "依据『使用全角中文标点』章节的通则;英文整句内部的逗号应保持半角,由 TW-zhcopy-punct-english-halfwidth 处理,故本规则要求逗号两侧均为汉字。",
+   "source_text": "使用全角中文标点"
+  },
+  {
+   "id": "TW-zhcopy-punct-fullwidth-exclam",
+   "name": "中文语境使用全角叹号",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "汉字后紧跟半角叹号,应为全角叹号",
+    "pattern": "([\\u4e00-\\u9fff])!",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-punct-fullwidth-exclam",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1！"
+   },
+   "notes": "要求叹号前为汉字,故英文缩写句尾的『JFGI!』不受影响(其内容依英文整句规则用半角)。",
+   "source_text": "使用全角中文标点"
+  },
+  {
+   "id": "TW-zhcopy-punct-fullwidth-paren-open",
+   "name": "中文语境使用全角左括号",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "汉字后(允许空格)紧跟半角左括号,应改为全角左括号并去除空格",
+    "pattern": "([\\u4e00-\\u9fff])[ \\t]*\\(",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-punct-fullwidth-paren-open",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1（"
+   },
+   "notes": "只在左括号前为汉字时转换,英文语境的 foo(x) 不受影响;右括号见 TW-zhcopy-punct-fullwidth-paren-close。",
+   "source_text": "使用全角中文标点"
+  },
+  {
+   "id": "TW-zhcopy-punct-fullwidth-paren-close",
+   "name": "中文语境使用全角右括号",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "半角右括号(允许其后空格)后紧接汉字,应改为全角右括号并去除空格",
+    "pattern": "\\)[ \\t]*(?=[\\u4e00-\\u9fff])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-punct-fullwidth-paren-close",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "）"
+   },
+   "notes": "只在右括号后为汉字时转换;与左括号规则配合可把中文语境下的半角括号成对转为全角。行内代码里的 foo() 由 inline_code 豁免。",
+   "source_text": "使用全角中文标点"
+  },
+  {
+   "id": "TW-zhcopy-punct-halfwidth-digits",
+   "name": "数字使用半角字符",
+   "category": [
+    "punctuation",
+    "标点",
+    "全角与半角",
+    "数字"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现全角阿拉伯数字(０-９),应替换为对应半角数字",
+    "pattern": "[０-９]+",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-punct-halfwidth-digits",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "逐字符将全角数字映射为半角(０→0,１→1,…,９→9);属字符集转换,无法用单一正则替换串表达,故不自动执行,由程序做全角→半角映射。"
+   },
+   "notes": "例外:在设计稿、宣传海报中如出现极少量数字、为方便文字对齐时,可以使用全角数字(原文例外条款)。",
+   "source_text": "数字使用半角字符"
+  },
+  {
+   "id": "TW-zhcopy-punct-english-halfwidth",
+   "name": "英文整句/特殊名词内部使用半角标点",
+   "category": [
+    "punctuation",
+    "标点",
+    "中英混排"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "全角标点/符号(，。；：！？＆)夹在两个拉丁字母之间,提示英文内容误用了全角标点,应改半角",
+    "pattern": "([A-Za-z])[，。；：！？＆]([A-Za-z])",
+    "flags": "g",
+    "python_ok": true,
+    "confidence": "heuristic",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-punct-english-halfwidth",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "将英文整句/特殊名词内部的全角标点改为对应半角(，→,;。→.;：→:;＆→&),并按英文惯例补空格;需确认确为英文整句而非中文用字母作枚举(如『选项A，选项B』),故不自动替换。"
+   },
+   "notes": "误报风险:中文里用单个拉丁字母做枚举并接全角逗号(A，B)会被命中,故仅报告不自动改。英文书名应改用斜体、不用中文书名号《》,该点与少数派指南一致。",
+   "source_text": "遇到完整的英文整句、特殊名词，其内容使用半角标点"
+  },
+  {
+   "id": "TW-zhcopy-term-github",
+   "name": "专有名词:GitHub 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "产品名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "GitHub 的任何错误大小写变体",
+    "pattern": "\\b(?!GitHub\\b)[Gg][Ii][Tt][Hh][Uu][Bb]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-term-github",
+    "doc": "中文写作规范.md"
+   },
+   "term": {
+    "canonical": "GitHub",
+    "wrong_variants": [
+     "github",
+     "Github",
+     "GITHUB",
+     "gitHub",
+     "GitHUB"
+    ],
+    "match_pattern": "\\b(?!GitHub\\b)[Gg][Ii][Tt][Hh][Uu][Bb]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "GitHub"
+   },
+   "notes": "URL(github.com)、包名、代码标识符中的小写形式正确,靠 exclude_scopes 豁免。",
+   "source_text": "专有名词使用正确的大小写……我们的客户有 GitHub、Foursquare、Microsoft Corporation、Google、Facebook, Inc.。",
+   "also_from": [
+    {
+     "file": "sspai.rules.json",
+     "id": "TW-sspai-term-github",
+     "doc": "风格指南¶.md"
+    }
+   ]
+  },
+  {
+   "id": "TW-zhcopy-term-foursquare",
+   "name": "专有名词:Foursquare 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "产品名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "Foursquare 的任何错误大小写变体",
+    "pattern": "\\b(?!Foursquare\\b)[Ff][Oo][Uu][Rr][Ss][Qq][Uu][Aa][Rr][Ee]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-term-foursquare",
+    "doc": "中文写作规范.md"
+   },
+   "term": {
+    "canonical": "Foursquare",
+    "wrong_variants": [
+     "foursquare",
+     "FOURSQUARE",
+     "FourSquare",
+     "fourSquare"
+    ],
+    "match_pattern": "\\b(?!Foursquare\\b)[Ff][Oo][Uu][Rr][Ss][Qq][Uu][Aa][Rr][Ee]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "Foursquare"
+   },
+   "notes": "官方写法首字母大写、其余小写。",
+   "source_text": "专有名词使用正确的大小写……我们的客户有 GitHub、Foursquare、Microsoft Corporation、Google、Facebook, Inc.。"
+  },
+  {
+   "id": "TW-zhcopy-term-microsoft",
+   "name": "专有名词:Microsoft 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "公司名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "Microsoft 的任何错误大小写变体",
+    "pattern": "\\b(?!Microsoft\\b)[Mm][Ii][Cc][Rr][Oo][Ss][Oo][Ff][Tt]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-term-microsoft",
+    "doc": "中文写作规范.md"
+   },
+   "term": {
+    "canonical": "Microsoft",
+    "wrong_variants": [
+     "microsoft",
+     "MICROSOFT",
+     "MicroSoft",
+     "microSoft"
+    ],
+    "match_pattern": "\\b(?!Microsoft\\b)[Mm][Ii][Cc][Rr][Oo][Ss][Oo][Ff][Tt]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "Microsoft"
+   },
+   "notes": "完整法定名 Microsoft Corporation 中的核心词按此规范;URL/代码中的小写靠 exclude_scopes 豁免。",
+   "source_text": "专有名词使用正确的大小写……我们的客户有 GitHub、Foursquare、Microsoft Corporation、Google、Facebook, Inc.。"
+  },
+  {
+   "id": "TW-zhcopy-term-google",
+   "name": "专有名词:Google 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "公司名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "Google 的任何错误大小写变体",
+    "pattern": "\\b(?!Google\\b)[Gg][Oo][Oo][Gg][Ll][Ee]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-term-google",
+    "doc": "中文写作规范.md"
+   },
+   "term": {
+    "canonical": "Google",
+    "wrong_variants": [
+     "google",
+     "GOOGLE",
+     "gOOGLE"
+    ],
+    "match_pattern": "\\b(?!Google\\b)[Gg][Oo][Oo][Gg][Ll][Ee]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "Google"
+   },
+   "notes": "作动词『google 一下』属英文用法,少见于中文技术文档;URL(google.com)靠 exclude_scopes 豁免。",
+   "source_text": "专有名词使用正确的大小写……我们的客户有 GitHub、Foursquare、Microsoft Corporation、Google、Facebook, Inc.。"
+  },
+  {
+   "id": "TW-zhcopy-term-facebook",
+   "name": "专有名词:Facebook 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "公司名"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "term",
+    "description": "Facebook 的任何错误大小写变体",
+    "pattern": "\\b(?!Facebook\\b)[Ff][Aa][Cc][Ee][Bb][Oo][Oo][Kk]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-term-facebook",
+    "doc": "中文写作规范.md"
+   },
+   "term": {
+    "canonical": "Facebook",
+    "wrong_variants": [
+     "facebook",
+     "FACEBOOK",
+     "FaceBook",
+     "faceBook"
+    ],
+    "match_pattern": "\\b(?!Facebook\\b)[Ff][Aa][Cc][Ee][Bb][Oo][Oo][Kk]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "Facebook"
+   },
+   "notes": "少数派指南将社交平台产品仍称 Facebook、运营主体称 Meta;此处仅约束 Facebook 一词的大小写。",
+   "source_text": "专有名词使用正确的大小写……我们的客户有 GitHub、Foursquare、Microsoft Corporation、Google、Facebook, Inc.。"
+  },
+  {
+   "id": "TW-zhcopy-term-typescript",
+   "name": "专有名词:TypeScript 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "技术名词"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "TypeScript 的错误大小写变体",
+    "pattern": "\\b(?!TypeScript\\b)[Tt][Yy][Pp][Ee][Ss][Cc][Rr][Ii][Pp][Tt]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-term-typescript",
+    "doc": "中文写作规范.md"
+   },
+   "term": {
+    "canonical": "TypeScript",
+    "wrong_variants": [
+     "typescript",
+     "Typescript",
+     "TYPESCRIPT",
+     "typeScript"
+    ],
+    "match_pattern": "\\b(?!TypeScript\\b)[Tt][Yy][Pp][Ee][Ss][Cc][Rr][Ii][Pp][Tt]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "TypeScript"
+   },
+   "notes": "npm 包名『typescript』为全小写,属正确用法,靠 inline_code / code_block 豁免;原文『Ts』式不地道缩写由 TW-zhcopy-style-no-unidiomatic-abbrev 处理。",
+   "source_text": "我们需要一位熟悉 TypeScript、HTML5，至少理解一种框架（如 React、Next.js）的前端开发者。"
+  },
+  {
+   "id": "TW-zhcopy-term-nextjs",
+   "name": "专有名词:Next.js 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "技术名词"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "Next.js 的错误大小写/缺点号变体",
+    "pattern": "\\b(?!Next\\.js\\b)[Nn][Ee][Xx][Tt]\\.?[Jj][Ss]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-term-nextjs",
+    "doc": "中文写作规范.md"
+   },
+   "term": {
+    "canonical": "Next.js",
+    "wrong_variants": [
+     "nextjs",
+     "NextJS",
+     "Nextjs",
+     "NextJs",
+     "next.js",
+     "NEXT.JS"
+    ],
+    "match_pattern": "\\b(?!Next\\.js\\b)[Nn][Ee][Xx][Tt]\\.?[Jj][Ss]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "Next.js"
+   },
+   "notes": "包名/路径中的 next 及 URL 靠 exclude_scopes 豁免。",
+   "source_text": "我们需要一位熟悉 TypeScript、HTML5，至少理解一种框架（如 React、Next.js）的前端开发者。"
+  },
+  {
+   "id": "TW-zhcopy-style-no-unidiomatic-abbrev",
+   "name": "不要使用不地道的缩写",
+   "category": [
+    "style",
+    "风格",
+    "用词",
+    "缩写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "llm",
+    "description": "判断文中是否把技术名词写成不地道/自造的缩写(如 Ts=TypeScript、h5=HTML5、RJS=React、nextjs=Next.js、FED=前端开发者),应还原为通行全称/官方写法。"
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-style-no-unidiomatic-abbrev",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "将不地道缩写替换为通行写法(Ts→TypeScript、h5→HTML5、RJS→React、nextjs→Next.js、FED→前端开发者);是否为缩写及其对应词需语义判断,不自动执行。"
+   },
+   "notes": "『h5』在中文语境常指移动端营销页而非字面 HTML5,故此类缩写不能机械替换,须人工判断,列为 llm 语义规则。",
+   "source_text": "不要使用不地道的缩写"
+  },
+  {
+   "id": "TW-zhcopy-style-link-spacing",
+   "name": "链接与前后汉字之间增加空格(争议)",
+   "category": [
+    "style",
+    "空格",
+    "链接前后",
+    "争议"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "Markdown 链接与紧邻的汉字之间缺少空格(争议性建议,默认仅提示)",
+    "pattern": "([\\u4e00-\\u9fff])(\\[[^\\]]+\\]\\([^)]*\\))|(\\[[^\\]]+\\]\\([^)]*\\))([\\u4e00-\\u9fff])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "zhcopy.rules.json",
+    "id": "TW-zhcopy-style-link-spacing",
+    "doc": "中文写作规范.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "在链接与相邻汉字之间插入一个半角空格(如『请 [提交一个 issue](#) 并』);因原文明确标注为『争议』用法,默认只提示不自动修改。"
+   },
+   "notes": "原文列为『争议』(遵循与否语法上都正确),故 severity=suggestion。冲突提示:少数派指南反向规定『不应为链接文本与其前后文之间添加额外空格』(仅中英文留空例外),两规范在此直接分歧,合并时需按语料/平台取舍。",
+   "source_text": "以下用法略带有个人色彩，即：无论是否遵循下述规则，从语法的角度来讲都是正确的。……链接之间增加空格"
+  },
+  {
+   "id": "TW-sspai-space-latin-cjkpunct-nospace",
+   "name": "英文与相邻中文标点之间不设空格",
+   "category": [
+    "spacing",
+    "空格",
+    "全角标点前后"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "拉丁字母/数字与相邻中文(全角)标点之间多出的半角空格应删除",
+    "pattern": "(?<=[A-Za-z0-9])\\s+(?=[，。！？；：、）】」』》〉])|(?<=[（【「『《〈])\\s+(?=[A-Za-z0-9])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-space-latin-cjkpunct-nospace",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": ""
+   },
+   "notes": "本规则是中英文加空格规则的但书:仅删除英文与相邻中文标点之间的空格,不影响汉字与字母之间的正常留空。",
+   "source_text": "如英文部分之前或之后有中文标点符号，则英文部分与中文标点之间不设空格。"
+  },
+  {
+   "id": "TW-sspai-space-no-extra-link-space",
+   "name": "不为链接文本与前后文添加额外空格(中英文留空除外)",
+   "category": [
+    "spacing",
+    "空格",
+    "链接前后"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "code",
+    "description": "检测链接文本与相邻汉字之间是否存在『非中英文留空需要』的额外空格:若空格两侧均为汉字(或链接文本首尾为汉字),则该空格为多余,应删除;若为汉字-字母边界则保留。需结合链接边界与字符类别判断,超出单条正则能力。"
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-space-no-extra-link-space",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "删除链接与前后汉字之间的多余空格,但保留为满足中英文留空而必需的空格;需逐处判断空格两侧字符类别。"
+   },
+   "notes": "跨文档冲突:中文文案排版指北在『争议』章节反向建议链接前后加空格;两规范此处直接分歧。本规范明确『不应』添加额外空格,仅中英文留空例外。",
+   "source_text": "不应为链接文本与其前后文之间添加额外空格，但为满足中英文字符间留空要求而添加的除外。"
+  },
+  {
+   "id": "TW-sspai-punct-ellipsis",
+   "name": "省略号使用两个半角省略号……",
+   "category": [
+    "punctuation",
+    "标点",
+    "省略号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "用三个及以上英文句点、三个及以上中文句号,或单个省略号代替标准省略号……",
+    "pattern": "\\.{3,}|。{3,}|(?<!…)…(?!…)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-punct-ellipsis",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "……"
+   },
+   "notes": "标准省略号为两个 U+2026(……)。英文引文中原文的英文省略号可能需保留,故排除代码/URL;若正文确为英文语境应人工确认。已是『……』者不被重复命中。",
+   "source_text": "省略：两个半角省略号 …… （U+2026）；不使用中英文句号代替省略号"
+  },
+  {
+   "id": "TW-sspai-punct-name-separator",
+   "name": "中译人名间隔使用间隔号•(U+2022)",
+   "category": [
+    "punctuation",
+    "标点",
+    "间隔号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "两汉字之间用了·(U+00B7)或●(U+25CF)作人名间隔,应改为•(U+2022)",
+    "pattern": "([\\u4e00-\\u9fff])[·●]([\\u4e00-\\u9fff])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-punct-name-separator",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1•$2"
+   },
+   "notes": "本规范特意选用 U+2022 并排除 GB 常用的 U+00B7,是少数派的独特主张,可能与国标/其他中文规范冲突(合并留意)。连续多个间隔号(如三段式姓名)本规则一次替换只覆盖相邻一处,需多轮或人工补齐。",
+   "source_text": "中译人名间隔：•（U+2022）；不使用 ●（U+25CF）、·（U+00B7）等"
+  },
+  {
+   "id": "TW-sspai-punct-no-cjk-booktitle-for-english",
+   "name": "英文书名/报刊名不使用中文书名号《》",
+   "category": [
+    "punctuation",
+    "标点",
+    "中英混排",
+    "书名号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "中文书名号《》内是以拉丁字母/数字开头的英文书名或报刊名",
+    "pattern": "《([A-Za-z0-9][^》]*)》",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-punct-no-cjk-booktitle-for-english",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "去掉中文书名号《》,改用英文斜体表示书名/报刊名(如 *World of Tomorrow*);夹用英文文章标题则用英文正体并加中文引号「」。转换涉及样式,不自动替换。"
+   },
+   "notes": "此规定与中文文案排版指北一致(两规范均要求英文书名用斜体而非《》),属跨文档共识条目。中文书名仍用《》,故仅在书名号内以拉丁字符开头时提示。",
+   "source_text": "中文句子内夹有英文书籍名、报刊名时，不应借用中文书名号，应以英文斜体表示。"
+  },
+  {
+   "id": "TW-sspai-punct-dash-usage",
+   "name": "连接号与破折号的形态选用(短横线–/长连接号—/双长连接号——)",
+   "category": [
+    "punctuation",
+    "标点",
+    "破折号与连接号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "llm",
+    "description": "核查连接号/破折号形态是否符合用途:英文编号/型号/数字起止用短横线–(U+2013);中文数字/时间/地域起止及英文说明性破折号用单个长连接号—(U+2014);中文说明、插入、中断用两个长连接号——。常见错误:用连字符-或波浪号~代替、中文破折号只写一个—。"
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-punct-dash-usage",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "按用途替换为正确的横线形态;因单个—在中文既作数字起止又是英文破折号、与中文双破折号——难以纯正则区分,需语义判断,不自动执行。"
+   },
+   "notes": "横线体系(-、–、—、——)语义高度上下文相关,纯正则误报率高,故整体列为 llm 语义核查。中文文案排版指北未规定横线体系,属本规范特有。",
+   "source_text": "编号、复合名词、型号、复姓、时间、地域、数字的起止（英文）：短横线 –（U+2013）。说明、列举、插入、中断、间隔（英文）／时间、地域、数字的起止（中文）：长连接号 —（U+2014）。说明、列举、插入、中断、间隔（中文）：两个长连接号（——）。"
+  },
+  {
+   "id": "TW-sspai-punct-no-quote-for-emphasis",
+   "name": "不将引号用于强调或装饰",
+   "category": [
+    "punctuation",
+    "标点",
+    "引号",
+    "滥用"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "llm",
+    "description": "判断引号是否被用于强调或装饰(而非引用/专名/界面标签);以及是否用点状符号(·、•)标示列表项、用斜线/表示并列可选项或在表格中表示『无/不适用』。这些属标点滥用。"
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-punct-no-quote-for-emphasis",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "取消用于强调/装饰的引号(改用加粗等样式或不加),列表改用规范的项目符号,斜线并列改为文字或顿号,表格『无/不适用』直接写明;均需语义判断。"
+   },
+   "notes": "强调 vs 引用需结合语义,无法用正则可靠区分,故列为 llm。",
+   "source_text": "不应以下列方式使用标点符号:将引号用于强调或装饰目的;用间隔号或其他点状符号标示列表项目;或使用斜线表示并列的可选项，或在表格中表示「无」或「不适用」等含义。"
+  },
+  {
+   "id": "TW-sspai-term-app-lowercase",
+   "name": "专有名词:泛指的 app 应全小写(不写 App、APP)",
+   "category": [
+    "terminology",
+    "专有名词",
+    "术语大小写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "泛指应用程序时把 app 写成 App 或 APP(排除专名 App Store)",
+    "pattern": "\\b(App|APP)\\b(?!\\s?[Ss]tore)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-term-app-lowercase",
+    "doc": "风格指南¶.md"
+   },
+   "term": {
+    "canonical": "app",
+    "wrong_variants": [
+     "App",
+     "APP"
+    ],
+    "match_pattern": "\\b(App|APP)\\b(?!\\s?[Ss]tore)",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": false,
+    "description": "泛指应用时改小写 app;但 App Store、App Clip、App Library 等 Apple 专名保留大写,需上下文判断,故不自动替换。"
+   },
+   "notes": "关键跨文档冲突:本规范要求泛指的 app 一律小写,而中文文案排版指北示例及 App Store 专名要求首字母大写。二者非绝对矛盾(通名 vs 专名),但自动改写会互相误伤,合并时 app→小写规则必须排除 App Store / App Clip / App Library 等专名。已在模式中排除紧跟 Store 的情形。",
+   "source_text": "app ｜ 应用 ｜ [移动] [互联网] 应用 [程序] ｜ App、APP ｜ 不要使用任何大写"
+  },
+  {
+   "id": "TW-sspai-term-amazon",
+   "name": "专有名词:Amazon 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "公司名"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "Amazon 的错误大小写变体(附录『避免使用』列 amazon)",
+    "pattern": "\\b(?!Amazon\\b)[Aa][Mm][Aa][Zz][Oo][Nn]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-term-amazon",
+    "doc": "风格指南¶.md"
+   },
+   "term": {
+    "canonical": "Amazon",
+    "wrong_variants": [
+     "amazon",
+     "AMAZON"
+    ],
+    "match_pattern": "\\b(?!Amazon\\b)[Aa][Mm][Aa][Zz][Oo][Nn]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "Amazon"
+   },
+   "notes": "中文昵称『亚麻』属别称(非拼写变体),不在本正则范围。URL amazon.com 靠 exclude_scopes 豁免。",
+   "source_text": "Amazon ｜ 亚马逊 ｜ 无 ｜ amazon、亚麻 ｜ 无"
+  },
+  {
+   "id": "TW-sspai-term-nvidia",
+   "name": "专有名词:NVIDIA 应全大写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "公司名"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "NVIDIA 写成非全大写形式(Nvidia、nvidia 等)",
+    "pattern": "\\b(?!NVIDIA\\b)[Nn][Vv][Ii][Dd][Ii][Aa]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-term-nvidia",
+    "doc": "风格指南¶.md"
+   },
+   "term": {
+    "canonical": "NVIDIA",
+    "wrong_variants": [
+     "Nvidia",
+     "nvidia",
+     "nVidia"
+    ],
+    "match_pattern": "\\b(?!NVIDIA\\b)[Nn][Vv][Ii][Dd][Ii][Aa]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": false,
+    "description": "依官方主张改为全大写 NVIDIA;因『Nvidia』在业界亦极常见,是否统一替换宜人工确认,故不自动执行。"
+   },
+   "notes": "本规范依官方对外宣传主张全大写;与部分英文风格指南(倾向 Nvidia)可能分歧,合并留意。",
+   "source_text": "NVIDIA ｜ 英伟达 ｜ 无 ｜ N 厂 ｜ 官方对外宣传中使用全大写，应以此为准"
+  },
+  {
+   "id": "TW-sspai-term-netflix",
+   "name": "专有名词:Netflix 对外宣传用首字母大写形式",
+   "category": [
+    "terminology",
+    "专有名词",
+    "公司名"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "正文中把 Netflix 写成全大写 NETFLIX(全大写仅限商标)",
+    "pattern": "\\bNETFLIX\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-term-netflix",
+    "doc": "风格指南¶.md"
+   },
+   "term": {
+    "canonical": "Netflix",
+    "wrong_variants": [
+     "NETFLIX"
+    ],
+    "match_pattern": "\\bNETFLIX\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": false,
+    "description": "对外宣传/正文中改为首字母大写 Netflix;商标语境下的全大写 NETFLIX 属正确,需判断语境,故不自动替换。"
+   },
+   "notes": "中文别称『网飞、奈飞』为可接受用法(非错误变体),不建正则。",
+   "source_text": "Netflix ｜ 无 ｜ 网飞、奈飞 ｜ NETFLIX ｜ 全大写 NETFLIX 仅在商标中使用，对外宣传中仍使用首字母大写的形式"
+  },
+  {
+   "id": "TW-sspai-term-sony",
+   "name": "专有名词:Sony 一般使用首字母大写形式",
+   "category": [
+    "terminology",
+    "专有名词",
+    "公司名"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "正文中把 Sony 写成全大写 SONY(全大写为商号用法)",
+    "pattern": "\\bSONY\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-term-sony",
+    "doc": "风格指南¶.md"
+   },
+   "term": {
+    "canonical": "Sony",
+    "wrong_variants": [
+     "SONY"
+    ],
+    "match_pattern": "\\bSONY\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": false,
+    "description": "一般交流/正文改为首字母大写 Sony;商号语境的 SONY 属正确,需判断,故不自动替换。"
+   },
+   "notes": "中文昵称『大法』为别称,不建正则。",
+   "source_text": "Sony ｜ 索尼 ｜ 无 ｜ 大法 ｜ 全大写的 SONY 为其商号中使用，官方文件和一般交流仍以首字母大写形式居多"
+  },
+  {
+   "id": "TW-sspai-term-linkedin",
+   "name": "专有名词:LinkedIn 的拼写与大小写",
+   "category": [
+    "terminology",
+    "专有名词",
+    "公司名"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "LinkedIn 的错误大小写/加空格变体",
+    "pattern": "\\b(?!LinkedIn\\b)[Ll][Ii][Nn][Kk][Ee][Dd][ ]?[Ii][Nn]\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-term-linkedin",
+    "doc": "风格指南¶.md"
+   },
+   "term": {
+    "canonical": "LinkedIn",
+    "wrong_variants": [
+     "linkedin",
+     "Linkedin",
+     "LinkedIN",
+     "LINKEDIN",
+     "Linked In"
+    ],
+    "match_pattern": "\\b(?!LinkedIn\\b)[Ll][Ii][Nn][Kk][Ee][Dd][ ]?[Ii][Nn]\\b",
+    "case_sensitive": true
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "LinkedIn"
+   },
+   "notes": "canonical 形态取自附录『正式名称(英)』列;附录未单列错误变体,wrong_variants 为该专名的常见误写大小写。URL linkedin.com 靠 exclude_scopes 豁免。",
+   "source_text": "LinkedIn ｜ 领英 ｜ 无 ｜ 无 ｜ 无"
+  },
+  {
+   "id": "TW-sspai-style-no-cjk-italic",
+   "name": "不将中文设置为斜体",
+   "category": [
+    "style",
+    "文本样式",
+    "斜体"
+   ],
+   "layer": "genre",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "Markdown 单星号斜体 *…* 内含有汉字(即把中文设为斜体)",
+    "pattern": "(?<!\\*)\\*(?!\\*)([^*\\n]*[\\u4e00-\\u9fff][^*\\n]*)\\*(?!\\*)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-style-no-cjk-italic",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "去除中文外围的斜体标记;如需强调改用其他方式(不加样式或加粗)。同理下划线式 _…_ 斜体含中文亦不允许。是否保留强调语义需人工决定,不自动删标记。"
+   },
+   "notes": "非中文部分使用斜体应遵循通行规范(允许);故仅在斜体范围含汉字时命中。加粗 **…** 不会被单星号模式误命中。下划线式斜体建议另配一条同类规则。",
+   "source_text": "不应在任何情况下将中文设置为斜体。"
+  },
+  {
+   "id": "TW-sspai-style-heading-no-skip",
+   "name": "标题层级不跳跃",
+   "category": [
+    "style",
+    "文本样式",
+    "标题"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "code",
+    "description": "逐一比较相邻标题(Markdown # 数或富文本标题级别)的层级,若从第 n 级直接跳到第 n+2 级或更深(如 H2 直接到 H4)即违规。需跨行、有状态地跟踪层级序列,非单条正则可完成。"
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-style-heading-no-skip",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "调整跳跃处的标题层级,使相邻标题层级相同或仅相差一级;需结合文档结构,不自动执行。"
+   },
+   "notes": "另有要求:不应仅为放大字体/强调而使用标题样式,该点需语义判断,归入 md 原则总结。",
+   "source_text": "相邻的标题应使用相同或连续的层级；不应跳跃层级创建标题。"
+  },
+  {
+   "id": "TW-sspai-style-date-format",
+   "name": "完整句子中的日期使用中文单位、不用横线/冒号/前置零",
+   "category": [
+    "style",
+    "文本样式",
+    "日期和时区"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "正文中出现横线或斜线分隔的数字日期(如 2024-03-05、2024/03/05),完整句子中应改用汉字单位形式",
+    "pattern": "\\b\\d{4}-\\d{1,2}-\\d{1,2}\\b|\\b\\d{4}/\\d{1,2}/\\d{1,2}\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-style-date-format",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "在完整句子中改写为『yyyy 年 M 月 d 日』(月/日不加前置零);需解析日期数值且判断是否处于完整句子(界面显示值、日志、表格等除外),故不自动替换。"
+   },
+   "notes": "仅适用于完整句子中的日期;代码、URL、表格、界面截图内的 ISO 日期不适用,靠 exclude_scopes 及人工判断。",
+   "source_text": "在完整的句子中，除非根据上下文另有需要，应使用汉字表达日期中的单位，且不使用前置零，即 yyyy 年 M 月 d 日 h 时 m 分 s 秒，不应使用横线、冒号、英文等。"
+  },
+  {
+   "id": "TW-sspai-style-currency-format",
+   "name": "货币金额使用「数值 中文货币单位」样式",
+   "category": [
+    "style",
+    "文本样式",
+    "货币"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "货币金额写成符号前缀($100)、货币代码前缀(USD 100)或俗称(100 刀)而非『数值 中文货币单位』",
+    "pattern": "\\$\\s?\\d|\\bUSD\\s?\\d|\\d\\s?刀\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-style-currency-format",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改写为『[数值] [中文货币单位]』(如 100 美元);界面显示金额或输入值除外。货币换算与单位映射需人工,故不自动替换。"
+   },
+   "notes": "例外:指界面上显示的金额或操作输入值时保留原样(如设置页显示『$0.99』)。",
+   "source_text": "文中提及货币金额时，应使用「[数值] [中文货币单位名称]」的样式，但用于指界面上显示的金额或操作中的输入值除外。……100 美元；$100、USD 100、100 刀"
+  },
+  {
+   "id": "TW-sspai-style-no-modifier-abbrev",
+   "name": "修饰键不使用 Ctl、Opt、Cmd 等缩写",
+   "category": [
+    "style",
+    "用户界面",
+    "按键",
+    "修饰键"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "提及修饰键时使用了 Ctl、Opt、Cmd 等缩写",
+    "pattern": "\\b(Ctl|Opt|Cmd)\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-style-no-modifier-abbrev",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用规范名称:Ctl→Ctrl/Control、Opt→Option、Cmd→Command;需确认确指修饰键(而非命令行 cmd 等),故不自动替换。"
+   },
+   "notes": "误报风险:Windows 的 cmd.exe、命令行 cmd 等非修饰键含义,靠 exclude_scopes(代码)与人工判断规避。修饰键符号(⌘⌥⌃⇧)代替名称亦不允许,可另设规则。",
+   "source_text": "不应使用 Ctl、Opt、Cmd 等缩写提及修饰键，或使用修饰键符号代替提及修饰键名称，以免读者因不熟悉产生困惑，或无法正常显示。"
+  },
+  {
+   "id": "TW-sspai-style-no-shell-prompt",
+   "name": "终端命令开头不加提示符 $ 或 >",
+   "category": [
+    "style",
+    "用户界面",
+    "终端环境"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "code",
+    "description": "在行内代码或代码块所呈现的终端命令中,检测命令行开头是否有提示符『$ 』或『> 』。注意本规则专门针对代码/终端样例内部,与其他规则默认排除代码相反,需在代码作用域内检查。"
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-style-no-shell-prompt",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "删除命令开头的提示符及其后空格(如 `$ npm install` → `npm install`);需区分真正的提示符与代码中合法的 $/> (如重定向、变量),故不自动执行。"
+   },
+   "notes": "该规则作用域恰为代码/终端样例内部,不能像普通规则那样整体排除 code_block/inline_code;实现时应只在被判定为终端命令的代码片段上运行。",
+   "source_text": "提及终端命令时，命令开头不应添加提示符 $ 或 >。"
+  },
+  {
+   "id": "TW-sspai-style-bold-trailing-punct",
+   "name": "粗体结尾的点号不宜设为粗体",
+   "category": [
+    "style",
+    "文本样式",
+    "粗体"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "Markdown 粗体 **…** 的结尾处包含逗号、句号等点号(，。！？、；：)在加粗范围之内",
+    "pattern": "\\*\\*([^*\\n]+?)([，。！？、；：])\\*\\*",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-style-bold-trailing-punct",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "把结尾点号移出加粗范围(**内容**，);但整句设为粗体时点号可随之加粗(除外情形),需判断是否整句,故不自动替换。"
+   },
+   "notes": "原文用『不宜』,故 severity=suggestion。整句加粗时结尾点号可粗体,属除外情形。粗体含引文/书名时两端引号、书名号应一并加粗(另一条,归 md 原则)。",
+   "source_text": "粗体部分结尾的逗号、句号等点号不宜设为粗体，但整句设为粗体的除外。"
+  },
+  {
+   "id": "TW-sspai-style-en-word-lowercase",
+   "name": "中文句内夹用的普通英文单词首字母小写",
+   "category": [
+    "style",
+    "文本样式",
+    "大小写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "llm",
+    "description": "判断中文句子内夹用的普通英文单词/词组是否被不必要地首字母大写(仅因居句首等);普通名词应小写,只有必须大写的专名保留大写。需区分普通词与专名,故为语义核查。"
+   },
+   "source": {
+    "file": "sspai.rules.json",
+    "id": "TW-sspai-style-en-word-lowercase",
+    "doc": "风格指南¶.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "将夹用的普通英文单词首字母改小写(如句首的 Paper→paper);专名(如 the Yangtze River、iOS)保留大写。需判断是否专名,不自动执行。"
+   },
+   "notes": "区分普通词与专名需词汇知识,无法用正则可靠判定,列为 llm。",
+   "source_text": "中文句子内夹用普通英文单词或词组，无论其位于中文句子的开头、中间还是末尾，首字母一律小写。但是，首字母必须大写的专名，该单词或词组应保留其首字母大写形式。"
+  }
+ ]
+}

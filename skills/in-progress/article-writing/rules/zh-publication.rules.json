@@ -1,0 +1,3074 @@
+{
+ "bundle": "zh-publication",
+ "language": "zh",
+ "genre": "publication",
+ "version": "1.0.0",
+ "compiled_by": "scripts/compile-article-rules.py",
+ "layering": "house > genre > universal; markdownlint applies to all genres at runtime",
+ "quote_convention": "严格 GB/T 15834：全角弯引号“”‘’；禁用直角引号。",
+ "sources": [
+  "审校工作规范.rules.json",
+  "house"
+ ],
+ "counts": {
+  "total": 84,
+  "regex": 26,
+  "term": 0,
+  "llm": 58,
+  "must": 83
+ },
+ "rules": [
+  {
+   "id": "HOUSE-zh-pub-gbt-quotes",
+   "name": "家规:出版物严格 GB/T 15834 弯引号“”,禁用直角引号",
+   "category": [
+    "标点符号",
+    "引号"
+   ],
+   "layer": "house",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "pattern": "[「」『』]",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "frontmatter",
+     "html_tag"
+    ],
+    "description": "出版物正文出现直角引号（国标要求全角弯引号“”‘’）",
+    "confidence": "exact",
+    "python_ok": true
+   },
+   "fix": {
+    "auto": true,
+    "description": "「」→“”，『』→‘’"
+   },
+   "examples": {
+    "positive": [
+     "他说：“先跑通再谈优雅。”"
+    ],
+    "negative": [
+     "他说：「先跑通再谈优雅。」"
+    ]
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q6"
+   },
+   "notes": "出版物不叠加技术文章排版习惯，标点严格随国标。"
+  },
+  {
+   "id": "F002-fact-principle",
+   "name": "凡事实必核",
+   "category": [
+    "事实核对"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "存在未经核实即保留的事实性陈述(默认假定其为错)",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-principle"
+   },
+   "notes": "总原则,统摄 F002-fact-* 各细则。",
+   "source_text": "凡事实必核。核对事实是审校工作的核心内容,也是不可或缺的工作步骤。你需要养成核对事实的习惯。这里的事实包括人物、时间、地点、事物等内容。你在审校稿件过程中,看到这些内容出现时,脑中需下意识地拉起警报。未经核实的事实,要假定它们都是错的。你既可以在当时就查阅相关资料核实,也可以先逐个高亮标出,最后再集中核对。"
+  },
+  {
+   "id": "F002-fact-person-name",
+   "name": "人物名字及古人字、号正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人名写错(如张冠李戴、译名错误),或将\"字\"与\"号\"混淆",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-name"
+   },
+   "examples": {
+    "positive": [
+     "明确提出保健因素的,是美国心理学家弗雷德里克·赫茨伯格(Fredrick Herzberg)。",
+     "苏东坡, 号东坡居士。"
+    ],
+    "negative": [
+     "明确提出保健因素的,是美国心理学家罗伯特·赫茨伯格(Robert Herzberg)。",
+     "苏东坡,字东坡。"
+    ]
+   },
+   "source_text": "名字以及古人的字、号等是否正确"
+  },
+  {
+   "id": "F002-fact-person-identity",
+   "name": "人物身份正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物的职务、党派、头衔等身份信息与事实不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-identity"
+   },
+   "examples": {
+    "positive": [
+     "特朗普,美国总统,美国共和党籍政治家。"
+    ],
+    "negative": [
+     "特朗普,美国总统,美国民主党籍政治家。"
+    ]
+   },
+   "source_text": "身份是否正确"
+  },
+  {
+   "id": "F002-fact-person-nationality",
+   "name": "人物国别正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物国籍/国别表述错误,或忽略移民、改籍等事实(必要时应写成\"X裔/X出生的Y国人\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-nationality"
+   },
+   "examples": {
+    "positive": [
+     "哈耶克, (奥地利裔 / 奥地利出生的) 英国经济学家。"
+    ],
+    "negative": [
+     "哈耶克,奥地利经济学家。"
+    ]
+   },
+   "source_text": "国别是否正确"
+  },
+  {
+   "id": "F002-fact-person-relation",
+   "name": "人物前后关系正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物间的影响、师承、时间先后等关系颠倒或错置",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-relation"
+   },
+   "examples": {
+    "positive": [
+     "亚当·斯密的《国富论》,为李嘉图的多理论提供了依据。"
+    ],
+    "negative": [
+     "李嘉图的很多理论,成为亚当·斯密写《国富论》的依据。"
+    ]
+   },
+   "source_text": "人物前后的关系是否正确"
+  },
+  {
+   "id": "F002-fact-time-event",
+   "name": "事件发生时间正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "时间"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "事件年份/日期与史实不符",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-time-event"
+   },
+   "examples": {
+    "positive": [
+     "1984年,新中国第一次参加奥运会,中国队获得15枚金牌。"
+    ],
+    "negative": [
+     "1983年,新中国第一次参加奥运会,中国队获得15枚金牌。"
+    ]
+   },
+   "source_text": "事件发生的时间是否正确"
+  },
+  {
+   "id": "F002-fact-time-publication",
+   "name": "出版/发表时间正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "时间"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "书籍出版年、论文/文章发表年与实际不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-time-publication"
+   },
+   "examples": {
+    "positive": [
+     "《傲慢与偏见》出版于1813年。",
+     "2014年,《科学》杂志发表了一项研究,它说肺癌可以潜伏二十多年,然后会突然转变为侵袭性的疾病。"
+    ],
+    "negative": [
+     "《傲慢与偏见》出版于1796年。",
+     "2018年,《科学》杂志发表了一项研究,它说肺癌可以潜伏二十多年,然后会突然转变为侵袭性的疾病。"
+    ]
+   },
+   "source_text": "书籍出版、文章发表的时间是否正确"
+  },
+  {
+   "id": "F002-fact-place-name",
+   "name": "地点名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "地名书写错误(错别字、同音混淆、行政区划名称错误)",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-name"
+   },
+   "examples": {
+    "positive": [
+     "山西省吕梁市。"
+    ],
+    "negative": [
+     "山西省吕梁市。"
+    ]
+   },
+   "notes": "源文件此条误/正示例文字相同,系转档失真(原意疑为省名或政区级别之误),保留原样。",
+   "source_text": "地点的名称是否正确"
+  },
+  {
+   "id": "F002-fact-place-relation",
+   "name": "地点之间关系正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "地理方位、隶属、相对位置关系与实际不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-relation"
+   },
+   "examples": {
+    "positive": [
+     "加拿大不列颠哥伦比亚省西部的温哥华岛上, 有一座叫维多利亚的小城, 往东和温哥华市隔海相望。"
+    ],
+    "negative": [
+     "加拿大不列颠哥伦比亚省的西部有一座叫维多利亚的岛, 往东和温哥华隔海相望。"
+    ]
+   },
+   "source_text": "地点之间的关系是否正确"
+  },
+  {
+   "id": "F002-fact-place-history",
+   "name": "地点历史沿革准确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "对地点历史状态的表述(曾经/一直/首个等限定词)与史实不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-history"
+   },
+   "examples": {
+    "positive": [
+     "维多利亚是哥伦比亚省的首府。(说明:不是曾经,一直都是首府)"
+    ],
+    "negative": [
+     "维多利亚曾经是哥伦比亚省第一个首府。"
+    ]
+   },
+   "source_text": "地点的历史沿革是否准确"
+  },
+  {
+   "id": "F002-fact-place-oldnew",
+   "name": "古今地名匹配",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "历史地名括注的今名对应错误",
+    "original_gate_types": [
+     "llm",
+     "regex"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-oldnew"
+   },
+   "examples": {
+    "positive": [
+     "广州湾(今湛江港)是1899年被法国强行租借的。"
+    ],
+    "negative": [
+     "广州湾(今广州)是1899年被法国强行租借的。"
+    ]
+   },
+   "source_text": "地点的历史名称与今天的名称是否匹配"
+  },
+  {
+   "id": "F002-fact-quote-classic",
+   "name": "传统文化经典引文与原文一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "引用的经典原文存在错字、语序颠倒、句序错乱",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-quote-classic"
+   },
+   "examples": {
+    "positive": [
+     "“天下有道,则礼乐征伐自天子出。”",
+     "“驾长车,踏破贺兰山缺。壮志饥餐胡虏肉,笑谈渴饮匈奴血。”"
+    ],
+    "negative": [
+     "“天下有道,礼伐征乐自天子出。”",
+     "“壮士饥餐胡虏肉,笑谈渴饮匈奴血,驾长车踏破贺兰山缺。”"
+    ]
+   },
+   "notes": "注意\"壮志\"与\"壮士\"这类单字之差。",
+   "source_text": "引用传统文化经典(国学经典、唐诗宋词等)原文"
+  },
+  {
+   "id": "F002-fact-quote-modern",
+   "name": "其他经典作品引文与原文一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "引用现当代作品原文与出版文本不一致(包括异体字、用字习惯,如鲁迅\"年青\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-quote-modern"
+   },
+   "examples": {
+    "positive": [
+     "“我在年青时候也曾做过许多梦”。(鲁迅《呐喊》)"
+    ],
+    "negative": [
+     "“我在年轻时候也曾做过许多梦”。(鲁迅《呐喊》)"
+    ]
+   },
+   "notes": "以已出版文本为准,不得\"顺手修正\"原作者用字。",
+   "source_text": "引用其他经典作品原文"
+  },
+  {
+   "id": "F002-fact-theory-name",
+   "name": "理论名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "学术理论/学说名称用词错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-theory-name"
+   },
+   "examples": {
+    "positive": [
+     "决定论,又称拉普拉斯信条。"
+    ],
+    "negative": [
+     "确定论, 又称拉普拉斯信条。"
+    ]
+   },
+   "source_text": "理论名称"
+  },
+  {
+   "id": "F002-fact-work-title",
+   "name": "书刊/文章/节目名称与已发表版本一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "作品标题与正式出版/发表的标题不一致(包括语序)",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-work-title"
+   },
+   "examples": {
+    "positive": [
+     "卢梭是深刻推动了平等的现代思想家,他的《论人类不平等的起源和基础》《社会契约论》都是对平等的经典赞歌。"
+    ],
+    "negative": [
+     "卢梭是深刻推动了平等的现代思想家,他的《论人类不平等的基础和起源》《社会契约论》都是对平等的经典赞歌。"
+    ]
+   },
+   "source_text": "书名、刊物名称、文章或论文标题、节目名称等是否与已发表或出版的一致"
+  },
+  {
+   "id": "F002-fact-org-name",
+   "name": "机构名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "机构缩写与全称/译名对应错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-org-name"
+   },
+   "examples": {
+    "positive": [
+     "NASD(全国证券交易商协会)。"
+    ],
+    "negative": [
+     "NASD (纳斯达克)。"
+    ]
+   },
+   "notes": "缩写首次出现时括注的展开必须是该缩写的真实全称。",
+   "source_text": "机构名称"
+  },
+  {
+   "id": "F002-fact-formula-unit",
+   "name": "公式、计量单位正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "数值的计量单位/币种错误(如\"元\"与\"美元\"混淆),公式书写错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-formula-unit"
+   },
+   "examples": {
+    "positive": [
+     "苹果公司的市值, 一度超过一万亿美元。"
+    ],
+    "negative": [
+     "苹果公司的市值, 一度超过一万亿元。"
+    ]
+   },
+   "source_text": "公式、计量单位"
+  },
+  {
+   "id": "F002-number-principle",
+   "name": "凡数字必核",
+   "category": [
+    "事实核对"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "抽取全文所有数字(含百分比、金额、年份),生成核对清单,逐一标记核实来源",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-principle"
+   },
+   "notes": "总原则,统摄 F002-number-* 各细则。",
+   "source_text": "凡数字必核。数字属于事实的一种,之所以提出来单独强调,是因为数字在文稿中太特殊了,一旦出错,会严重影响文稿的质量。文稿中出现的所有数字,你要逐一核对。"
+  },
+  {
+   "id": "F002-number-precision",
+   "name": "数字精确",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "将精确数值随手取整或凭记忆约写,与来源数据不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-precision"
+   },
+   "examples": {
+    "positive": [
+     "京东上市前, 刘强东只持股18.8%, 却有51.2%的投票权。"
+    ],
+    "negative": [
+     "京东上市前, 刘强东只持股20%, 却有50%的投票权。"
+    ]
+   },
+   "source_text": "精确"
+  },
+  {
+   "id": "F002-number-arithmetic",
+   "name": "核算无误",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "文中给出的合计/换算结果与按其自身分项数据重算的结果不一致",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-arithmetic"
+   },
+   "examples": {
+    "positive": [
+     "工位区、会议室、前台区,加在一起是90-110平方米。按65%的得房率计算,办公室建筑面积要达到140-170平方米。"
+    ],
+    "negative": [
+     "工位区、会议室、前台区,加在一起是100-120平方米。按65%的得房率计算,办公室建筑面积要达到150-160平方米。"
+    ]
+   },
+   "notes": "这是最可程序化的事实核对项:凡「合计/共/加在一起/按X%计算」处必重算。",
+   "source_text": "所有涉及运算的地方,都要演算核对。"
+  },
+  {
+   "id": "F002-number-freshness",
+   "name": "数字保持最新",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "llm",
+    "description": "文中统计数字的年份落后于发稿年份且已有更新数据可用",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-freshness"
+   },
+   "examples": {
+    "positive": [
+     "2018年, 阿里“双11”的销售额已经达到了2135亿元。(假设文稿发布在2018年年底)"
+    ],
+    "negative": [
+     "2017年,阿里“双11”的销售额已经达到了1682亿元。(假设文稿发布在2018年年底)"
+    ]
+   },
+   "notes": "手册措辞为\"尽可能\",故 level 为 should。",
+   "source_text": "数字在文稿发布的时间点, 尽可能保持最新。"
+  },
+  {
+   "id": "F002-style-person-name",
+   "name": "人名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一人物在同一文稿中出现两种及以上写法(如\"泰罗/泰勒\"),用 NER 聚类同指实体后比对字面",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-person-name"
+   },
+   "examples": {
+    "positive": [
+     "管理学的鼻祖是美国人泰勒。泰勒是一位“破局”的高手……泰勒在身体条件一般的情况下……"
+    ],
+    "negative": [
+     "管理学的鼻祖是美国人泰罗。泰罗是一位“破局”的高手……泰勒在身体条件一般的情况下……"
+    ]
+   },
+   "source_text": "同一文稿中的人名保持一致。"
+  },
+  {
+   "id": "F002-style-thing-name",
+   "name": "事物名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一机构/事物先后使用不同称名(如\"美国证监会\"与\"证券交易委员会\"),同指实体字面不一致",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-thing-name"
+   },
+   "examples": {
+    "positive": [
+     "证券交易委员会(Securities and Exchange Commission,SEC)是美国国会成立的政府委员会……证券交易委员会成立于1934年。"
+    ],
+    "negative": [
+     "美国证监会(Securities and Exchange Commission,SEC)是美国国会成立的政府委员会……证券交易委员会成立于1934年。"
+    ]
+   },
+   "notes": "首次定名后全篇沿用;如需换称,应显式交代。",
+   "source_text": "同一文稿中的事物名保持一致。"
+  },
+  {
+   "id": "F002-style-work-title",
+   "name": "作品名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "书名号内的同一作品标题在文中出现不同版本(编辑距离小但不相等的标题对)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-work-title"
+   },
+   "examples": {
+    "positive": [
+     "《我们从哪里来?我们是谁?我们向何处去?》……最出名的是《我们从哪里来?我们是谁?我们向何处去?》。"
+    ],
+    "negative": [
+     "《我们从哪里来?我们是谁?我们向何处去?》……最出名的是《我们从哪里来?我们是谁?我们往哪里去?》。"
+    ]
+   },
+   "notes": "书名号内容可直接抽取比对,是体例一致中最易程序化的一条。",
+   "source_text": "同一文稿中的作品名保持一致。"
+  },
+  {
+   "id": "F002-style-number",
+   "name": "数字前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一对象的数量在上下文中不一致且未交代变化原因(如\"买5架飞机\"与\"3架飞机已运到\")",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-number"
+   },
+   "examples": {
+    "positive": [
+     "假设你的公司要买5架飞机……现在,5架飞机已经运到公司了……",
+     "上市前, 马云持股8.9%……8.9%的股份减持之后,马云用仅仅7.8%的股份控制了一家市值几千亿美金的公司。"
+    ],
+    "negative": [
+     "假设你的公司要买5架飞机……现在, 3架飞机已经运到公司了……",
+     "上市前,马云持股8.9%……马云用仅仅7.8%的股份控制了一家市值几千亿美金的公司。"
+    ]
+   },
+   "source_text": "同一文稿中的相关材料和数据保持一致。如果条件或信息发生了变化, 要在文稿中交代清楚。"
+  },
+  {
+   "id": "F002-style-count-claim",
+   "name": "上下表述一致(声明数量与实际枚举一致)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "\"我有N个X\"式声明后,实际枚举的序次项数量 ≠ N(统计\"第一/第二/……\"或\"1. 2. ……\"的个数并与声明比对)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-count-claim"
+   },
+   "examples": {
+    "positive": [
+     "我有四个心得想和大家分享。第一,……第二,……第三,……第四,……"
+    ],
+    "negative": [
+     "我有三个心得想和大家分享。第一,……第二,……第三,……第四,……"
+    ]
+   },
+   "notes": "可完全程序化:声明数 vs 枚举数。",
+   "source_text": "上下表述一致"
+  },
+  {
+   "id": "F002-style-local-expression",
+   "name": "局部表述一致(同段落译名/称谓体例统一)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一语境中头衔或人名的中英文体例混用(如同段出现\"首席执行官\"与\"CEO\"、中译名与英文原名并存)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-local-expression"
+   },
+   "examples": {
+    "positive": [
+     "百度公司首席执行官李彦宏……微软的第二任首席执行官史蒂夫·鲍尔默、总裁布拉德·史密斯……"
+    ],
+    "negative": [
+     "百度公司首席执行官李彦宏……微软的第二任CEO 史蒂夫·鲍尔默、总裁Brad Smith……"
+    ]
+   },
+   "notes": "源文件正例中的间隔号被转档为\"*\",摘录时已复原为\"·\"。",
+   "source_text": "局部表述一致"
+  },
+  {
+   "id": "F002-style-hierarchy",
+   "name": "层级一致(序号体系与序次语成套使用)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "同级标题混用不同序号体系(如同级出现\"(一)\"与\"1、\");序次语不成套(如\"首先……第二……第三……最后\") / 检测\"首先\"与\"第二\"混搭的序次语断裂",
+    "original_gate_types": [
+     "code",
+     "regex"
+    ],
+    "pattern": "首先[\\s\\S]{0,120}?第二",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-hierarchy"
+   },
+   "examples": {
+    "positive": [
+     "首先……其次……再次……最后……",
+     "第一……第二……第三……第四……"
+    ],
+    "negative": [
+     "首先……第二……第三……最后……",
+     "一、……(一)……(二)……二、……1、……2、……"
+    ]
+   },
+   "source_text": "层级一致。同一文稿中的格式和层级等保持一致。"
+  },
+  {
+   "id": "F002-grammar-subj-pred",
+   "name": "主语与谓语搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "句法分析中主语与谓语语义不能搭配(如\"社交…提升\"缺中心语\"能力\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-subj-pred"
+   },
+   "examples": {
+    "positive": [
+     "自从参加了这个社团, 他的社交能力明显提升了。"
+    ],
+    "negative": [
+     "自从参加了这个社团, 他的社交明显提升了。"
+    ]
+   },
+   "source_text": "主语与谓语搭配不当"
+  },
+  {
+   "id": "F002-grammar-subj-obj",
+   "name": "主语与宾语搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "主语与宾语在判断句中范畴错位(如\"煤是……省份\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-subj-obj"
+   },
+   "examples": {
+    "positive": [
+     "山西是我国出产煤最多的省份之一。"
+    ],
+    "negative": [
+     "山西的煤是我国出产最多的省份之一。"
+    ]
+   },
+   "notes": "\"X的Y是……Z之一\"且 Y 与 Z 范畴不同,为高置信线索。",
+   "source_text": "主语与宾语搭配不当"
+  },
+  {
+   "id": "F002-grammar-verb-obj",
+   "name": "动宾搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "动词与宾语不能搭配(如\"奠基…基础\"应为\"奠定…基础\");并列宾语共用动词但动词只能支配其一(如\"听音乐和电影\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-verb-obj"
+   },
+   "examples": {
+    "positive": [
+     "莎士比亚奠定了英国文学的基础。",
+     "小明喜欢听音乐和看电影。"
+    ],
+    "negative": [
+     "莎士比亚奠基了英国文学的基础。",
+     "小明喜欢听音乐和电影。"
+    ]
+   },
+   "source_text": "动宾搭配不当"
+  },
+  {
+   "id": "F002-grammar-adj-noun",
+   "name": "形容词与名词搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "定语形容词与中心名词习惯搭配错位(如\"高超的功底\"应为\"深厚的功底\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-adj-noun"
+   },
+   "examples": {
+    "positive": [
+     "深厚的语言功底和高超的文字水平。"
+    ],
+    "negative": [
+     "高超的语言功底和文字水平。"
+    ]
+   },
+   "source_text": "形容词与名词搭配不当"
+  },
+  {
+   "id": "F002-grammar-classifier",
+   "name": "量词与名词搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "量词与名词不匹配(如\"一条钥匙\"应为\"一把钥匙\"),可用量词-名词搭配表校验",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-classifier"
+   },
+   "examples": {
+    "positive": [
+     "一把价值200元的钥匙。"
+    ],
+    "negative": [
+     "一条价值200元的钥匙。"
+    ]
+   },
+   "notes": "量词搭配表可程序化到较高覆盖率。",
+   "source_text": "量词与名词搭配不当"
+  },
+  {
+   "id": "F002-grammar-conjunction",
+   "name": "关联词搭配不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "搭配不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "关联词不成对(如\"不仅……竟然\"应为\"不仅……还/而且\"),按关联词配对表扫描 / 依配对表校验:不仅/还、虽然/但是、因为/所以、即使/也 等",
+    "original_gate_types": [
+     "nlp",
+     "regex"
+    ],
+    "pattern": "不仅[^。;;]{1,40}竟然",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-grammar-conjunction"
+   },
+   "examples": {
+    "positive": [
+     "她不仅躲过了疫病, 还保存下希望的火种。"
+    ],
+    "negative": [
+     "她不仅躲过了疫病,竟然保存下希望的火种。"
+    ]
+   },
+   "source_text": "关联词搭配不当"
+  },
+  {
+   "id": "F002-order-inversion",
+   "name": "句子成分颠倒",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "语序不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "双宾语等成分语序颠倒(如\"给本钱你\"应为\"给你本钱\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-order-inversion"
+   },
+   "examples": {
+    "positive": [
+     "我给你本钱。"
+    ],
+    "negative": [
+     "我给本钱你。"
+    ]
+   },
+   "source_text": "句子成分颠倒"
+  },
+  {
+   "id": "F002-order-conjunction-position",
+   "name": "连词位置不当",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "语序不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "前后分句同主语时,关联词误置于主语之前(如\"不仅卡西莫多的脸……整个人\"应为\"卡西莫多不仅脸……\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-order-conjunction-position"
+   },
+   "examples": {
+    "positive": [
+     "卡西莫多不仅脸长得奇形怪状,整个人都是畸形的。"
+    ],
+    "negative": [
+     "不仅卡西莫多的脸长得奇形怪状, 整个人都是畸形的。"
+    ]
+   },
+   "notes": "判定规则:两分句主语相同→关联词放主语后;不同→放主语前。",
+   "source_text": "连词位置不当"
+  },
+  {
+   "id": "F002-order-logic",
+   "name": "语序不符合事物发展规律",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "语序不当"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "并列流程词未按事理/时间顺序排列(如\"推广、研发、设计、销售\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-order-logic"
+   },
+   "examples": {
+    "positive": [
+     "研发、设计、销售、推广产品。"
+    ],
+    "negative": [
+     "推广、研发、设计、销售产品。"
+    ]
+   },
+   "source_text": "语序不符合事物发展规律"
+  },
+  {
+   "id": "F002-missing-subject",
+   "name": "主语残缺",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "成分残缺"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "介宾/动宾短语开头后紧跟\"使/让/令\"造成全句无主语 / 句法分析检出无主句且非祈使/惯用省略",
+    "original_gate_types": [
+     "nlp",
+     "regex"
+    ],
+    "pattern": "(^|[。;;!?])(听了|通过|经过|由于|随着|在)[^。;;]{2,30},\\s*(使|让|令)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-missing-subject"
+   },
+   "examples": {
+    "positive": [
+     "听了这次演讲,我受到很大启发。/这次演讲使我受到很大启发。"
+    ],
+    "negative": [
+     "听了这次演讲,使我受到很大启发。"
+    ]
+   },
+   "notes": "\"X了……,使……\"是最高频的主语残缺模式,regex 线索可靠。",
+   "source_text": "主语残缺"
+  },
+  {
+   "id": "F002-missing-predicate",
+   "name": "谓语残缺",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "成分残缺"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "句中名词性成分前缺谓语动词(如\"去餐厅夜宵\"缺\"吃\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-missing-predicate"
+   },
+   "examples": {
+    "positive": [
+     "加完班后, 王玲就去餐厅吃夜宵。"
+    ],
+    "negative": [
+     "加完班后,王玲就去餐厅夜宵。"
+    ]
+   },
+   "source_text": "谓语残缺"
+  },
+  {
+   "id": "F002-missing-object",
+   "name": "宾语残缺",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "成分残缺"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "及物动词的宾语中心语缺失(如\"勾勒了一个骑士和一个仆人\"缺\"的形象\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-missing-object"
+   },
+   "examples": {
+    "positive": [
+     "作家勾勒了一个骑士和一个仆人的形象。"
+    ],
+    "negative": [
+     "作家勾勒了一个骑士和一个仆人。"
+    ]
+   },
+   "source_text": "宾语残缺"
+  },
+  {
+   "id": "F002-mixed-structure",
+   "name": "结构混乱(句式杂糅)",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "结构混乱"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "\"是由于……的结果\"杂糅 / \"靠的是……取得的\"杂糅 / \"关键在于……是十分重要的\"杂糅 / \"围绕以……为中心\"杂糅 / \"成分是……配制而成的\"杂糅 / \"本着……为原则\"杂糅 / \"是为了……为目的\"杂糅 / \"原因是……造成的\"杂糅 / \"借口……为名\"杂糅 / \"有……组成\"应为\"由……组成\"",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "是?由于[^。;;]{1,40}的结果",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-mixed-structure"
+   },
+   "examples": {
+    "positive": [
+     "脑细胞无法工作,是由于免疫系统攻击脑细胞/是免疫系统攻击脑细胞的结果。",
+     "本着……的原则;以……为原则"
+    ],
+    "negative": [
+     "脑细胞无法工作,是由于免疫系统攻击脑细胞的结果。",
+     "本着……为原则"
+    ]
+   },
+   "notes": "手册给出 10 组固定杂糅模式,全部可正则化;\"有……组成\"匹配面宽,标 heuristic 需复核。",
+   "source_text": "结构混乱主要表现为既想用这种说法,又想用那种说法。"
+  },
+  {
+   "id": "F002-unclear-reference",
+   "name": "指代不明",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "表意不明"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "代词(他/她/它/这/其)或\"这一群人\"等指称在上下文中有多个可能先行词,或与作者本意不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-unclear-reference"
+   },
+   "examples": {
+    "positive": [
+     "塞万提斯为了不让堂吉柯德连续受打击,就在随后两页给他安排了一场胜利。",
+     "劳渥德学校就是为舅母这类人量身定制的。"
+    ],
+    "negative": [
+     "塞万提斯为了不让堂吉柯德连续受打击, 他就在随后两页给他安排了一场胜利。",
+     "劳渥德学校就是为这一群人量身定制的。"
+    ]
+   },
+   "source_text": "指代不明"
+  },
+  {
+   "id": "F002-ambiguity",
+   "name": "产生歧义",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "表意不明"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "句子存在两种及以上合理解读(如\"咬死了猎人的狗\")而未消歧",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-ambiguity"
+   },
+   "examples": {
+    "positive": [
+     "猎人的狗被咬死了 / 猎人被狗咬死了。"
+    ],
+    "negative": [
+     "咬死了猎人的狗。"
+    ]
+   },
+   "source_text": "产生歧义"
+  },
+  {
+   "id": "F002-self-contradiction",
+   "name": "自相矛盾",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "不合逻辑"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "同一句/同一语段中的表述互相矛盾(如\"买了……免费的\") / \"买\"与\"免费\"共现线索",
+    "original_gate_types": [
+     "llm",
+     "regex"
+    ],
+    "pattern": "买了[^。]{0,10}免费",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-self-contradiction"
+   },
+   "examples": {
+    "positive": [
+     "他买了一杯咖啡 / 他拿了一杯免费的咖啡。"
+    ],
+    "negative": [
+     "他买了一杯免费的咖啡。"
+    ]
+   },
+   "source_text": "自相矛盾"
+  },
+  {
+   "id": "F002-scope-confusion",
+   "name": "范围不清",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "不合逻辑"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "包含关系的概念并列(如\"科学家和人才\":前者是后者子集,应改为\"各类人才,尤其是科学家\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-scope-confusion"
+   },
+   "examples": {
+    "positive": [
+     "这个项目如果想取得成功, 还缺乏各类人才, 尤其是科学家。"
+    ],
+    "negative": [
+     "这个项目如果想取得成功, 还缺乏各类科学家和人才。"
+    ]
+   },
+   "source_text": "范围不清"
+  },
+  {
+   "id": "F002-redundancy",
+   "name": "前后重复",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "不合逻辑"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "同义成分叠用(可维护同义冗余词表:无偿+免费、大约+左右、亲眼+目睹 等)",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "无偿[^。]{0,6}免费|免费[^。]{0,6}无偿|大约[^。]{0,12}左右|凯旋归来|亲眼目睹",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-redundancy"
+   },
+   "examples": {
+    "positive": [
+     "无偿提供服务/提供免费服务。"
+    ],
+    "negative": [
+     "无偿提供免费服务。"
+    ]
+   },
+   "notes": "词表可持续扩充。",
+   "source_text": "前后重复"
+  },
+  {
+   "id": "F002-false-causality",
+   "name": "误用因果关系",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "不合逻辑"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "用\"所以/因此\"连接不构成因果的前后件(应为假设、转折等其他关系)",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-false-causality"
+   },
+   "examples": {
+    "positive": [
+     "船员能获得的经济回报很有限,如果纯粹为了经济利益,大可不必从事如此危险的职业。"
+    ],
+    "negative": [
+     "船员能获得的经济回报很有限, 所以纯粹为了经济利益, 大可不必从事如此危险的职业。"
+    ]
+   },
+   "source_text": "误用因果关系"
+  },
+  {
+   "id": "F002-pos-noun-as-verb",
+   "name": "名词误作动词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "名词占据谓语位置(如\"有条件大量阅读\"中\"阅读\"作名词用时需加\"进行\"类形式动词)。词性类门禁,按手册允许保留为自然语言/词性标注判定",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-noun-as-verb"
+   },
+   "examples": {
+    "positive": [
+     "他们在成长过程中都有条件进行大量阅读。"
+    ],
+    "negative": [
+     "他们在成长过程中都有条件大量阅读。"
+    ]
+   },
+   "notes": "词性门禁:需分词+词性标注辅助,机器判定后人工复核。",
+   "source_text": "名词误作动词"
+  },
+  {
+   "id": "F002-pos-noun-as-adj",
+   "name": "名词误作形容词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "程度副词直接修饰名词 / 程度副词+名词结构(\"很本事\"应为\"很有本事/很能干\")",
+    "original_gate_types": [
+     "nlp",
+     "regex"
+    ],
+    "pattern": "(很|非常|特别|十分|相当)(本事|能力|水平|素质)(?!强|高|好|差|低)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-noun-as-adj"
+   },
+   "examples": {
+    "positive": [
+     "这位医生很能干/这位医生很有本事。"
+    ],
+    "negative": [
+     "这位医生很本事。"
+    ]
+   },
+   "source_text": "名词误作形容词"
+  },
+  {
+   "id": "F002-pos-verb-as-noun",
+   "name": "动词误作名词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "动词占据名词位置(如\"还是个怀疑\"应为\"还是个疑问\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-verb-as-noun"
+   },
+   "examples": {
+    "positive": [
+     "这项研究对治疗癌症到底有没有用,还是个疑问。"
+    ],
+    "negative": [
+     "这项研究对治疗癌症到底有没有用,还是个怀疑。"
+    ]
+   },
+   "source_text": "动词误作名词"
+  },
+  {
+   "id": "F002-pos-verb-as-adj",
+   "name": "动词误作形容词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "动词直接作定语表性状(如\"感动的场面\"应为\"令人感动/感人的场面\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-verb-as-adj"
+   },
+   "examples": {
+    "positive": [
+     "那是个令人感动/感人的场面。"
+    ],
+    "negative": [
+     "那是个感动的场面。"
+    ]
+   },
+   "source_text": "动词误作形容词"
+  },
+  {
+   "id": "F002-pos-adj-as-verb",
+   "name": "形容词误作动词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "形容词带宾语/补语作谓语动词(如\"向组长抱歉\"应为\"向组长道歉\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-adj-as-verb"
+   },
+   "examples": {
+    "positive": [
+     "李平为自己的冲动向组长道歉。"
+    ],
+    "negative": [
+     "李平为自己的冲动向组长抱歉。"
+    ]
+   },
+   "source_text": "形容词误作动词"
+  },
+  {
+   "id": "F002-pos-adj-as-noun",
+   "name": "形容词误作名词",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "词性错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "形容词占据名词并列位置(如\"用勇气和鲁莽发起冲锋\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-pos-adj-as-noun"
+   },
+   "examples": {
+    "positive": [
+     "骑士用巨大的勇气发起了鲁莽的冲锋。"
+    ],
+    "negative": [
+     "骑士用巨大的勇气和鲁莽发起了冲锋。"
+    ]
+   },
+   "source_text": "形容词误作名词"
+  },
+  {
+   "id": "F002-voice-error",
+   "name": "语态错误",
+   "category": [
+    "内容审校",
+    "文字表述审校",
+    "语态错误"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "主动/被动(使动)标记缺失导致语态断裂(如\"反而中下层人民的居住环境遭到破坏\"缺\"使\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-voice-error"
+   },
+   "examples": {
+    "positive": [
+     "工业发展不仅没有让城市更美好,反而使中下层人民的居住环境遭到了严重破坏。"
+    ],
+    "negative": [
+     "工业发展不仅没有让城市更美好,反而中下层人民的居住环境遭到了严重破坏。"
+    ]
+   },
+   "source_text": "语态错误"
+  },
+  {
+   "id": "F002-punc-period-runon",
+   "name": "句号:一逗到底",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "句号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "单句(以句号/问号/叹号结尾的片段)内逗号数超过阈值(建议≥6)且含多个完整主谓结构",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-period-runon"
+   },
+   "examples": {
+    "positive": [
+     "我们把范围、时间和成本作为三条边,画一个三角形,然后把范围的边加长。有一定基础几何知识的人会知道,这时必须相应加长时间或者成本的边长,才能使三角形保持闭合。"
+    ],
+    "negative": [
+     "我们把范围、时间和成本作为三条边, 画一个三角形, 然后把范围的边加长, 有一定基础几何知识的人会知道, 这时必须相应加长时间或者成本的边长, 才能使三角形保持闭合, 如果想降低成本, 我们则需要调整另外两边, 这就是著名的“项目三角形”。"
+    ]
+   },
+   "notes": "阈值型门禁,命中后由人工/llm 决定断句点。",
+   "source_text": "该用句号的地方不用,一逗到底"
+  },
+  {
+   "id": "F002-punc-period-split",
+   "name": "句号:割裂句子",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "句号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "句号后紧跟转折/承接连词起头的残句 / 句号切分处前后仍是同一句法结构的两半(前半无法独立成句)",
+    "original_gate_types": [
+     "llm",
+     "regex"
+    ],
+    "pattern": "。(但在|但是在|而在|却在|但这|而这)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-period-split"
+   },
+   "examples": {
+    "positive": [
+     "免费虽然是“互联网思维”的核心方法,但在其他行业未必适用。"
+    ],
+    "negative": [
+     "免费虽然是“互联网思维”的核心方法。但在其他行业未必适用。"
+    ]
+   },
+   "notes": "\"虽然……。但……\"结构为高置信线索:regex 可加 虽然[^。]*。但。",
+   "source_text": "不该用句号的地方用了句号,割裂了句子"
+  },
+  {
+   "id": "F002-punc-comma-missing",
+   "name": "逗号漏用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "逗号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "两个完整主谓结构间无任何停顿标点(如\"找不到爸爸妈妈心里很着急\")",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-comma-missing"
+   },
+   "examples": {
+    "positive": [
+     "小朋友找不到爸爸妈妈, 心里很着急。"
+    ],
+    "negative": [
+     "小朋友找不到爸爸妈妈心里很着急。"
+    ]
+   },
+   "source_text": "逗号漏用"
+  },
+  {
+   "id": "F002-punc-comma-vs-dunhao",
+   "name": "\"以及/或者\"前误用顿号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "逗号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "顿号直接出现在\"以及/或者/或是\"之前",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "、(以及|或者|或是|抑或)",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-comma-vs-dunhao"
+   },
+   "examples": {
+    "positive": [
+     "一件事情的愿景和目标,以及对应的流程和方法,是否能释放他的能力?",
+     "这些人未来可能是公司的伙伴、客户,或者竞争对手。"
+    ],
+    "negative": [
+     "一件事情的愿景和目标、以及对应的流程和方法,是否能释放他的能力?",
+     "这些人未来可能是公司的伙伴、客户、或者竞争对手。"
+    ]
+   },
+   "notes": "完全可正则化,置信度高。",
+   "source_text": "该用逗号的地方(比如\"以及\"\"或者\"等词前)用了顿号"
+  },
+  {
+   "id": "F002-punc-semicolon-no-comma",
+   "name": "分号:句中未用逗号径直用分号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "分号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "以分号分隔的并列分句内部不含任何逗号(分号的层级作用不成立)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-semicolon-no-comma"
+   },
+   "examples": {
+    "positive": [
+     "学历史,使人更明智;学文学,使人更聪慧;学数学,使人更精细;学考古,使人更深沉。/学历史使人更明智,学文学使人更聪慧,学数学使人更精细,学考古使人更深沉。"
+    ],
+    "negative": [
+     "学历史使人更明智;学文学使人更聪慧;学数学使人更精细;学考古使人更深沉。"
+    ]
+   },
+   "notes": "判定:各并列分句内无逗号时,分号应降级为逗号,或在分句内补逗号。",
+   "source_text": "句中未用逗号径直用分号"
+  },
+  {
+   "id": "F002-punc-semicolon-after-period",
+   "name": "分号:并列分句已用句号后再用分号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "分号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "\"一是……。……;二是……\"式并列结构中,句号与分号混用作同级分隔 / 序次语并列中句号分号混用线索",
+    "original_gate_types": [
+     "code",
+     "regex"
+    ],
+    "pattern": "一是[^;;]*。[^;;]*;\\s*二是",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-semicolon-after-period"
+   },
+   "examples": {
+    "positive": [
+     "一是激发“产品功能”的需求。要想激发用户对功能的需求,最好的办法是体验。二是激发“情感诉求”的需求。要想激发用户对情感的需求,最好的办法是营销。"
+    ],
+    "negative": [
+     "一是激发“产品功能”的需求。要想激发用户对功能的需求,最好的办法是体验;二是激发“情感诉求”的需求。要想激发用户对情感的需求,最好的办法是营销。"
+    ]
+   },
+   "notes": "并列项内部已出现句号时,项与项之间只能用句号,不能回头用分号。",
+   "source_text": "在并列分句中使用句号后,再使用分号"
+  },
+  {
+   "id": "F002-punc-dunhao-titles",
+   "name": "顿号:书名号/引号并列时不用顿号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "顿号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "书名号之间用顿号且无插入成分 / 引号之间用顿号且无插入成分",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "》、《",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-dunhao-titles"
+   },
+   "examples": {
+    "positive": [
+     "中国的四大名著有《红楼梦》《水浒传》《西游记》《三国演义》。",
+     "李白的“白发三千丈”(《秋浦歌》)、“朝如青丝暮成雪”(《将进酒》)都是脍炙人口的诗句。"
+    ],
+    "negative": [
+     "中国的四大名著有《红楼梦》、《水浒传》、《西游记》、《三国演义》。",
+     "王刚有很多外号,比如“小胖子”、“冬瓜”、“王叮当”。"
+    ]
+   },
+   "notes": "例外(手册明示):并列项之间有括注等插入成分时宜用顿号——regex 命中后须排除\"》(……)、\"形态,故标 heuristic。",
+   "source_text": "多个书名号或引号并列时使用顿号分隔。值得注意的是,若有其他成分插在并列的引号之间或并列的书名号之间(如引语或书名号之后还有括注),宜用顿号。"
+  },
+  {
+   "id": "F002-punc-dunhao-approx",
+   "name": "顿号:概数中间不加顿号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "顿号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "相邻汉字数字构成概数时中间出现顿号",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "[一二三四五六七八九十]、[一二三四五六七八九十](?=[个岁人天年只件位名种])",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-dunhao-approx"
+   },
+   "examples": {
+    "positive": [
+     "四五个;二十五六岁"
+    ],
+    "negative": [
+     "四、五个;二十五、六岁"
+    ]
+   },
+   "notes": "真实的并列枚举(如\"三、五年后再看\"仍是概数;但\"第三、五章\"是并列)需复核,故 heuristic。",
+   "source_text": "表示概数、约数时,加了顿号"
+  },
+  {
+   "id": "F002-punc-colon-nested",
+   "name": "冒号:同一句内不套用两个冒号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "冒号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一句(句号间片段)内出现两个及以上提示性全角冒号",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-colon-nested"
+   },
+   "examples": {
+    "positive": [
+     "我还要正式宣布:何帆2019年-2020年年度报告的调研主题正式定为“寻找中国经济的基本盘”。"
+    ],
+    "negative": [
+     "我还要正式宣布:何帆2019年-2020年年度报告的调研主题正式定为:寻找中国经济的基本盘。"
+    ]
+   },
+   "notes": "统计时须排除表时间(12:30)、比分等半角冒号场景。",
+   "source_text": "同一句话中套用两个冒号"
+  },
+  {
+   "id": "F002-punc-colon-said",
+   "name": "冒号:\"某某说\"插在两段引语中间时用逗号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "冒号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "前引语收尾后\"某某说:\"再接后引语",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": ",”[^“”]{1,12}说:“",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-colon-said"
+   },
+   "examples": {
+    "positive": [
+     "“马上就要高考了,”王老师说,“请大家做好最后的冲刺。”"
+    ],
+    "negative": [
+     "“马上就要高考了,”王老师说:“请大家做好最后的冲刺。”"
+    ]
+   },
+   "source_text": "“某某说”在两个引语中间时错用了冒号"
+  },
+  {
+   "id": "F002-punc-colon-ratio",
+   "name": "冒号与比号不混用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "冒号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "比分/比例场景使用全角冒号",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "\\d+:\\d+",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-colon-ratio"
+   },
+   "examples": {
+    "positive": [
+     "比赛结果是1:3(比号)"
+    ],
+    "negative": [
+     "比赛结果是1:3(冒号)"
+    ]
+   },
+   "notes": "需上下文判断是否为比例/比分场景;时间(12:30)同样用半角冒号,不冲突。",
+   "source_text": "冒号和比号混用(冒号位于字的下标,比号位置居中)"
+  },
+  {
+   "id": "F002-punc-question-choice",
+   "name": "问号:选择问句中间不用问号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "问号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "\"?还是\"结构(选择问的前半误用问号)",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "？还是",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-question-choice"
+   },
+   "examples": {
+    "positive": [
+     "你是往南边走,还是往北边走?"
+    ],
+    "negative": [
+     "你是往南边走?还是往北边走?"
+    ]
+   },
+   "notes": "源文\"问题号\"疑为\"问号\"之误,按原文保留。",
+   "source_text": "选择问句中,句子中间出现问题号"
+  },
+  {
+   "id": "F002-punc-question-no-interrogative",
+   "name": "问号:有疑问词但无疑问语气不用问号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "问号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "宾语从句内含疑问词(谁/什么/多少/哪)但主句为祈使/陈述(看看/算出/知道),句末误用问号 / 祈使动词+疑问词从句+问号线索",
+    "original_gate_types": [
+     "nlp",
+     "regex"
+    ],
+    "pattern": "(看看|算算|算出|想想|知道|问问)[^。?]*?(是谁|是什么|是多少|在哪)[^。?]*?",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-question-no-interrogative"
+   },
+   "examples": {
+    "positive": [
+     "你去看看是谁在敲门。",
+     "最后要算出这道题的得数是多少。"
+    ],
+    "negative": [
+     "你去看看是谁在敲门?",
+     "最后要算出这道题的得数是多少?"
+    ]
+   },
+   "source_text": "句子中有疑问词,但没有疑问语气,不是疑问句,误用问号"
+  },
+  {
+   "id": "F002-punc-quote-partial",
+   "name": "引号:部分引用时句号放引号外",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "引号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "引文作为句子成分(非独立完整引用)时,句末点号进入了引号内",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-quote-partial"
+   },
+   "examples": {
+    "positive": [
+     "王羲之笔下的字,正如有的评论家说的那样,“以形写神,神形兼备”。"
+    ],
+    "negative": [
+     "王羲之笔下的字,正如有的评论家说的那样,“以形写神,神形兼备。”"
+    ]
+   },
+   "notes": "与 F002-punc-quote-full 互为镜像:判定核心是引文是否独立成句。",
+   "source_text": "引文只是整个句子的一部分,句号却放在了引号内"
+  },
+  {
+   "id": "F002-punc-quote-full",
+   "name": "引号:完整引用时句号放引号内",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "引号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "冒号引出的完整引用,句号落在引号外",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": ":“[^“”]+”。",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-quote-full"
+   },
+   "examples": {
+    "positive": [
+     "俗话说:“眉头一皱,计上心来。”就是说多想出智慧。"
+    ],
+    "negative": [
+     "俗话说:“眉头一皱,计上心来”。就是说多想出智慧。"
+    ]
+   },
+   "source_text": "直接引用一句完整的话,句号却放在了引号外"
+  },
+  {
+   "id": "F002-punc-quote-nested",
+   "name": "引号:双引号内再引用须用单引号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "引号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "双引号配对区间内再次出现双引号(应为单引号'')",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-quote-nested"
+   },
+   "examples": {
+    "positive": [
+     "父亲对我说:“《论语》里有句话叫‘知之为知之,不知为不知’。”"
+    ],
+    "negative": [
+     "父亲对我说:“《论语》里有句话叫“知之为知之,不知为不知。””"
+    ]
+   },
+   "notes": "手册例子同时演示了引号内句号位置(部分引用句号在单引号外)。",
+   "source_text": "双引号里出现引号,里面的引号没有变成单引号"
+  },
+  {
+   "id": "F002-punc-ellipsis-deng",
+   "name": "省略号不与\"等/等等/之类\"并用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "省略号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "省略号与\"等\"类词共现",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "(等等?……|……等等?|之类……|……之类)",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-ellipsis-deng"
+   },
+   "examples": {
+    "positive": [
+     "小万买了很多水果, 有苹果、橘子、西瓜、葡萄……/葡萄等。"
+    ],
+    "negative": [
+     "小万买了很多水果, 有苹果、橘子、西瓜、葡萄等……"
+    ]
+   },
+   "source_text": "省略号和“等”“等等”“之类”并列使用"
+  },
+  {
+   "id": "F002-punc-ellipsis-adjacent",
+   "name": "省略号前后不接顿号/逗号/分号,后不接句号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "省略号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "省略号紧邻其他点号",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "[、,;;,]……|……[、,;;,]|……。",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-ellipsis-adjacent"
+   },
+   "examples": {
+    "positive": [
+     "小万买了很多水果, 有苹果、橘子、西瓜、葡萄……",
+     "燕京八景有太液秋风、琼岛春阴、金台夕照、蓟门烟树……"
+    ],
+    "negative": [
+     "小万买了很多水果,有苹果、橘子、西瓜、葡萄、……",
+     "燕京八景有太液秋风、琼岛春阴、金台夕照、蓟门烟树……。"
+    ]
+   },
+   "source_text": "省略号前后出现顿号、逗号、分号,或者后面出现句号"
+  },
+  {
+   "id": "F002-punc-ellipsis-form",
+   "name": "省略号统一为六个点(……)",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "省略号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "半角三点作省略号 / 单个省略字符(三点)或四个及以上省略字符(≥十二点)",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "(?<!\\.)\\.{3}(?!\\.)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-ellipsis-form"
+   },
+   "examples": {
+    "positive": [
+     "小万买了很多水果, 有苹果、橘子、西瓜、葡萄……"
+    ],
+    "negative": [
+     "小万买了很多水果,有苹果、橘子、西瓜、葡萄…",
+     "小万买了很多水果,有苹果、橘子、西瓜、葡萄…………"
+    ]
+   },
+   "notes": "半角 ... 在代码/URL 场景需排除,故 heuristic。",
+   "source_text": "省略号用3个点(…)或12个点(……)表示"
+  },
+  {
+   "id": "F002-punc-booktitle-missing",
+   "name": "书名号:该用未用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "书名号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "已知报刊/影视/歌曲/艺术作品名出现时未加书名号(可维护知名作品名词表辅助)",
+    "original_gate_types": [
+     "nlp"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-booktitle-missing"
+   },
+   "examples": {
+    "positive": [
+     "《纽约时报》发布了一篇文章。"
+    ],
+    "negative": [
+     "纽约时报发布了一篇文章。"
+    ]
+   },
+   "notes": "适用范围(手册括注):报纸、杂志、电影、电视剧、电视节目、歌曲、舞蹈、摄影、绘画、雕塑作品。",
+   "source_text": "该用书名号(报纸、杂志、电影、电视剧、电视节目、歌曲以及舞蹈、摄影、绘画、雕塑作品)的地方没用"
+  },
+  {
+   "id": "F002-punc-booktitle-misuse",
+   "name": "书名号:不该用误用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "书名号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "书名号包裹证件/奖项/机构名",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "《[^《》]*(身份证|护照|驾驶证|奖|杯|大学|学院|公司|集团|委员会)》",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-booktitle-misuse"
+   },
+   "examples": {
+    "positive": [
+     "他把身份证递给了前台人员。",
+     "这部电影获得了奥斯卡金像奖。"
+    ],
+    "negative": [
+     "他把《身份证》递给了前台人员。",
+     "这部电影获得了《奥斯卡金像奖》。"
+    ]
+   },
+   "notes": "词表法覆盖高频误用;真书名含\"奖\"字(如小说《奖》)属罕见,命中后复核。",
+   "source_text": "不该用书名号(证件名、奖杯名、丛书名、机构名等)的地方误用"
+  },
+  {
+   "id": "F002-punc-paren-position",
+   "name": "括号:句内括号紧跟被注释内容",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "括号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "括注与其注释对象之间隔了其他成分(如\"集团的故事(旗下有肯德基和必胜客)\"——注释对象是\"集团\"而非\"故事\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-paren-position"
+   },
+   "examples": {
+    "positive": [
+     "百胜餐饮集团(旗下有肯德基和必胜客)的故事是理解愿望管理和动机管理的很好的例证。"
+    ],
+    "negative": [
+     "百胜餐饮集团的故事(旗下有肯德基和必胜客)是理解愿望管理和动机管理的很好的例证。"
+    ]
+   },
+   "source_text": "句内括号没有紧跟对应的内容"
+  },
+  {
+   "id": "F002-punc-paren-nested",
+   "name": "括号:同一形式的括号不得套用",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "括号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同形括号嵌套(圆括号内再开圆括号),应改用方括号[]分层",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-paren-nested"
+   },
+   "examples": {
+    "positive": [
+     "PDCA[PDCA分别代表plan(计划)、do(行动)、check(检查)、adjust(纠正)]循环由美国学者爱德华兹·戴明提出,因此又称“戴明循环”。"
+    ],
+    "negative": [
+     "PDCA(PDCA分别代表plan(计划)、do(行动)、check(检查)、adjust(纠正))循环由美国学者爱德华兹·戴明提出,因此又称“戴明循环”。"
+    ]
+   },
+   "notes": "括号配对栈扫描即可精确判定。",
+   "source_text": "同一形式的括号套用"
+  },
+  {
+   "id": "F002-punc-dash-mismatch",
+   "name": "破折号:前后两部分所指须相同",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "破折号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "破折号用于解释说明时,后项与前项不同指(如\"庭园中央——这张X光片子的主人\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-dash-mismatch"
+   },
+   "examples": {
+    "positive": [
+     "他久久地凝视着庭园中央,这张X光片子的主人。"
+    ],
+    "negative": [
+     "他久久地凝视着庭园中央——这张X光片子的主人。(“庭园中央”与“这张X光片子的主人”所指的概念不相当。)"
+    ]
+   },
+   "source_text": "破折号的前后两部分所指不相同"
+  },
+  {
+   "id": "F002-punc-dash-missing",
+   "name": "破折号:补充说明前应用破折号",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "破折号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同位复指的补充说明用逗号衔接造成并列误读(如\"在合成车间,叶绿体里\"应为\"合成车间——叶绿体\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-dash-missing"
+   },
+   "examples": {
+    "positive": [
+     "二氧化碳和水在合成车间——叶绿体里发生奇妙的变化。"
+    ],
+    "negative": [
+     "二氧化碳和水在合成车间, 叶绿体里发生奇妙的变化。"
+    ]
+   },
+   "source_text": "补充说明前未用破折号"
+  },
+  {
+   "id": "F002-punc-dash-glyph",
+   "name": "破折号字形:占两字位\"——\",不用一字线/半字线",
+   "category": [
+    "内容审校",
+    "标点符号审校",
+    "破折号"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "单个 em dash 或连字符串充当破折号",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "(?<!—)—(?!—)|(?<!-)-{2,4}(?!-)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-punc-dash-glyph"
+   },
+   "examples": {
+    "positive": [
+     "二氧化碳和水在合成车间——叶绿体里发生奇妙的变化。"
+    ],
+    "negative": [
+     "二氧化碳和水在合成车间—叶绿体里发生奇妙的变化。",
+     "二氧化碳和水在合成车间----叶绿体里发生奇妙的变化。"
+    ]
+   },
+   "notes": "源文件此条误/正示例文字相同(字形差异在转档中丢失),负例按规则原意重构;规则原文保留原样。数学负号、区间连接号场景需排除。",
+   "source_text": "破折号误为一字线(一)、两个一字线(一)、四个半字线(——)"
+  },
+  {
+   "id": "F002-num-approx-chinese",
+   "name": "概数用汉字数字",
+   "category": [
+    "内容审校",
+    "数字及单位用法审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "阿拉伯数字+概数后缀 / \"40几岁\"式:阿拉伯数字直接接\"几\"",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "\\d+(几|来|多|上下|左右)?(?<=\\d几|\\d来)",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-num-approx-chinese"
+   },
+   "examples": {
+    "positive": [
+     "四十几岁"
+    ],
+    "negative": [
+     "40几岁"
+    ]
+   },
+   "source_text": "表示概数用阿拉伯数字(此为要避免的错误)"
+  },
+  {
+   "id": "F002-num-nonad-chinese",
+   "name": "非公元纪年用汉字数字",
+   "category": [
+    "内容审校",
+    "数字及单位用法审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "年号/农历纪年接阿拉伯数字",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "(咸丰|康熙|乾隆|光绪|宣统|嘉庆|道光|同治|洪武|永乐|万历|贞观|开元|民国)\\s*\\d+年|(正月|腊月|冬月|初)\\s*\\d+",
+    "flags": "",
+    "confidence": "exact",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-num-nonad-chinese"
+   },
+   "examples": {
+    "positive": [
+     "清咸丰十年",
+     "腊月初八"
+    ],
+    "negative": [
+     "清咸丰10年",
+     "腊月初8"
+    ]
+   },
+   "notes": "年号词表可扩充。",
+   "source_text": "非公元纪年用阿拉伯数字(此为要避免的错误)"
+  },
+  {
+   "id": "F002-num-range-unit",
+   "name": "数值范围不省略前一个数值的单位",
+   "category": [
+    "内容审校",
+    "数字及单位用法审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "范围表达仅末尾带百分号 / 范围表达仅末尾带\"万/亿\"等数量级单位",
+    "original_gate_types": [
+     "regex"
+    ],
+    "pattern": "(?<![%\\d.])\\d+(\\.\\d+)?-\\d+(\\.\\d+)?%",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-num-range-unit"
+   },
+   "examples": {
+    "positive": [
+     "20%-30%",
+     "20万-30万人"
+    ],
+    "negative": [
+     "20-30%",
+     "20-30万人"
+    ]
+   },
+   "notes": "注意与\"60-70平方米\"(单位在末尾的普通量程,手册示例中允许)的区分:强制规则针对%和万/亿等数量级词。",
+   "source_text": "表示数值或量的范围时, 漏掉前面数值或量的单位"
+  }
+ ]
+}

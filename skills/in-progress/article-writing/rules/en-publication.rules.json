@@ -1,0 +1,3920 @@
+{
+ "bundle": "en-publication",
+ "language": "en",
+ "genre": "publication",
+ "version": "1.0.0",
+ "compiled_by": "scripts/compile-article-rules.py",
+ "layering": "house > genre > universal; markdownlint applies to all genres at runtime",
+ "quote_convention": "Curly quotes “ ” ‘ ’ in prose; straight quotes only inside code.",
+ "sources": [
+  "审校工作规范.rules.json",
+  "apple.rules.json",
+  "redhat.rules.json",
+  "mdnen.rules.json",
+  "mdnzh.rules.json",
+  "msbias.rules.json",
+  "house"
+ ],
+ "counts": {
+  "total": 112,
+  "regex": 68,
+  "term": 9,
+  "llm": 35,
+  "must": 29
+ },
+ "notes": "Publication methodology is inherited from the zh publication system (审校工作规范); vendor terminology rules are excluded as too product-specific for general publications (bias-free terminology kept).",
+ "rules": [
+  {
+   "id": "HOUSE-en-curly-quotes",
+   "name": "House rule: prose uses curly quotes, not straight",
+   "category": [
+    "punctuation",
+    "quotes"
+   ],
+   "layer": "house",
+   "strength": "must",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "pattern": "[A-Za-z,.;:!?)\\]]\\s*\"[A-Za-z(]|[A-Za-z]\\s\"|\"\\s[A-Za-z]",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "frontmatter",
+     "html_tag"
+    ],
+    "description": "Straight double quote in prose (use “ ”; apostrophes use ’)",
+    "confidence": "heuristic",
+    "python_ok": true
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q7"
+   },
+   "notes": "Unifies the Apple-vs-MDN conflict: Apple and the newsletter corpus mandate curly quotes; MDN mandates straight. House rule: curly across all three en genres, so the two MDN curly→straight rules are excluded.",
+   "replaces": [
+    "TW-mdnen-punct-curly-double-quote",
+    "TW-mdnen-punct-curly-single-quote",
+    "TW-mdnzh-punct-curly-double-quotes",
+    "TW-mdnzh-punct-curly-apostrophe"
+   ]
+  },
+  {
+   "id": "HOUSE-en-curly-apostrophe",
+   "name": "House rule: curly apostrophe ’ in prose contractions/possessives",
+   "category": [
+    "punctuation",
+    "quotes"
+   ],
+   "layer": "house",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "pattern": "[A-Za-z]'(?=[a-z])",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "frontmatter",
+     "html_tag"
+    ],
+    "description": "Straight apostrophe in prose (use ’, e.g. don’t / Erik’s)",
+    "confidence": "heuristic",
+    "python_ok": true
+   },
+   "fix": {
+    "auto": true,
+    "description": "' → ’"
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q7 (newsletter corpus convention)"
+   }
+  },
+  {
+   "id": "HOUSE-en-single-space-after-period",
+   "name": "House rule: single space after sentence period",
+   "category": [
+    "punctuation",
+    "spacing"
+   ],
+   "layer": "house",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "pattern": "[.!?][”’\"']?  +[A-Z“\"]",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "table"
+    ],
+    "description": "Two or more spaces after end-of-sentence punctuation",
+    "confidence": "exact",
+    "python_ok": true
+   },
+   "fix": {
+    "auto": true,
+    "description": "collapse to one space"
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q7 (newsletter corpus convention)"
+   }
+  },
+  {
+   "id": "HOUSE-en-oxford-comma",
+   "name": "House rule: use the Oxford comma in lists of three or more",
+   "category": [
+    "punctuation",
+    "comma"
+   ],
+   "layer": "house",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "pattern": ", (?:[\\w’']+ ){1,3}(?:and|or) [\\w’']+",
+    "flags": "g",
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "heading"
+    ],
+    "description": "Possible missing serial comma before and/or (verify it is a 3+ item list)",
+    "confidence": "heuristic",
+    "python_ok": true
+   },
+   "source": {
+    "file": "house",
+    "id": "grilling-2026-07-15#Q7 (newsletter corpus convention)"
+   }
+  },
+  {
+   "id": "F002-fact-principle",
+   "name": "凡事实必核",
+   "category": [
+    "事实核对"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "存在未经核实即保留的事实性陈述(默认假定其为错)",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-principle"
+   },
+   "notes": "总原则,统摄 F002-fact-* 各细则。",
+   "source_text": "凡事实必核。核对事实是审校工作的核心内容,也是不可或缺的工作步骤。你需要养成核对事实的习惯。这里的事实包括人物、时间、地点、事物等内容。你在审校稿件过程中,看到这些内容出现时,脑中需下意识地拉起警报。未经核实的事实,要假定它们都是错的。你既可以在当时就查阅相关资料核实,也可以先逐个高亮标出,最后再集中核对。"
+  },
+  {
+   "id": "F002-fact-person-name",
+   "name": "人物名字及古人字、号正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人名写错(如张冠李戴、译名错误),或将\"字\"与\"号\"混淆",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-name"
+   },
+   "examples": {
+    "positive": [
+     "明确提出保健因素的,是美国心理学家弗雷德里克·赫茨伯格(Fredrick Herzberg)。",
+     "苏东坡, 号东坡居士。"
+    ],
+    "negative": [
+     "明确提出保健因素的,是美国心理学家罗伯特·赫茨伯格(Robert Herzberg)。",
+     "苏东坡,字东坡。"
+    ]
+   },
+   "source_text": "名字以及古人的字、号等是否正确"
+  },
+  {
+   "id": "F002-fact-person-identity",
+   "name": "人物身份正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物的职务、党派、头衔等身份信息与事实不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-identity"
+   },
+   "examples": {
+    "positive": [
+     "特朗普,美国总统,美国共和党籍政治家。"
+    ],
+    "negative": [
+     "特朗普,美国总统,美国民主党籍政治家。"
+    ]
+   },
+   "source_text": "身份是否正确"
+  },
+  {
+   "id": "F002-fact-person-nationality",
+   "name": "人物国别正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物国籍/国别表述错误,或忽略移民、改籍等事实(必要时应写成\"X裔/X出生的Y国人\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-nationality"
+   },
+   "examples": {
+    "positive": [
+     "哈耶克, (奥地利裔 / 奥地利出生的) 英国经济学家。"
+    ],
+    "negative": [
+     "哈耶克,奥地利经济学家。"
+    ]
+   },
+   "source_text": "国别是否正确"
+  },
+  {
+   "id": "F002-fact-person-relation",
+   "name": "人物前后关系正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "人物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "人物间的影响、师承、时间先后等关系颠倒或错置",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-person-relation"
+   },
+   "examples": {
+    "positive": [
+     "亚当·斯密的《国富论》,为李嘉图的多理论提供了依据。"
+    ],
+    "negative": [
+     "李嘉图的很多理论,成为亚当·斯密写《国富论》的依据。"
+    ]
+   },
+   "source_text": "人物前后的关系是否正确"
+  },
+  {
+   "id": "F002-fact-time-event",
+   "name": "事件发生时间正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "时间"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "事件年份/日期与史实不符",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-time-event"
+   },
+   "examples": {
+    "positive": [
+     "1984年,新中国第一次参加奥运会,中国队获得15枚金牌。"
+    ],
+    "negative": [
+     "1983年,新中国第一次参加奥运会,中国队获得15枚金牌。"
+    ]
+   },
+   "source_text": "事件发生的时间是否正确"
+  },
+  {
+   "id": "F002-fact-time-publication",
+   "name": "出版/发表时间正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "时间"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "书籍出版年、论文/文章发表年与实际不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-time-publication"
+   },
+   "examples": {
+    "positive": [
+     "《傲慢与偏见》出版于1813年。",
+     "2014年,《科学》杂志发表了一项研究,它说肺癌可以潜伏二十多年,然后会突然转变为侵袭性的疾病。"
+    ],
+    "negative": [
+     "《傲慢与偏见》出版于1796年。",
+     "2018年,《科学》杂志发表了一项研究,它说肺癌可以潜伏二十多年,然后会突然转变为侵袭性的疾病。"
+    ]
+   },
+   "source_text": "书籍出版、文章发表的时间是否正确"
+  },
+  {
+   "id": "F002-fact-place-name",
+   "name": "地点名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "地名书写错误(错别字、同音混淆、行政区划名称错误)",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-name"
+   },
+   "examples": {
+    "positive": [
+     "山西省吕梁市。"
+    ],
+    "negative": [
+     "山西省吕梁市。"
+    ]
+   },
+   "notes": "源文件此条误/正示例文字相同,系转档失真(原意疑为省名或政区级别之误),保留原样。",
+   "source_text": "地点的名称是否正确"
+  },
+  {
+   "id": "F002-fact-place-relation",
+   "name": "地点之间关系正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "地理方位、隶属、相对位置关系与实际不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-relation"
+   },
+   "examples": {
+    "positive": [
+     "加拿大不列颠哥伦比亚省西部的温哥华岛上, 有一座叫维多利亚的小城, 往东和温哥华市隔海相望。"
+    ],
+    "negative": [
+     "加拿大不列颠哥伦比亚省的西部有一座叫维多利亚的岛, 往东和温哥华隔海相望。"
+    ]
+   },
+   "source_text": "地点之间的关系是否正确"
+  },
+  {
+   "id": "F002-fact-place-history",
+   "name": "地点历史沿革准确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "对地点历史状态的表述(曾经/一直/首个等限定词)与史实不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-history"
+   },
+   "examples": {
+    "positive": [
+     "维多利亚是哥伦比亚省的首府。(说明:不是曾经,一直都是首府)"
+    ],
+    "negative": [
+     "维多利亚曾经是哥伦比亚省第一个首府。"
+    ]
+   },
+   "source_text": "地点的历史沿革是否准确"
+  },
+  {
+   "id": "F002-fact-place-oldnew",
+   "name": "古今地名匹配",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "地点"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "历史地名括注的今名对应错误",
+    "original_gate_types": [
+     "llm",
+     "regex"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-place-oldnew"
+   },
+   "examples": {
+    "positive": [
+     "广州湾(今湛江港)是1899年被法国强行租借的。"
+    ],
+    "negative": [
+     "广州湾(今广州)是1899年被法国强行租借的。"
+    ]
+   },
+   "source_text": "地点的历史名称与今天的名称是否匹配"
+  },
+  {
+   "id": "F002-fact-quote-classic",
+   "name": "传统文化经典引文与原文一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "引用的经典原文存在错字、语序颠倒、句序错乱",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-quote-classic"
+   },
+   "examples": {
+    "positive": [
+     "“天下有道,则礼乐征伐自天子出。”",
+     "“驾长车,踏破贺兰山缺。壮志饥餐胡虏肉,笑谈渴饮匈奴血。”"
+    ],
+    "negative": [
+     "“天下有道,礼伐征乐自天子出。”",
+     "“壮士饥餐胡虏肉,笑谈渴饮匈奴血,驾长车踏破贺兰山缺。”"
+    ]
+   },
+   "notes": "注意\"壮志\"与\"壮士\"这类单字之差。",
+   "source_text": "引用传统文化经典(国学经典、唐诗宋词等)原文"
+  },
+  {
+   "id": "F002-fact-quote-modern",
+   "name": "其他经典作品引文与原文一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "引用现当代作品原文与出版文本不一致(包括异体字、用字习惯,如鲁迅\"年青\")",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-quote-modern"
+   },
+   "examples": {
+    "positive": [
+     "“我在年青时候也曾做过许多梦”。(鲁迅《呐喊》)"
+    ],
+    "negative": [
+     "“我在年轻时候也曾做过许多梦”。(鲁迅《呐喊》)"
+    ]
+   },
+   "notes": "以已出版文本为准,不得\"顺手修正\"原作者用字。",
+   "source_text": "引用其他经典作品原文"
+  },
+  {
+   "id": "F002-fact-theory-name",
+   "name": "理论名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "学术理论/学说名称用词错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-theory-name"
+   },
+   "examples": {
+    "positive": [
+     "决定论,又称拉普拉斯信条。"
+    ],
+    "negative": [
+     "确定论, 又称拉普拉斯信条。"
+    ]
+   },
+   "source_text": "理论名称"
+  },
+  {
+   "id": "F002-fact-work-title",
+   "name": "书刊/文章/节目名称与已发表版本一致",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "作品标题与正式出版/发表的标题不一致(包括语序)",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-work-title"
+   },
+   "examples": {
+    "positive": [
+     "卢梭是深刻推动了平等的现代思想家,他的《论人类不平等的起源和基础》《社会契约论》都是对平等的经典赞歌。"
+    ],
+    "negative": [
+     "卢梭是深刻推动了平等的现代思想家,他的《论人类不平等的基础和起源》《社会契约论》都是对平等的经典赞歌。"
+    ]
+   },
+   "source_text": "书名、刊物名称、文章或论文标题、节目名称等是否与已发表或出版的一致"
+  },
+  {
+   "id": "F002-fact-org-name",
+   "name": "机构名称正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "机构缩写与全称/译名对应错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-org-name"
+   },
+   "examples": {
+    "positive": [
+     "NASD(全国证券交易商协会)。"
+    ],
+    "negative": [
+     "NASD (纳斯达克)。"
+    ]
+   },
+   "notes": "缩写首次出现时括注的展开必须是该缩写的真实全称。",
+   "source_text": "机构名称"
+  },
+  {
+   "id": "F002-fact-formula-unit",
+   "name": "公式、计量单位正确",
+   "category": [
+    "事实核对",
+    "凡事实必核",
+    "事物"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "数值的计量单位/币种错误(如\"元\"与\"美元\"混淆),公式书写错误",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-fact-formula-unit"
+   },
+   "examples": {
+    "positive": [
+     "苹果公司的市值, 一度超过一万亿美元。"
+    ],
+    "negative": [
+     "苹果公司的市值, 一度超过一万亿元。"
+    ]
+   },
+   "source_text": "公式、计量单位"
+  },
+  {
+   "id": "F002-number-principle",
+   "name": "凡数字必核",
+   "category": [
+    "事实核对"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "抽取全文所有数字(含百分比、金额、年份),生成核对清单,逐一标记核实来源",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-principle"
+   },
+   "notes": "总原则,统摄 F002-number-* 各细则。",
+   "source_text": "凡数字必核。数字属于事实的一种,之所以提出来单独强调,是因为数字在文稿中太特殊了,一旦出错,会严重影响文稿的质量。文稿中出现的所有数字,你要逐一核对。"
+  },
+  {
+   "id": "F002-number-precision",
+   "name": "数字精确",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "将精确数值随手取整或凭记忆约写,与来源数据不符",
+    "original_gate_types": [
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-precision"
+   },
+   "examples": {
+    "positive": [
+     "京东上市前, 刘强东只持股18.8%, 却有51.2%的投票权。"
+    ],
+    "negative": [
+     "京东上市前, 刘强东只持股20%, 却有50%的投票权。"
+    ]
+   },
+   "source_text": "精确"
+  },
+  {
+   "id": "F002-number-arithmetic",
+   "name": "核算无误",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "文中给出的合计/换算结果与按其自身分项数据重算的结果不一致",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-arithmetic"
+   },
+   "examples": {
+    "positive": [
+     "工位区、会议室、前台区,加在一起是90-110平方米。按65%的得房率计算,办公室建筑面积要达到140-170平方米。"
+    ],
+    "negative": [
+     "工位区、会议室、前台区,加在一起是100-120平方米。按65%的得房率计算,办公室建筑面积要达到150-160平方米。"
+    ]
+   },
+   "notes": "这是最可程序化的事实核对项:凡「合计/共/加在一起/按X%计算」处必重算。",
+   "source_text": "所有涉及运算的地方,都要演算核对。"
+  },
+  {
+   "id": "F002-number-freshness",
+   "name": "数字保持最新",
+   "category": [
+    "事实核对",
+    "凡数字必核"
+   ],
+   "layer": "universal",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "llm",
+    "description": "文中统计数字的年份落后于发稿年份且已有更新数据可用",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-number-freshness"
+   },
+   "examples": {
+    "positive": [
+     "2018年, 阿里“双11”的销售额已经达到了2135亿元。(假设文稿发布在2018年年底)"
+    ],
+    "negative": [
+     "2017年,阿里“双11”的销售额已经达到了1682亿元。(假设文稿发布在2018年年底)"
+    ]
+   },
+   "notes": "手册措辞为\"尽可能\",故 level 为 should。",
+   "source_text": "数字在文稿发布的时间点, 尽可能保持最新。"
+  },
+  {
+   "id": "F002-style-person-name",
+   "name": "人名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一人物在同一文稿中出现两种及以上写法(如\"泰罗/泰勒\"),用 NER 聚类同指实体后比对字面",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-person-name"
+   },
+   "examples": {
+    "positive": [
+     "管理学的鼻祖是美国人泰勒。泰勒是一位“破局”的高手……泰勒在身体条件一般的情况下……"
+    ],
+    "negative": [
+     "管理学的鼻祖是美国人泰罗。泰罗是一位“破局”的高手……泰勒在身体条件一般的情况下……"
+    ]
+   },
+   "source_text": "同一文稿中的人名保持一致。"
+  },
+  {
+   "id": "F002-style-thing-name",
+   "name": "事物名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一机构/事物先后使用不同称名(如\"美国证监会\"与\"证券交易委员会\"),同指实体字面不一致",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-thing-name"
+   },
+   "examples": {
+    "positive": [
+     "证券交易委员会(Securities and Exchange Commission,SEC)是美国国会成立的政府委员会……证券交易委员会成立于1934年。"
+    ],
+    "negative": [
+     "美国证监会(Securities and Exchange Commission,SEC)是美国国会成立的政府委员会……证券交易委员会成立于1934年。"
+    ]
+   },
+   "notes": "首次定名后全篇沿用;如需换称,应显式交代。",
+   "source_text": "同一文稿中的事物名保持一致。"
+  },
+  {
+   "id": "F002-style-work-title",
+   "name": "作品名前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "书名号内的同一作品标题在文中出现不同版本(编辑距离小但不相等的标题对)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-work-title"
+   },
+   "examples": {
+    "positive": [
+     "《我们从哪里来?我们是谁?我们向何处去?》……最出名的是《我们从哪里来?我们是谁?我们向何处去?》。"
+    ],
+    "negative": [
+     "《我们从哪里来?我们是谁?我们向何处去?》……最出名的是《我们从哪里来?我们是谁?我们往哪里去?》。"
+    ]
+   },
+   "notes": "书名号内容可直接抽取比对,是体例一致中最易程序化的一条。",
+   "source_text": "同一文稿中的作品名保持一致。"
+  },
+  {
+   "id": "F002-style-number",
+   "name": "数字前后一致",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一对象的数量在上下文中不一致且未交代变化原因(如\"买5架飞机\"与\"3架飞机已运到\")",
+    "original_gate_types": [
+     "code",
+     "llm"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-number"
+   },
+   "examples": {
+    "positive": [
+     "假设你的公司要买5架飞机……现在,5架飞机已经运到公司了……",
+     "上市前, 马云持股8.9%……8.9%的股份减持之后,马云用仅仅7.8%的股份控制了一家市值几千亿美金的公司。"
+    ],
+    "negative": [
+     "假设你的公司要买5架飞机……现在, 3架飞机已经运到公司了……",
+     "上市前,马云持股8.9%……马云用仅仅7.8%的股份控制了一家市值几千亿美金的公司。"
+    ]
+   },
+   "source_text": "同一文稿中的相关材料和数据保持一致。如果条件或信息发生了变化, 要在文稿中交代清楚。"
+  },
+  {
+   "id": "F002-style-count-claim",
+   "name": "上下表述一致(声明数量与实际枚举一致)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "\"我有N个X\"式声明后,实际枚举的序次项数量 ≠ N(统计\"第一/第二/……\"或\"1. 2. ……\"的个数并与声明比对)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-count-claim"
+   },
+   "examples": {
+    "positive": [
+     "我有四个心得想和大家分享。第一,……第二,……第三,……第四,……"
+    ],
+    "negative": [
+     "我有三个心得想和大家分享。第一,……第二,……第三,……第四,……"
+    ]
+   },
+   "notes": "可完全程序化:声明数 vs 枚举数。",
+   "source_text": "上下表述一致"
+  },
+  {
+   "id": "F002-style-local-expression",
+   "name": "局部表述一致(同段落译名/称谓体例统一)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "llm",
+    "description": "同一语境中头衔或人名的中英文体例混用(如同段出现\"首席执行官\"与\"CEO\"、中译名与英文原名并存)",
+    "original_gate_types": [
+     "code"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-local-expression"
+   },
+   "examples": {
+    "positive": [
+     "百度公司首席执行官李彦宏……微软的第二任首席执行官史蒂夫·鲍尔默、总裁布拉德·史密斯……"
+    ],
+    "negative": [
+     "百度公司首席执行官李彦宏……微软的第二任CEO 史蒂夫·鲍尔默、总裁Brad Smith……"
+    ]
+   },
+   "notes": "源文件正例中的间隔号被转档为\"*\",摘录时已复原为\"·\"。",
+   "source_text": "局部表述一致"
+  },
+  {
+   "id": "F002-style-hierarchy",
+   "name": "层级一致(序号体系与序次语成套使用)",
+   "category": [
+    "内容审校",
+    "体例一致审校"
+   ],
+   "layer": "universal",
+   "strength": "must",
+   "severity": "error",
+   "check": {
+    "type": "regex",
+    "description": "同级标题混用不同序号体系(如同级出现\"(一)\"与\"1、\");序次语不成套(如\"首先……第二……第三……最后\") / 检测\"首先\"与\"第二\"混搭的序次语断裂",
+    "original_gate_types": [
+     "code",
+     "regex"
+    ],
+    "pattern": "首先[\\s\\S]{0,120}?第二",
+    "flags": "",
+    "confidence": "heuristic",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table",
+     "heading"
+    ]
+   },
+   "source": {
+    "file": "审校工作规范.rules.json",
+    "id": "F002-style-hierarchy"
+   },
+   "examples": {
+    "positive": [
+     "首先……其次……再次……最后……",
+     "第一……第二……第三……第四……"
+    ],
+    "negative": [
+     "首先……第二……第三……最后……",
+     "一、……(一)……(二)……二、……1、……2、……"
+    ]
+   },
+   "source_text": "层级一致。同一文稿中的格式和层级等保持一致。"
+  },
+  {
+   "id": "TW-apple-space-num-unit",
+   "name": "数字与数据/频率单位符号之间加一个空格",
+   "category": [
+    "spacing",
+    "空格",
+    "数字与单位"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "数字紧贴数据量/速率单位符号,缺少空格(如 16GB)",
+    "pattern": "(\\d)(GB|MB|TB|KB|PB|GHz|MHz|kHz|Kbps|Mbps|Gbps|mAh|Wh)\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-space-num-unit",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1 $2"
+   },
+   "notes": "屏幕/图像分辨率的 2K–8K 反而不留空格(见 num-k-nospace);单位表见指南 Names and unit symbols。",
+   "source_text": "Use a nonbreaking space (Option-Space bar) between the quantity and its symbol."
+  },
+  {
+   "id": "TW-apple-space-degree-symbol",
+   "name": "数字与度数符号 ° 之间不留空格",
+   "category": [
+    "spacing",
+    "空格",
+    "度量符号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "数字与度数符号之间多余空格(如 160 °)",
+    "pattern": "(\\d)\\s+°",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-space-degree-symbol",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1°"
+   },
+   "notes": "度数符号后接单位(°F、°C)另计;仅处理数字与 ° 之间的空格。",
+   "source_text": "The symbol is closed up with the number:"
+  },
+  {
+   "id": "TW-apple-space-em-dash-closed",
+   "name": "破折号(em dash)两侧不留空格",
+   "category": [
+    "spacing",
+    "空格",
+    "破折号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "em dash 两侧有空格,应闭合",
+    "pattern": "\\s+—\\s+",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-space-em-dash-closed",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "—"
+   },
+   "notes": "部分西文体例在 em dash 两侧留空格;Apple 明确要求闭合,故本规则面向 Apple 体例文档。",
+   "source_text": "Close up the em dash with the word before it and the word after it."
+  },
+  {
+   "id": "TW-apple-space-en-dash-range-closed",
+   "name": "数字范围内的连接号(en dash)两侧不留空格",
+   "category": [
+    "spacing",
+    "空格",
+    "破折号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "数字范围的 en dash 两侧有空格",
+    "pattern": "(\\d)\\s+–\\s+(\\d)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-space-en-dash-range-closed",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1–$2"
+   },
+   "notes": "仅处理数字-数字范围;连字符 hyphen 与 en dash 的区分见 punct-range-en-dash。",
+   "source_text": "Close up the en dash with the word (or number) before it and the word (or number) after it."
+  },
+  {
+   "id": "TW-apple-space-num-k-nospace",
+   "name": "分辨率 2K–8K 中数字与 K 之间不留空格",
+   "category": [
+    "spacing",
+    "空格",
+    "数字与单位"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "2K/4K/5K/6K/8K 分辨率中数字与 K 之间多余空格",
+    "pattern": "\\b([2-8])\\s+K\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-space-num-k-nospace",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1K"
+   },
+   "notes": "仅面向屏幕/图像分辨率;“5 K”若表示 5 开尔文或 5 千则不适用,故设为 warning。",
+   "source_text": "Don't use a space between the numeral and the K."
+  },
+  {
+   "id": "TW-apple-punct-curly-double-quote",
+   "name": "正文使用弯双引号,不用直双引号(代码字体除外)",
+   "category": [
+    "punctuation",
+    "标点",
+    "引号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "正文中出现直双引号 \"",
+    "pattern": "\"",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "html_tag"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-punct-curly-double-quote",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用弯引号 “ ”;开/闭方向需按上下文判断,故不自动替换。度量单位应改用 prime 符号而非引号。"
+   },
+   "notes": "四字符标识符(如 'TEXT')按指南用直单引号+代码字体,属例外。",
+   "source_text": "quotation marks Use curly opening and closing quotation marks except in code font."
+  },
+  {
+   "id": "TW-apple-punct-curly-apostrophe",
+   "name": "正文使用弯撇号 ’,不用直撇号(代码字体除外)",
+   "category": [
+    "punctuation",
+    "标点",
+    "撇号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "词内直撇号(如 don't、it's)",
+    "pattern": "([A-Za-z])'([A-Za-z])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-punct-curly-apostrophe",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用弯撇号 ’(Option-Shift-]);代码字体与度量单位除外。"
+   },
+   "notes": "度量单位(尺/寸)应使用 prime/double-prime 符号,不用撇号或引号。",
+   "source_text": "apostrophes Use the curly apostrophe (Option-Shift-Right Bracket) except in code font and for units of measure."
+  },
+  {
+   "id": "TW-apple-punct-period-comma-inside-quote",
+   "name": "句号、逗号置于闭合弯引号之内",
+   "category": [
+    "punctuation",
+    "标点",
+    "引号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "闭合弯引号之后紧跟句号或逗号,通常应移入引号内",
+    "pattern": "”\\s*([.,])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-punct-period-comma-inside-quote",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "将句号/逗号移入闭合引号内(“…。”);为清晰起见可置于引号外(如 = “1”.),需人工判断。"
+   },
+   "notes": "与“其他标点置于引号外”规则互补。",
+   "source_text": "Put periods and commas within quotation marks."
+  },
+  {
+   "id": "TW-apple-punct-other-outside-quote",
+   "name": "分号、冒号、问号、叹号置于闭合弯引号之外(除非属引文)",
+   "category": [
+    "punctuation",
+    "标点",
+    "引号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "分号/冒号/问号/叹号出现在闭合弯引号之内",
+    "pattern": "([;:?!])”",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-punct-other-outside-quote",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "若非引文本身的一部分,应将该标点移到闭合引号之外。需人工判断。"
+   },
+   "source_text": "Semicolons, colons, question marks, and exclamation points go outside quotation marks unless they're part of an actual quotation."
+  },
+  {
+   "id": "TW-apple-punct-ellipsis-char",
+   "name": "使用省略号字符 …,不用三个句点",
+   "category": [
+    "punctuation",
+    "标点",
+    "省略号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "用三个及以上连续句点代替省略号字符",
+    "pattern": "\\.{3,}",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-punct-ellipsis-char",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "…"
+   },
+   "notes": "菜单项/按钮名末尾的省略号在正文中应省去(单独规则,未机检)。代码与路径中的 ... 已豁免。",
+   "source_text": "Use the ellipsis character (Option-Semicolon) to prevent line breaks from occurring between the dots."
+  },
+  {
+   "id": "TW-apple-punct-number-sign-name",
+   "name": "“#” 的名称是 number sign,不叫 pound sign / number symbol",
+   "category": [
+    "punctuation",
+    "标点",
+    "符号名称"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "称呼 # 时误用 pound sign 或 number symbol",
+    "pattern": "\\b(pound sign|number symbol)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-punct-number-sign-name",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "指 # 字符时改用 number sign。"
+   },
+   "source_text": "Don't use pound sign or number symbol."
+  },
+  {
+   "id": "TW-apple-punct-range-en-dash",
+   "name": "数字范围用 en dash 并保留完整结束数(2013–2019,非 2013-19)",
+   "category": [
+    "punctuation",
+    "标点",
+    "连字符与破折号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "年份/数字范围用连字符且缩写结束数(如 2013-19)",
+    "pattern": "\\b(\\d{4})-(\\d{2})\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-punct-range-en-dash",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用 en dash 并写出完整结束数,如 2013–2019。需确认确为范围而非其他连字符用途。"
+   },
+   "source_text": "Use the full concluding number in a range of numbers."
+  },
+  {
+   "id": "TW-apple-punct-number-comma-grouping",
+   "name": "五位及以上的数字用逗号分组",
+   "category": [
+    "punctuation",
+    "标点",
+    "数字"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "code",
+    "description": "五位及以上的整数未用逗号分组(65536 → 65,536)。例外:内存地址、微处理器编号、国际体例。"
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-punct-number-comma-grouping",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "为五位以上整数插入千分位逗号;内存地址、微处理器编号(如 68020)及国际体例除外,故需上下文判断。"
+   },
+   "notes": "因例外较多且需按上下文,标注为 code 级、不自动处理。",
+   "source_text": "Use a comma to set off numbers of five digits or more."
+  },
+  {
+   "id": "TW-apple-style-no-latin-abbrev",
+   "name": "避免拉丁缩写 e.g./i.e./etc./et al.",
+   "category": [
+    "style",
+    "风格",
+    "拉丁缩写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现拉丁缩写 e.g. / i.e. / etc. / et al.",
+    "pattern": "\\b(?:e\\.g\\.|i\\.e\\.|etc\\.|et al\\.)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-style-no-latin-abbrev",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用英文短语:e.g.→for example,i.e.→that is,etc.→and so on,et al.→and others。"
+   },
+   "source_text": "Avoid using Latin abbreviations."
+  },
+  {
+   "id": "TW-apple-style-plural-abbrev-no-apostrophe",
+   "name": "缩写复数不加撇号(CDs,非 CD’s)",
+   "category": [
+    "style",
+    "风格",
+    "缩写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "缩写复数误加撇号(如 CD’s、ISP’s)",
+    "pattern": "\\b([A-Z]{2,})['’]s\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-style-plural-abbrev-no-apostrophe",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "复数去掉撇号(CDs、ISPs);若为所有格则保留,故需人工判断。"
+   },
+   "source_text": "Don't add an apostrophe before the s when you form the plural of an abbreviation."
+  },
+  {
+   "id": "TW-apple-style-dimensions-by",
+   "name": "表示尺寸用 by,不用 x",
+   "category": [
+    "style",
+    "风格",
+    "数字"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "尺寸表达式用 x 连接数字(如 8.5 x 11)",
+    "pattern": "(\\d)\\s*[xX]\\s*(\\d)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "apple.rules.json",
+    "id": "TW-apple-style-dimensions-by",
+    "doc": "Apple_Style_Guide_June_2026_清理版.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用 by(如 8.5 by 11 inches);若通篇一致使用 x 亦可接受,故仅建议。"
+   },
+   "source_text": "dimensions In general, use by, not x, to show dimensions."
+  },
+  {
+   "id": "TW-redhat-punct-serial-comma",
+   "name": "Use the serial (Oxford) comma before the conjunction in a series of three or more",
+   "category": [
+    "punctuation",
+    "标点",
+    "逗号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "A series item immediately before \"and\"/\"or\" with no preceding comma (possible missing serial comma)",
+    "pattern": "[\\w-]+,\\s+[\\w-]+\\s+(?:and|or)\\s+[\\w-]+",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-punct-serial-comma",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "If this is a series of three or more items, add a comma before \"and\"/\"or\". Appositives and two-item compounds are false positives."
+   },
+   "notes": "Heuristic: cannot reliably distinguish a true 3+ series from appositives or compound objects. Report only.",
+   "source_text": "Separate elements in a series of three or more with commas, including a comma before the conjunction if one is used."
+  },
+  {
+   "id": "TW-redhat-punct-paren-plural-s",
+   "name": "Do not use \"(s)\" in parentheses to denote a plural",
+   "category": [
+    "punctuation",
+    "标点",
+    "括号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "A word immediately followed by \"(s)\" used to mean a plural",
+    "pattern": "\\b[A-Za-z]{2,}\\(s\\)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-punct-paren-plural-s",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Rewrite as a plural (for example, \"item(s)\" becomes \"items\")."
+   },
+   "source_text": "Do not use \"(s)\" in parentheses to denote a plural. If something can be singular or plural, make it plural."
+  },
+  {
+   "id": "TW-redhat-punct-and-or",
+   "name": "Avoid \"and/or\"; make the options explicit",
+   "category": [
+    "punctuation",
+    "标点",
+    "斜杠"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "The construction \"and/or\"",
+    "pattern": "\\band/or\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-punct-and-or",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Rewrite to make the options explicit: \"A or B\", or \"A, or B, or both\"."
+   },
+   "source_text": "Instead of \"A and/or B\", use \"A or B\", or \"A, or B, or both\"."
+  },
+  {
+   "id": "TW-redhat-punct-exclamation-end",
+   "name": "Do not use an exclamation point at the end of a sentence",
+   "category": [
+    "punctuation",
+    "标点",
+    "感叹号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "A word character immediately followed by \"!\" ending a clause",
+    "pattern": "[A-Za-z0-9]!(?=\\s|$|[\"'\\u201d\\u2019)])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-punct-exclamation-end",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "End the sentence with a period. Exception: the bang (!) command or programming operators."
+   },
+   "source_text": "Do not use at the end of sentences. An exclamation point can be used when referring to a command, such as the bang (!) command."
+  },
+  {
+   "id": "TW-redhat-punct-apostrophe-plural",
+   "name": "Do not use an apostrophe to form the plural of an acronym",
+   "category": [
+    "punctuation",
+    "标点",
+    "撇号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "An uppercase acronym followed by an apostrophe-s (possible apostrophe-plural)",
+    "pattern": "\\b[A-Z]{2,}['\\u2019]s\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-punct-apostrophe-plural",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "If plural, drop the apostrophe (ROMs, PINs). If possessive, this is a false positive."
+   },
+   "notes": "Section 3.6.1 confirms: \"To form the plural of an acronym, add a trailing, lowercase s or es without an apostrophe, for example, ROMs, PINs, BIOSes.\" Cannot distinguish plural from possessive by regex; report only.",
+   "source_text": "Do not use an apostrophe to denote a plural."
+  },
+  {
+   "id": "TW-redhat-space-numeral-unit",
+   "name": "Insert a space between a numeral and its unit of measurement",
+   "category": [
+    "spacing",
+    "空格",
+    "数字与单位"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "A digit directly touching a unit abbreviation with no space",
+    "pattern": "(\\d)(GB|MB|KB|TB|PB|Gb|Mb|Kb|bpp|bps|Bps|MHz|GHz|kHz|Hz|ms|ns)\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-space-numeral-unit",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1 $2"
+   },
+   "notes": "Red Hat prefers a non-breaking space between numeral and unit; a normal space is the minimal machine fix. In AsciiDoc use {nbsp}.",
+   "source_text": "Between a numeral and a unit of measurement. ... Use a non-breaking space between the numeral and the units. For example, \"16 bpp\", not \"16bpp\"."
+  },
+  {
+   "id": "TW-redhat-space-am-pm",
+   "name": "Times of day use uppercase AM/PM without periods, spaced from the numeral",
+   "category": [
+    "spacing",
+    "空格",
+    "时间"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "A time using lowercase am/pm or periods (a.m./p.m.), or glued to the numeral",
+    "pattern": "\\b\\d{1,2}\\s*(?:[apAP]\\.[mM]\\.|[ap]m)\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-space-am-pm",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Write as \"11 AM\" / \"2 PM\": uppercase, no periods, a (non-breaking) space after the numeral."
+   },
+   "source_text": "For times of day, use uppercase without periods, such as \"11 AM\". Use a nonbreaking space between the numeral and \"AM\" or \"PM\"."
+  },
+  {
+   "id": "TW-redhat-style-contractions",
+   "name": "Do not use contractions in Red Hat documentation",
+   "category": [
+    "style",
+    "风格",
+    "正式度"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "A common English contraction",
+    "pattern": "\\b(?:can|could|does|did|do|is|are|was|were|has|have|had|would|should|will|shall|it|that|there|here|what|who|let|you|we|they|I|he|she)(?:n['\\u2019]t|['\\u2019](?:s|re|ve|ll|m|d))\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-contractions",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Write the words out in full (for example, \"can't\" -> \"cannot\")."
+   },
+   "notes": "Expansion is context-dependent (for example, \"it's\" = \"it is\" or \"it has\"), so report only.",
+   "source_text": "Do not use contractions in Red Hat documents. For example, do not use \"can't\", \"don't\", \"won't\", and similar examples. Write out the words in full."
+  },
+  {
+   "id": "TW-redhat-style-eg",
+   "name": "Replace \"e.g.\" with \"for example\"",
+   "category": [
+    "style",
+    "风格",
+    "缩写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "The Latin abbreviation \"e.g.\"",
+    "pattern": "\\be\\.g\\.",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-eg",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "for example"
+   },
+   "source_text": "Take care also with abbreviations; replace \"e.g.\" with \"for example\", and replace \"i.e.\" with \"that is\", and so on."
+  },
+  {
+   "id": "TW-redhat-style-ie",
+   "name": "Replace \"i.e.\" with \"that is\"",
+   "category": [
+    "style",
+    "风格",
+    "缩写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "The Latin abbreviation \"i.e.\"",
+    "pattern": "\\bi\\.e\\.",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-ie",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "that is"
+   },
+   "source_text": "Take care also with abbreviations; replace \"e.g.\" with \"for example\", and replace \"i.e.\" with \"that is\", and so on."
+  },
+  {
+   "id": "TW-redhat-style-revert-back",
+   "name": "Use \"revert\" instead of the redundant \"revert back\"",
+   "category": [
+    "style",
+    "风格",
+    "冗余"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "The redundant phrase \"revert back\"",
+    "pattern": "\\brevert back\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-revert-back",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "revert"
+   },
+   "source_text": "Redundant words might also occur where two words or phrases are used that mean approximately the same thing, such as \"revert back\" versus \"revert\", or that add "
+  },
+  {
+   "id": "TW-redhat-style-it-is-recommended",
+   "name": "Use \"Red Hat recommends\" instead of \"it is recommended\"",
+   "category": [
+    "style",
+    "风格",
+    "推荐语"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "The passive/indirect phrase \"it is recommended\"",
+    "pattern": "\\bit is recommended\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-it-is-recommended",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Rewrite with a direct subject, for example \"Red Hat recommends ...\"."
+   },
+   "source_text": "When making a recommendation, the preferred verbiage is \"Red Hat recommends ...\" instead of the common but indirect \"It is recommended ...\"."
+  },
+  {
+   "id": "TW-redhat-style-filler-words",
+   "name": "Remove redundant filler words (actually, really, simply, basically, essentially, totally, very)",
+   "category": [
+    "style",
+    "风格",
+    "冗余"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "A common filler/intensifier word",
+    "pattern": "\\b(?:actually|really|simply|basically|essentially|totally|very)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-filler-words",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Usually the sentence is stronger with the word removed. Review each occurrence."
+   },
+   "source_text": "Avoid redundant words, such as \"actually\", \"really\", \"simply\", and \"very\". They are typically filler words that add no value to a sentence."
+  },
+  {
+   "id": "TW-redhat-style-allow-anthropomorphism",
+   "name": "Avoid \"allows you to\"; focus on what the user does or use \"enables\"",
+   "category": [
+    "style",
+    "风格",
+    "拟人化"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "The construction \"allow(s) you to\"",
+    "pattern": "\\ballows?\\s+you\\s+to\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-allow-anthropomorphism",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Rephrase around what the user does, or use \"enables you to\". Exception: genuine permission statements."
+   },
+   "source_text": "Except when referring specifically to permission, avoid stating that a product or feature allows the user to do something. ... replace \"allow\" with a different "
+  },
+  {
+   "id": "TW-redhat-style-inclusive-list",
+   "name": "Avoid \"whitelist\"/\"blacklist\"; use allowlist / denylist / blocklist",
+   "category": [
+    "style",
+    "风格",
+    "包容性语言"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "The terms whitelist/blacklist and inflections",
+    "pattern": "\\b(?:white|black)list(?:ed|ing|s)?\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-inclusive-list",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Use \"allowlist\" for whitelist; \"denylist\" or \"blocklist\" for blacklist."
+   },
+   "source_text": "For alternatives, choose words that describe the action ... for example \"allowlist\" instead of \"whitelist\", or \"blocklist\" or \"denylist\" instead of \"blacklist\"."
+  },
+  {
+   "id": "TW-redhat-style-inclusive-slave",
+   "name": "Avoid \"slave\" (and \"master\" paired with it); use inclusive alternatives",
+   "category": [
+    "style",
+    "风格",
+    "包容性语言"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "The term \"slave\" or the pairing \"master/slave\"",
+    "pattern": "\\b(?:slave|master/slave|slave/master)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-inclusive-slave",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Use function-based terms (primary/secondary, controller/worker). \"master\" alone is acceptable; use \"main\" for a default branch."
+   },
+   "notes": "\"master\" is only prohibited when paired with \"slave\"; flagging \"slave\" catches the pairing while avoiding false positives on standalone \"master\".",
+   "source_text": "Do not use \"master\" when it is paired with \"slave\". ... When naming the default branch name for a GitHub repository, use \"main\" instead of \"master\". Use of \"mas"
+  },
+  {
+   "id": "TW-redhat-style-inclusive-gendered",
+   "name": "Avoid gendered \"he/she\" constructions; use singular \"they\"",
+   "category": [
+    "style",
+    "风格",
+    "包容性语言"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "Gendered slash/either constructions",
+    "pattern": "\\b(?:he/she|she/he|he or she|his/her|her/his|him/her|his or her|s/he)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-inclusive-gendered",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Rewrite with the singular \"they\"/\"their\", with \"you\", or reword to avoid the pronoun."
+   },
+   "source_text": "Avoid binary gendered language, such as \"he\" or \"she\", except to refer to a specific named person. Do not use \"he or she\". Instead, use the ungendered \"they\" as"
+  },
+  {
+   "id": "TW-redhat-style-inclusive-sanity",
+   "name": "Avoid \"sanity check\"/\"sanity test\" (neurodiversity bias)",
+   "category": [
+    "style",
+    "风格",
+    "包容性语言"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "The phrases \"sanity check\"/\"sanity test\"",
+    "pattern": "\\bsanity[ -](?:check|test)(?:s|ing|ed)?\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-inclusive-sanity",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Use a descriptive alternative such as \"coherence check\", \"quick check\", or \"confirm that ...\"."
+   },
+   "source_text": "Avoid neurodiversity bias. For example, avoid the terms \"sanity check\" and \"sanity test\", and do not use \"disabled\" to refer to a person."
+  },
+  {
+   "id": "TW-redhat-style-inclusive-titles",
+   "name": "Avoid superlative job-title slang (guru, ninja, rockstar, evangelist)",
+   "category": [
+    "style",
+    "风格",
+    "包容性语言"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "Superlative job-title slang",
+    "pattern": "\\b(?:guru|ninja|rockstar|rock star|evangelist)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-inclusive-titles",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Use a neutral, descriptive job title or role."
+   },
+   "source_text": "Avoid superlatives in job titles and descriptions, especially problematic terms such as \"guru\", \"ninja\", \"rockstar\", or \"evangelist\"."
+  },
+  {
+   "id": "TW-redhat-style-inclusive-man-hours",
+   "name": "Avoid gendered \"man hours\"; use \"person hours\"",
+   "category": [
+    "style",
+    "风格",
+    "包容性语言"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "The phrase \"man hours\"/\"man-hours\"",
+    "pattern": "\\bman[ -]hours?\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-inclusive-man-hours",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Use \"labor hours\" or \"person hours\"."
+   },
+   "source_text": "Thus, instead of using \"man hours\", use \"labor hours\" or \"person hours\"."
+  },
+  {
+   "id": "TW-redhat-style-numeric-date",
+   "name": "Do not use all-numeric dates; write the month as a word",
+   "category": [
+    "style",
+    "风格",
+    "日期"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "An all-numeric slash date such as 9/12/2020",
+    "pattern": "\\b\\d{1,2}/\\d{1,2}/\\d{2,4}\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-numeric-date",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "Write the month as a word (\"1 April 2021\") or use ISO YYYY-MM-DD where space is limited."
+   },
+   "source_text": "Do not use an all-numeric representation for dates. For example, 9/12/2020 means September 12, 2020 in the US but 9 December 2020 in most other countries. Inste",
+   "also_from": [
+    {
+     "file": "mdnen.rules.json",
+     "id": "TW-mdnen-punct-date-numeric-slash",
+     "doc": "Writing style guide - MDN Web Docs.md"
+    }
+   ]
+  },
+  {
+   "id": "TW-redhat-style-four-digit-comma",
+   "name": "Do not use a comma in four-digit numbers",
+   "category": [
+    "style",
+    "风格",
+    "数字"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "A four-digit number written with a thousands comma",
+    "pattern": "(?<!\\d)(\\d),(\\d{3})(?![\\d,])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "redhat.rules.json",
+    "id": "TW-redhat-style-four-digit-comma",
+    "doc": "Red Hat Technical Writing Style Guide.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1$2"
+   },
+   "notes": "Numbers with five or more digits keep their commas; lookarounds prevent matching inside 10,000 or 1,000,000.",
+   "source_text": "Do not use commas in numbers with four digits (use 1000 rather than 1,000)."
+  },
+  {
+   "id": "TW-mdnen-punct-serial-comma",
+   "name": "三项及以上并列用序列逗号(牛津逗号)",
+   "category": [
+    "punctuation",
+    "标点",
+    "逗号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "llm",
+    "description": "三项及以上的并列中,最后一个 and/or 之前应有逗号(序列逗号)。判定需理解句子是否为三项以上并列,故用语义判断。"
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-punct-serial-comma",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "在系列最后一项的连词(and/or)前补一个逗号;两项并列则不加。"
+   },
+   "notes": "难以用正则可靠识别\"三项以上并列\",故用 llm;两项并列(cute and smart)不加逗号,是相反规则。",
+   "source_text": "The serial comma (also known as \"the Oxford comma\") is the comma that appears before the conjunction in a series of three or more items. On MDN Web Docs, we use"
+  },
+  {
+   "id": "TW-mdnen-punct-number-4digit-comma",
+   "name": "四位数不加千位逗号",
+   "category": [
+    "punctuation",
+    "标点",
+    "数字格式"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "四位整数被加了千位逗号(如 4,000),应去掉",
+    "pattern": "(?<!\\d)(\\d),(\\d{3})(?!\\d)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-punct-number-4digit-comma",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1$2"
+   },
+   "notes": "前后负向断言确保只命中恰为四位的分组数字,不误伤 54,000 / 1,234,567 等五位以上分组。",
+   "source_text": "In running text, use commas only in five-digit and larger numbers. Correct: 4000; 54,000. Incorrect: 4,000; 54000."
+  },
+  {
+   "id": "TW-mdnen-punct-number-5digit-comma",
+   "name": "五位及以上数字应加千位逗号",
+   "category": [
+    "punctuation",
+    "标点",
+    "数字格式"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "五位及以上整数未加千位逗号(如 54000)",
+    "pattern": "(?<![\\d,.])\\d{5,}(?![\\d,.])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-punct-number-5digit-comma",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "从右往左每三位插入一个逗号(如 54000 → 54,000);分组需程序处理,且可能命中 ID、像素值、时间戳等非计数数字,故仅报告。"
+   },
+   "notes": "正则仅检测裸露的五位以上整数;是否为需要千位分隔的计数需人工判断(端口号、像素、ID 等应豁免)。",
+   "source_text": "In running text, use commas only in five-digit and larger numbers. Correct: 4000; 54,000. Incorrect: 4,000; 54000."
+  },
+  {
+   "id": "TW-mdnen-punct-decade-apostrophe",
+   "name": "年代不加撇号(1990s 非 1990's)",
+   "category": [
+    "punctuation",
+    "标点",
+    "数字格式"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "年代写法误加撇号(如 1990's / 1920's)",
+    "pattern": "\\b(\\d{1,3}0)'s\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-punct-decade-apostrophe",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1s"
+   },
+   "notes": "针对以 0 结尾的年代数字加 's 的情形;数字所有格(极罕见)可能误伤,但年代/复数用法占绝对多数。",
+   "source_text": "Decades: Use the format \"1990s\". Don't use an apostrophe. Correct: 1920s; Incorrect: 1920's"
+  },
+  {
+   "id": "TW-mdnen-punct-numeral-plural-apostrophe",
+   "name": "数字复数不加撇号(486s 非 486's)",
+   "category": [
+    "punctuation",
+    "标点",
+    "数字格式"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "数字复数误加撇号(如 486's)",
+    "pattern": "\\b(\\d+)'s\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-punct-numeral-plural-apostrophe",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "数字复数直接加 s、去掉撇号(486's → 486s);但数字所有格(如 \"the 486's clock speed\")也呈此形态,需确认是复数而非所有格,故不自动替换。"
+   },
+   "notes": "与年代撇号规则范围重叠(年代那条可自动修);此条更泛且因所有格歧义设为不自动。",
+   "source_text": "Plurals of numerals: Add \"s\". Don't use an apostrophe. Correct: 486s; Incorrect: 486's"
+  },
+  {
+   "id": "TW-mdnen-punct-date-ordinal",
+   "name": "日期不用序数后缀(24 非 24th)",
+   "category": [
+    "punctuation",
+    "标点",
+    "日期格式"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "日期中的日带序数后缀(如 24th, 1906)",
+    "pattern": "\\b(\\d{1,2})(?:st|nd|rd|th)\\b(?=,?\\s+\\d{4}\\b)",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-punct-date-ordinal",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1"
+   },
+   "notes": "仅当序数后紧跟(可选逗号+)四位年份时才去后缀,避免误伤 \"20th century\" 等非日期用法。",
+   "source_text": "For dates (not including dates in code samples), use the format \"January 1, 1900\". Correct: February 24, 1906; Incorrect: February 24th, 1906; 24 February, 1906"
+  },
+  {
+   "id": "TW-mdnen-punct-acronym-no-periods",
+   "name": "缩写/首字母缩略词不加内部点号",
+   "category": [
+    "punctuation",
+    "标点",
+    "缩写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "缩略词写成带点号形式(三段及以上,如 X.U.L.、U.S.A.)",
+    "pattern": "\\b(?:[A-Z]\\.){3,}",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-punct-acronym-no-periods",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "去掉字母间点号并全大写(X.U.L. → XUL);因存在 P.S.、N.B. 等惯例带点写法,统一处理需人工确认,故不自动替换。"
+   },
+   "notes": "限定三段及以上以避开允许带点的两字母缩写 P.S./N.B.;两字母的 U.S.→US 因与之冲突不在自动范围。",
+   "source_text": "Use full capitals and delete periods in all abbreviations and acronyms, including organizations such as \"US\" and \"UN\". Correct: XUL; Incorrect: X.U.L.; Xul"
+  },
+  {
+   "id": "TW-mdnen-punct-plural-abbrev-apostrophe",
+   "name": "缩写复数不加撇号(CD-ROMs 非 CD-ROM's)",
+   "category": [
+    "punctuation",
+    "标点",
+    "缩写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "缩写复数误加撇号(如 CD-ROM's、URL's、API's)",
+    "pattern": "\\b([A-Z]{2,}(?:-[A-Z]+)*)'s\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-punct-plural-abbrev-apostrophe",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "缩写复数直接加 s、去掉撇号(CD-ROM's → CD-ROMs);但缩写所有格(如 \"the API's response\")同形,需确认是复数而非所有格,故不自动替换。"
+   },
+   "notes": "与所有格同形,故不自动;仅报告供人工判断。",
+   "source_text": "For plurals of abbreviations and acronyms, add s. Don't use an apostrophe. Ever. Please. Correct: CD-ROMs; Incorrect: CD-ROM's"
+  },
+  {
+   "id": "TW-mdnen-punct-eg-ie-comma",
+   "name": "e.g./i.e. 后须跟逗号",
+   "category": [
+    "punctuation",
+    "标点",
+    "拉丁缩写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "e.g. 或 i.e. 之后直接接内容而缺逗号(如 \"e.g. Firefox\")",
+    "pattern": "\\b(e\\.g\\.|i\\.e\\.)\\s+(?=[^\\s,])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-punct-eg-ie-comma",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1, "
+   },
+   "notes": "仅当 e.g./i.e. 后为空格且下一个非空字符不是逗号时补 \", \";已写 \"e.g.,\" 者不触发。前提是缩写已含点号(点号形态见 e.g./i.e. 术语规则)。",
+   "source_text": "Use periods in these abbreviations, followed by a comma or other appropriate punctuation. Correct: Web browsers (e.g., Firefox) can be used ...; Incorrect: Web "
+  },
+  {
+   "id": "TW-mdnen-punct-comma-before-that",
+   "name": "限定性从句 that 前不加逗号",
+   "category": [
+    "punctuation",
+    "标点",
+    "逗号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "\"that\" 之前出现逗号(限定性从句不应有逗号)",
+    "pattern": ",\\s+that\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-punct-comma-before-that",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "若 that 引导限定性(restrictive)从句,删去其前逗号;但同位语、\", that is,\"、插入语等语境中的逗号是正确的,需人工判断,故不自动替换。"
+   },
+   "notes": "误报较多(\", that is,\"、句间停顿等),设为建议级、仅报告。",
+   "source_text": "A restrictive clause is usually introduced by \"that\" and should not be preceded by a comma. Correct: \"... a course that includes ...\"; Incorrect: \"... a course,"
+  },
+  {
+   "id": "TW-mdnen-style-heading-sentence-case",
+   "name": "标题/小节用句子式大小写(sentence case)",
+   "category": [
+    "style",
+    "样式",
+    "标题"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "Markdown 标题行疑似用了标题式大小写(首词之外出现连续多个首字母大写的普通词)",
+    "pattern": "^#{2,6}\\s+\\S+(?:\\s+[A-Z][a-z]+){2,}",
+    "flags": "gm",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-style-heading-sentence-case",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改为句子式大小写:仅首词与专有名词首字母大写,其余小写。专有名词序列(如 World Wide Web)属误报,需人工确认。"
+   },
+   "notes": "启发式:首词后出现两个及以上连续 TitleCase 普通词即疑似标题式;专名连写会误报,故仅报告。同规则精神亦适用于链接文本与 slug。",
+   "source_text": "On MDN Web Docs, page titles and section headings should use sentence-style capitalization (only capitalize the first word and proper nouns) rather than headlin"
+  },
+  {
+   "id": "TW-mdnen-style-heading-max-depth",
+   "name": "标题层级不超过 h4(####)",
+   "category": [
+    "style",
+    "样式",
+    "标题"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现 h5 及更深标题(#####+)",
+    "pattern": "^#{5,}\\s",
+    "flags": "gm",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-style-heading-max-depth",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "不使用第四级以下标题;如需更深层级,考虑拆分文章或改用无序列表。"
+   },
+   "notes": "# 仅用于页面标题,正文正文标题从 ## 起;层级跳跃另见相应规则。",
+   "source_text": "Use these markdown heading levels in decreasing order without skipping levels: ##, then ###, and then ####. ## is the highest level allowed because # is reserve"
+  },
+  {
+   "id": "TW-mdnen-style-heading-no-skip",
+   "name": "标题层级不得跳级",
+   "category": [
+    "style",
+    "样式",
+    "标题"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "code",
+    "description": "按文档顺序检查标题层级:下探时一次只能加深一级(如 ## 后不得直接出现 ####,中间需有 ###)。需跨行维护当前层级状态。"
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-style-heading-no-skip",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "在跳级处补齐中间层级,或调整标题深度使层级逐级递减。"
+   },
+   "notes": "需程序按序遍历标题、比较相邻层级差,故为 code 类。",
+   "source_text": "Use these markdown heading levels in decreasing order without skipping levels: ##, then ###, and then ####."
+  },
+  {
+   "id": "TW-mdnen-style-no-bumping-heads",
+   "name": "禁止\"顶头标题\"(标题后紧跟子标题无正文)",
+   "category": [
+    "style",
+    "样式",
+    "标题"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "code",
+    "description": "检查是否存在标题之后未接任何正文即出现下一级子标题的情况(两标题之间无说明文字)。需跨行判断标题之间是否有内容。"
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-style-no-bumping-heads",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "在外层标题与子标题之间补写引导性说明文字。"
+   },
+   "notes": "需跨行检查相邻标题间是否有正文,故为 code 类。",
+   "source_text": "Don't create \"bumping heads\". These are headings followed immediately by a subheading, with no content text in between them."
+  },
+  {
+   "id": "TW-mdnen-style-list-item-punctuation",
+   "name": "列表项标点:整句加句点,短语不加",
+   "category": [
+    "style",
+    "样式",
+    "列表"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "llm",
+    "description": "同一列表内:完整句子的列表项应以句点结尾、短语项不加句点;若有任一项为完整句,则所有项都加句点;并尽量保持全列表统一为句子或统一为短语。需语义判断是否为完整句。"
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-style-list-item-punctuation",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "统一列表项体例:全为整句则每项加句点;全为短语则均不加;混合时以整句为准补齐句点。"
+   },
+   "notes": "判断\"完整句 vs 短语\"需语义分析,故为 llm 类。",
+   "source_text": "Sentences and phrases (i.e., sentence fragments missing a verb or a subject or both) in bulleted lists should include standard punctuation — sentences end with "
+  },
+  {
+   "id": "TW-mdnen-style-descriptive-link-text",
+   "name": "使用描述性链接文本(避免 \"click here\")",
+   "category": [
+    "style",
+    "样式",
+    "链接"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "Markdown 链接文本为 \"click here\"、\"here\"、\"read this article\"、\"this article\"、\"read more\" 等无意义措辞",
+    "pattern": "\\[(?:click\\s+here|here|read\\s+this\\s+article|this\\s+article|read\\s+more)\\]",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-style-descriptive-link-text",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "将链接文本改写为描述目标内容的短语(如\"了解如何排序 flex 项\"),而非\"点此/这里/本文\"。"
+   },
+   "notes": "仅匹配 Markdown 链接的方括号文本部分,机检可行;替换需理解目标语义,故仅报告。",
+   "source_text": "Additionally, avoid using vague link text like \"Click here\" or \"Read this article\". Descriptive link text provides better context for all readers and improves t"
+  },
+  {
+   "id": "TW-mdnen-style-no-directional-references",
+   "name": "避免方位/指向词做引用(above/below 等)",
+   "category": [
+    "style",
+    "样式",
+    "可访问性"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "用\"section/example/code/figure/table… + above/below\"等方位词指代内容",
+    "pattern": "\\b(?:the\\s+)?(?:section|example|code(?:\\s+example)?|figure|table|image|list|snippet|paragraph|diagram)\\s+(?:above|below)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-style-no-directional-references",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用按标题/小节名的描述性指代(如\"参见本页 Accessibility 小节\"),不用 above/below/left/right/here。"
+   },
+   "notes": "限定\"名词+above/below\"以降低误报;left/right/here 等的一般用法过泛,未纳入自动匹配。",
+   "source_text": "Avoid using spatial and directional words, such as \"above\", \"below\", \"left\", \"right\", or \"here\". These terms assume a specific visual layout, which may not appl"
+  },
+  {
+   "id": "TW-mdnen-style-no-violent-idioms",
+   "name": "避免暴力/残忍类比喻习语",
+   "category": [
+    "style",
+    "样式",
+    "包容性语言"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现暴力/残忍类习语(kill two birds with one stone、beating a dead horse、more than one way to skin a cat 等)",
+    "pattern": "\\b(?:kill(?:ing)?\\s+two\\s+birds\\s+with\\s+one\\s+stone|beat(?:ing)?\\s+a\\s+dead\\s+horse|more\\s+than\\s+one\\s+way\\s+to\\s+skin\\s+a\\s+cat)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-style-no-violent-idioms",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用中性表达:如\"solve two problems at once\"、\"belaboring the point\"、\"more than one way to do this\"。"
+   },
+   "notes": "匹配固定习语短语,机检可行;替换措辞依语境而定,故仅报告。",
+   "source_text": "Avoid figurative idioms with depictions of violence or cruelty, which trigger certain audiences and set the wrong tone for documentation. Examples: \"kill two bi"
+  },
+  {
+   "id": "TW-mdnen-style-gender-neutral",
+   "name": "性别无关时用中性语言(单数 they)",
+   "category": [
+    "style",
+    "样式",
+    "包容性语言"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "llm",
+    "description": "当性别与主题无关却使用了 he/his/him 或 she/her 等指定性别代词时,应改用单数 they/them/their,或重写以消除代词。需语义判断\"性别是否无关\"。"
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-style-gender-neutral",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用单数 they/them/their,或将主语改为复数,或重写句子彻底去除代词(MDN 认为去代词最佳)。"
+   },
+   "notes": "需判断性别是否与语境相关(特指某位男性时 he 可用),故为 llm 类。",
+   "source_text": "It is best to use gender-neutral language in any writing where gender is irrelevant to the subject matter. ... The best solution, of course, is to rewrite and e"
+  },
+  {
+   "id": "TW-mdnen-style-keyboard-keys-sentence-case",
+   "name": "键位名用句子式大小写(Enter 非 ENTER)",
+   "category": [
+    "style",
+    "样式",
+    "UI 与键位"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "键位名写成全大写(如 ENTER、SHIFT、ESCAPE);应用句子式大小写(例外:ESC 可缩写 Escape)",
+    "pattern": "\\b(?:ENTER|RETURN|SHIFT|CTRL|CONTROL|ALT|TAB|DELETE|BACKSPACE|SPACE|ESCAPE|OPTION|COMMAND)\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code"
+    ]
+   },
+   "source": {
+    "file": "mdnen.rules.json",
+    "id": "TW-mdnen-style-keyboard-keys-sentence-case",
+    "doc": "Writing style guide - MDN Web Docs.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改为句子式大小写(Enter、Shift、Escape…);\"ESC\" 作为 Escape 的缩写属允许例外,予以保留。"
+   },
+   "notes": "会命中代码常量(如 Key.ENTER、键码宏),故豁免代码区并仅报告;\"ESC\" 已排除在匹配之外。",
+   "source_text": "Keyboard keys should use sentence-style capitalization, not all-caps capitalization. For example, \"Enter\" not \"ENTER\". The only exception is that you can use \"E"
+  },
+  {
+   "id": "TW-mdnzh-punct-latin-abbr-comma",
+   "name": "拉丁缩写:e.g./i.e. 后需跟逗号",
+   "category": [
+    "punctuation",
+    "标点",
+    "拉丁缩写"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "e.g. 或 i.e. 后直接跟单词(缺少逗号),应为 e.g., / i.e.,",
+    "pattern": "(e\\.g\\.|i\\.e\\.) (?=[A-Za-z])",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-punct-latin-abbr-comma",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1, "
+   },
+   "notes": "只在 e.g./i.e. 后接空格加字母(而非标点)时触发,即缺逗号情形;后接其他标点(如右括号)不触发。另注:普通句子中原文要求改用英文等价词(such as / and so on),该语境问题需人工/语义处理,不在本规则内。",
+   "source_text": "你可以在括号内的表达和注释中使用常见的拉丁文缩写（如 etc.、i.e.、e.g.）。在这些缩写中使用句号，后面是逗号或其他适当的标点符号。……正确：Web browsers (e.g., Firefox) can be used ...；错误：Web browsers e.g. Firefox can be used"
+  },
+  {
+   "id": "TW-mdnzh-punct-acronym-no-periods",
+   "name": "首字母缩写:全大写不加句点(XUL 非 X.U.L.)",
+   "category": [
+    "punctuation",
+    "标点",
+    "缩写句点"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "全大写首字母缩写中夹带句点(如 X.U.L.、U.S.),应去除句点",
+    "pattern": "\\b(?:[A-Z]\\.){2,}",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-punct-acronym-no-periods",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "去除大写首字母缩写内部及结尾的句点(如 X.U.L. → XUL、U.S. → US)。替换需移除可变数量的句点,非单次正则替换可完成,故标记为需处理;另可能误伤人名首字母(如 J.R.R.),需人工确认。"
+   },
+   "notes": "pattern 要求连续两个及以上\"大写字母+句点\",故不匹配小写拉丁缩写 e.g./i.e.,也不匹配列表序号 A.。人名首字母缩写为潜在误报,故 auto=false。",
+   "source_text": "在这两种缩写中（包括国家和组织的缩写，如“US”、“UN”），请使用全大写且不要添加句号。……正确：XUL；错误：X.U.L.; Xul"
+  },
+  {
+   "id": "TW-mdnzh-style-decade-no-apostrophe",
+   "name": "数字:年代不加撇号(1990s 非 1990's)",
+   "category": [
+    "style",
+    "数字",
+    "年代"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "四位年代数字后误加撇号(如 1990's),应为 1990s",
+    "pattern": "\\b(\\d{3}0)'s\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-style-decade-no-apostrophe",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1s"
+   },
+   "notes": "仅匹配四位、以 0 结尾的年代 + 直撇号 's;弯撇号 ’ 变体与两位写法(90's)未覆盖。以 0 结尾的限定使其与非年代数字复数(如 486's)区分开。",
+   "source_text": "请使用“1990s”这种形式来表示年代，但不要使用撇号：……正确：1920s；错误：1920's"
+  },
+  {
+   "id": "TW-mdnzh-style-numeral-plural-no-apostrophe",
+   "name": "数字:数词复数不加撇号(486s 非 486's)",
+   "category": [
+    "style",
+    "数字",
+    "复数"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "数词复数误加撇号(如 486's),应为 486s",
+    "pattern": "\\b(\\d*[1-9])'s\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-style-numeral-plural-no-apostrophe",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "数词复数直接加 s,不加撇号(486's → 486s)。但 's 也可能是所有格(the 486's price),正则无法区分复数与所有格,故仅报告不自动替换。"
+   },
+   "notes": "pattern 限定末位为 1-9,避开以 0 结尾的年代(由 decade 规则自动处理)。复数与所有格歧义使 auto=false。",
+   "source_text": "数词的复数直接在后面加“s”，同样不要使用撇号：……正确：486s；错误：486's"
+  },
+  {
+   "id": "TW-mdnzh-style-4digit-no-comma",
+   "name": "数字:四位数不加千分位逗号(4000 非 4,000)",
+   "category": [
+    "style",
+    "数字",
+    "千分位"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "四位数字使用了千分位逗号(如 4,000),应写作 4000",
+    "pattern": "\\b(\\d),(\\d{3})\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-style-4digit-no-comma",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1$2"
+   },
+   "notes": "\\b 锚定使其只匹配恰好四位的\"X,XXX\",不会命中 54,000 内部。财务/统计表格中千分位可能为正当排版,故 exclude table。原文规定 5 位及以上才用逗号。",
+   "source_text": "应该仅在数字的位数大于等于 5 位时才使用逗号分隔符：……正确：4000、54,000；错误：4,000、54000"
+  },
+  {
+   "id": "TW-mdnzh-style-5digit-needs-comma",
+   "name": "数字:五位及以上应加千分位逗号(54,000 非 54000)",
+   "category": [
+    "style",
+    "数字",
+    "千分位"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "regex",
+    "description": "五位及以上无分隔的整数(如 54000),按规范应加千分位逗号",
+    "pattern": "\\b\\d{5,}\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target",
+     "table"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-style-5digit-needs-comma",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "五位及以上数字加千分位逗号(54000 → 54,000)。误报率高:ID、端口号、像素值、时间戳、哈希、版本号等长数字不应加逗号,故仅作建议,须人工判断。"
+   },
+   "notes": "该检查噪声大(大量长数字并非计数值),故 severity=suggestion、auto=false,并排除代码/URL/表格。",
+   "source_text": "应该仅在数字的位数大于等于 5 位时才使用逗号分隔符：……正确：4000、54,000；错误：4,000、54000"
+  },
+  {
+   "id": "TW-mdnzh-style-date-no-ordinal",
+   "name": "日期:月份日不加序数后缀(January 1 非 January 1st)",
+   "category": [
+    "style",
+    "数字",
+    "日期"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "英文日期中月份后的日带有序数后缀(如 January 1st、February 24th),应去掉 st/nd/rd/th",
+    "pattern": "(January|February|March|April|May|June|July|August|September|October|November|December) (\\d{1,2})(?:st|nd|rd|th)\\b",
+    "flags": "g",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-style-date-no-ordinal",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "fix": {
+    "auto": true,
+    "replacement": "$1 $2"
+   },
+   "notes": "仅处理\"完整月份名 + 日 + 序数后缀\"的安全情形;其他日期格式问题(如 24/02/1906、24 February)需人工。原文要求日期用 \"January 1, 1990\" 或 \"YYYY/MM/DD\" 格式。",
+   "source_text": "请用“January 1, 1990”这样的形式来表达日期（不包括代码示例中的日期）。……正确：February 24, 1906；错误：February 24th, 1906、24 February, 1906、24/02/1906"
+  },
+  {
+   "id": "TW-mdnzh-style-oxford-comma",
+   "name": "标点:三项以上列表使用牛津逗号",
+   "category": [
+    "style",
+    "标点",
+    "逗号"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "llm",
+    "description": "三个或更多并列项的系列,在末项前的连词(and/or)之前应有逗号(牛津逗号);需判断是否为三项以上列表,且两项列表不应加此逗号,故需语义判断。"
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-style-oxford-comma",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "在三项以上系列的末尾连词 and/or 前补逗号(trains, planes and automobiles → trains, planes, and automobiles)。注意:仅含两项的列表不得在 and/or 前加逗号(原文明确)。可靠识别列表边界需语义分析,故不自动替换。"
+   },
+   "notes": "MDN 强制使用牛津逗号,但自动识别\"三项以上\"与\"两项\"列表(两项不加逗号)不可靠,故 check.type=llm、auto=false、severity=suggestion。",
+   "source_text": "串行逗号（也称为“牛津逗号”）是指在三个或更多项目的系列中出现在连词前的逗号。在 MDN Web 文档上，我们使用串行逗号。……正确：I will travel on trains, planes, and automobiles.；错误：I will travel on trains, planes and auto"
+  },
+  {
+   "id": "TW-mdnzh-style-element-not-tag",
+   "name": "术语:HTML/XML 元素称 element 而非 tag",
+   "category": [
+    "style",
+    "术语",
+    "用词"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "llm",
+    "description": "把 HTML/XML 元素称为 tag(如 span tag),应改称 element(如 <span> element);需判断 tag 是否指代元素,因 tag 在 git tag、meta 标签、tag 属性等语境中为正当用法。"
+   },
+   "source": {
+    "file": "mdnzh.rules.json",
+    "id": "TW-mdnzh-style-element-not-tag",
+    "doc": "文档写作规范 - MDN Web 文档项目.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "指 HTML/XML 元素时把 tag 改为 element,并将元素名以尖括号 <> 与 code 样式呈现。tag 在其他语境(版本控制 tag、标签属性等)正当,需语义判断,故不自动替换。"
+   },
+   "notes": "\"tag\" 词义多样,纯正则易误报,故 check.type=llm、auto=false。原文另要求元素名加尖括号并用 code 样式。",
+   "source_text": "请使用“element”来表示 HTML 和 XML 元素，不要使用“tag”。……正确：<span> element；错误：span tag"
+  },
+  {
+   "id": "TW-msbias-term-chairman",
+   "name": "包容性用语:chairman 改用 chair / moderator",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "出现性别限定词 chairman/chairmen,建议改用 chair 或 moderator",
+    "pattern": "\\bchairm[ae]n\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-chairman",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "chair",
+    "wrong_variants": [
+     "chairman",
+     "chairmen"
+    ],
+    "match_pattern": "\\bchairm[ae]n\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用性别中立词:chair 或 moderator(依语境择一)。直接引语、作品标题、或性别确有相关时可保留原词。"
+   },
+   "notes": "wrong_variants 含复数 chairmen。gendered 词在直接引语、作品标题、性别相关讨论中可豁免(见文末 real-person/quotation 例外)。Chairman 作正式头衔或专名一部分时需人工判断。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-man-mankind",
+   "name": "包容性用语:man / mankind 改用 humanity / people / humankind",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "泛指全人类时使用 man / mankind,建议改用 humanity、people 或 humankind",
+    "pattern": "\\b(?:mankind|man)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-man-mankind",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "humanity",
+    "wrong_variants": [
+     "man",
+     "mankind"
+    ],
+    "match_pattern": "\\b(?:mankind|man)\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "泛指人类时改用 humanity / people / humankind。指具体某位男性时不替换。"
+   },
+   "notes": "'mankind' 高置信;独立的 'man' 误报极高(指具体男性、Isle of Man、姓氏、句首 Man 均非违规,仅泛指人类时才需替换),故 auto=false 交人工复核。'humankind' 因词首 human 不含词边界 man,不会被误匹配。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-mans",
+   "name": "包容性用语:动词 mans 改用 operates / staffs",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "动词 mans(如 mans the desk),建议改用 operates 或 staffs",
+    "pattern": "\\bmans\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-mans",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "operates",
+    "wrong_variants": [
+     "mans"
+    ],
+    "match_pattern": "\\bmans\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用中立动词 operates 或 staffs(依语境择一)。"
+   },
+   "notes": "'mans' 作动词时替换;可能与专名或其他用法冲突,人工确认。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-salesman",
+   "name": "包容性用语:salesman 改用 sales representative",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "性别限定词 salesman/salesmen,建议改用 sales representative",
+    "pattern": "\\bsalesm[ae]n\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-salesman",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "sales representative",
+    "wrong_variants": [
+     "salesman",
+     "salesmen"
+    ],
+    "match_pattern": "\\bsalesm[ae]n\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用 sales representative。直接引语、作品标题等语境可保留。"
+   },
+   "notes": "wrong_variants 含复数 salesmen。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-manmade",
+   "name": "包容性用语:manmade 改用 synthetic / manufactured",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "manmade / man-made / man made,建议改用 synthetic 或 manufactured",
+    "pattern": "\\bman[\\s-]?made\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-manmade",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "synthetic",
+    "wrong_variants": [
+     "manmade",
+     "man-made",
+     "man made"
+    ],
+    "match_pattern": "\\bman[\\s-]?made\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用 synthetic 或 manufactured(依语境择一)。"
+   },
+   "notes": "覆盖连写、连字符、空格三种拼法。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-manpower",
+   "name": "包容性用语:manpower 改用 workforce / staff / personnel",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "性别中立词汇"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "manpower / man power,建议改用 workforce、staff 或 personnel",
+    "pattern": "\\bman[\\s-]?power\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-manpower",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "workforce",
+    "wrong_variants": [
+     "manpower",
+     "man power"
+    ],
+    "match_pattern": "\\bman[\\s-]?power\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用 workforce / staff / personnel(依语境择一)。"
+   },
+   "notes": "注意专有产品名 ManpowerGroup 等应经 exclude 或人工豁免。",
+   "source_text": "Use gender-neutral alternatives for common terms."
+  },
+  {
+   "id": "TW-msbias-term-master-slave",
+   "name": "去偏见术语:master/slave 改用 primary/subordinate",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "去军事化/去偏见术语"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "master/slave 配对术语,或单独出现的 slave,建议改用 primary/subordinate",
+    "pattern": "\\b(?:master[\\s/-]?slave|slave)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-master-slave",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "primary/subordinate",
+    "wrong_variants": [
+     "master/slave",
+     "master-slave",
+     "master slave",
+     "slave"
+    ],
+    "match_pattern": "\\b(?:master[\\s/-]?slave|slave)\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用 primary/subordinate(或按技术语境用 primary/replica、leader/follower)。单独的 slave 建议改 subordinate/replica。"
+   },
+   "notes": "误报风险高:代码/URL 中的 master(git master、master key、master branch)刻意不进匹配,只匹配 master/slave 配对与独立 slave。exclude code_block/inline_code/url 关键。",
+   "source_text": "Don't use terms that may carry unconscious racial bias or terms associated with military actions, politics, or historical events and eras."
+  },
+  {
+   "id": "TW-msbias-term-dmz",
+   "name": "去军事化术语:demilitarized zone (DMZ) 改用 perimeter network",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "去军事化/去偏见术语"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "term",
+    "description": "网络术语 demilitarized zone / DMZ,建议改用 perimeter network",
+    "pattern": "\\b(?:demilitari[sz]ed zone|DMZ)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-dmz",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "perimeter network",
+    "wrong_variants": [
+     "demilitarized zone",
+     "demilitarised zone",
+     "DMZ"
+    ],
+    "match_pattern": "\\b(?:demilitari[sz]ed zone|DMZ)\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "网络语境改用 perimeter network。"
+   },
+   "notes": "仅网络术语义替换;地理政治语境(如 Korean DMZ)非本规则对象,需人工判断。gi 下 dmz/Dmz 亦命中。",
+   "source_text": "Don't use terms that may carry unconscious racial bias or terms associated with military actions, politics, or historical events and eras."
+  },
+  {
+   "id": "TW-msbias-term-hang",
+   "name": "去偏见术语:hang 改用 stop responding",
+   "category": [
+    "terminology",
+    "包容性用语",
+    "去军事化/去偏见术语"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "suggestion",
+   "check": {
+    "type": "term",
+    "description": "描述程序/系统无响应时用 hang,建议改用 stop responding",
+    "pattern": "\\b(?:hang|hangs|hanging|hung)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-term-hang",
+    "doc": "Bias-free communication.md"
+   },
+   "term": {
+    "canonical": "stop responding",
+    "wrong_variants": [
+     "hang",
+     "hangs",
+     "hanging",
+     "hung"
+    ],
+    "match_pattern": "\\b(?:hang|hangs|hanging|hung)\\b",
+    "case_sensitive": false
+   },
+   "fix": {
+    "auto": false,
+    "description": "描述软件无响应时改用 stop responding / stops responding / stopped responding;其余日常义不替换。"
+   },
+   "notes": "误报极高(hang up、hang on、日常悬挂义均非违规),故 severity=suggestion、auto=false,仅在描述软件无响应时替换。",
+   "source_text": "Don't use terms that may carry unconscious racial bias or terms associated with military actions, politics, or historical events and eras."
+  },
+  {
+   "id": "TW-msbias-style-he-she",
+   "name": "避免 he/she、s/he 等双性别并列写法",
+   "category": [
+    "style",
+    "包容性用语",
+    "代词"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现 he/she、s/he、he or she、his or her 等双性别并列构造",
+    "pattern": "\\b(?:s/he|he/she|she/he|his/her|him/her|he or she|his or her)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-style-he-she",
+    "doc": "Bias-free communication.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改写:优先第二人称 you、复数 they/their/them,或改用角色名词(reader、customer 等);单数 they 作兜底。"
+   },
+   "notes": "he/she 与 s/he 有明确原文依据;'his or her'/'he or she' 依据文中示例行(…dial his or her phone number → …dial their phone number)。exclude URL/code 防误伤路径中的 s/he 之类。",
+   "source_text": "Don't use constructions like *he/she* and *s/he.*"
+  },
+  {
+   "id": "TW-msbias-style-spirit-animal",
+   "name": "避免俚语/文化挪用词,如 spirit animal",
+   "category": [
+    "style",
+    "包容性用语",
+    "俚语与文化挪用"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现俚语 spirit animal(可能构成文化挪用)",
+    "pattern": "\\bspirit animal\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-style-spirit-animal",
+    "doc": "Bias-free communication.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "删除或改写为直白表达(如 favorite、inspiration),避免俚语与文化挪用。"
+   },
+   "notes": "原文仅举 spirit animal 为例;泛化的'俚语'需语义判断,本规则只精确匹配该示例词。",
+   "source_text": "Don't use slang, especially if it could be considered cultural appropriation, such as *spirit animal.*"
+  },
+  {
+   "id": "TW-msbias-style-profanity",
+   "name": "避免粗俗/贬损词,如 pimp、bitch",
+   "category": [
+    "style",
+    "包容性用语",
+    "粗俗与贬损词"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现粗俗或贬损词 pimp / bitch",
+    "pattern": "\\b(?:pimp|bitch)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-style-profanity",
+    "doc": "Bias-free communication.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "删除或改写为中性表达。"
+   },
+   "notes": "原文示例为 pimp、bitch;直接引语、作品标题等语境需人工判断。",
+   "source_text": "Don't use profane or derogatory terms, such as *pimp* or *bitch.*"
+  },
+  {
+   "id": "TW-msbias-style-pity-words",
+   "name": "避免带怜悯色彩的表述,如 stricken with、suffering from",
+   "category": [
+    "style",
+    "包容性用语",
+    "以人为本(残障)"
+   ],
+   "layer": "genre",
+   "strength": "should",
+   "severity": "warning",
+   "check": {
+    "type": "regex",
+    "description": "出现带怜悯色彩的表述 stricken with / suffering from",
+    "pattern": "\\b(?:stricken with|suffering from)\\b",
+    "flags": "gi",
+    "python_ok": true,
+    "exclude_scopes": [
+     "code_block",
+     "inline_code",
+     "url",
+     "link_target"
+    ]
+   },
+   "source": {
+    "file": "msbias.rules.json",
+    "id": "TW-msbias-style-pity-words",
+    "doc": "Bias-free communication.md"
+   },
+   "fix": {
+    "auto": false,
+    "description": "改用以人为本、中性的表述(如 who has… / who is…),聚焦于人而非残障。"
+   },
+   "notes": "配合'以人为本'(focus on people, not disabilities)原则;仅在描述残障语境替换。",
+   "source_text": "Don't use words that imply pity, such as *stricken with* or *suffering from.*"
+  }
+ ]
+}
