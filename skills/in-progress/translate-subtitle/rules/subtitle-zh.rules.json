@@ -1,0 +1,599 @@
+{
+  "source": "「翻译原则」提示词 · 视频字幕翻译部分(整理稿见 drafts/翻译原则.md;网页翻译部分未入库)。source_text 逐字摘自提示词;正/反示例除注明取自原文外,均为整理时补写,仅用于说明门禁判定。",
+  "version": "0.1.0",
+  "extracted_at": "2026-07-15",
+  "gate_types": {
+    "regex": "正则可直接扫描字幕文本判定",
+    "code": "需程序逻辑:计数、时间轴运算、跨条比对、结构校验",
+    "nlp": "需分词/词性标注/句法分析",
+    "llm": "语义级门禁,需模型或人工判断,description 即判定标准"
+  },
+  "rules": [
+    {
+      "id": "SUB-goal-priority",
+      "name": "五项优先:意思准确、逻辑成立、情绪正确、中文自然、可读性",
+      "category": ["总则"],
+      "source_text": "你需要根据具体语言环境、地区文化、人物身份和作品背景理解原文，而不是套用固定翻译模式。你的目标不是逐字翻译，而是在充分理解剧情、人物关系、上下文逻辑、镜头语言、情绪状态和场景氛围的基础上，输出自然、准确、适合字幕阅读的译文。你必须始终优先保证意思准确、逻辑成立、情绪正确、中文自然以及字幕可读性良好。你需要像真正的专业字幕翻译一样工作，而不是机械直译。",
+      "gates": {
+        "positive": [
+          { "type": "llm", "description": "译文同时满足:意思准确、逻辑成立、情绪正确、中文自然、字幕可读性良好;各要求冲突时以这五项为最高取舍标准" }
+        ],
+        "negative": [
+          { "type": "llm", "description": "逐字机械直译,或不顾语言环境/地区文化/人物身份/作品背景套用固定翻译模式" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "总原则,统摄 SUB-* 各细则。",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-context-why",
+      "name": "先理解一句话为什么出现",
+      "category": ["理解与考证", "语境判断"],
+      "source_text": "翻译时必须优先理解一句话为什么会在这里出现。需要结合当前场景、角色关系、人物状态、前后文、画面表现、剧情推进以及作品设定来判断真实含义。如果翻译后发现逻辑不通、人物情绪不对、与画面不符、或者不像中文母语者会说的话，大概率说明你理解错了原文。",
+      "gates": {
+        "positive": [
+          { "type": "llm", "description": "每句译文与场景、角色关系、人物状态、前后文、画面、剧情推进及作品设定相符,能解释这句话为何出现在此处" }
+        ],
+        "negative": [
+          { "type": "llm", "description": "译文逻辑不通、人物情绪不对、与画面不符,或不像中文母语者会说的话(判定为理解错误的信号)" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-context-research",
+      "name": "不懂先考证,不想当然硬翻",
+      "category": ["理解与考证", "主动考证"],
+      "source_text": "遇到不理解的内容时，应主动结合前后内容、原作设定、采访资料、维基百科、名词资料以及对应语言地区的文化背景进行推断和确认，而不是想当然硬翻。",
+      "gates": {
+        "positive": [
+          { "type": "llm", "description": "不理解的内容有考证依据(前后内容/原作设定/采访资料/维基百科/名词资料/地区文化背景)支撑译法" }
+        ],
+        "negative": [
+          { "type": "llm", "description": "对未理解内容想当然硬翻,未做任何推断确认" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-context-no-fabrication",
+      "name": "无法确认必须标注,不编造含义",
+      "category": ["理解与考证", "不确定处理"],
+      "source_text": "如果仍无法确认，应明确标注不确定，而不是编造含义。",
+      "gates": {
+        "positive": [
+          { "type": "regex", "description": "存在无法确认的内容时,译文带有明确的不确定标注", "pattern": "※", "confidence": "heuristic" }
+        ],
+        "negative": [
+          { "type": "llm", "description": "把无法确认的内容编造成确定含义输出" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "标注格式见 SUB-output-uncertain-marker(「※ 此处含义待确认」)。",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-natural-native",
+      "name": "像真实中文母语者说的话",
+      "category": ["中文自然度", "母语感"],
+      "source_text": "译文必须像真实中文母语者会说的话，避免翻译腔、逐字对应、生硬套句、明显书面语以及不自然的外语语序。",
+      "gates": {
+        "positive": [
+          { "type": "llm", "description": "译文读起来像母语者在该情境下自然说出的话" }
+        ],
+        "negative": [
+          { "type": "llm", "description": "出现翻译腔、逐字对应、生硬套句、明显书面语或不自然的外语语序" }
+        ]
+      },
+      "positive_examples": ["今晚真美"],
+      "negative_examples": ["这是一个如此美妙的夜晚"],
+      "notes": "",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-natural-restructure",
+      "name": "允许重组:调整语序、补足省略、地道表达优先",
+      "category": ["中文自然度", "重组表达"],
+      "source_text": "允许在不改变原意的前提下适当调整语序、补充中文语境下必须存在但原文省略的信息，并使用更符合中文阅读习惯的表达方式重组句子。应优先使用自然、常见、地道的中文表达，而不是照搬原句结构。",
+      "gates": {
+        "positive": [
+          { "type": "llm", "description": "在不改变原意前提下调整语序/补足中文语境必需信息/按中文阅读习惯重组,表达自然常见地道" }
+        ],
+        "negative": [
+          { "type": "llm", "description": "照搬原句结构导致不自然,或重组时改变了原意" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "should", "weight": 0.9 }
+    },
+    {
+      "id": "SUB-natural-region",
+      "name": "区分语言地区差异,不错误泛化",
+      "category": ["中文自然度", "地区差异"],
+      "source_text": "翻译时必须注意不同语言和地区的表达习惯差异，例如英式英语与美式英语在俚语、幽默、语气、社会文化背景和用词上的区别，避免将地区化表达错误泛化。",
+      "gates": {
+        "negative": [
+          { "type": "llm", "description": "将地区化表达错误泛化,如把英式俚语按美式含义翻译、忽略地区幽默与文化背景差异" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-natural-slang",
+      "name": "口音/俚语/梗/双关按真实语义翻,不按字面",
+      "category": ["中文自然度", "俚语与梗"],
+      "source_text": "遇到口音、俚语、网络梗、双关、地方文化引用或特定时代语境时，应优先理解真实语义和情绪，而不是表面字面意思。",
+      "gates": {
+        "negative": [
+          { "type": "llm", "description": "口音、俚语、网络梗、双关、文化引用或时代语境被按表面字面意思直译" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "与 SUB-tone-wordplay(双关的译文呈现)互补:本条管理解,彼条管输出效果。",
+      "strength": { "level": "should", "weight": 0.9 }
+    },
+    {
+      "id": "SUB-tone-preserve",
+      "name": "准确保留角色语气与情绪",
+      "category": ["语气与情绪", "语气保留"],
+      "source_text": "需要准确保留角色语气与情绪，包括犹豫、欲言又止、愤怒、调侃、无奈、坚定、冷淡、幽默、讽刺、双关、隐喻等内容。",
+      "gates": {
+        "positive": [
+          { "type": "llm", "description": "译文保留原文的语气与情绪层次(犹豫/欲言又止/愤怒/调侃/无奈/坚定/冷淡/幽默/讽刺/双关/隐喻等)" }
+        ],
+        "negative": [
+          { "type": "llm", "description": "语气被拉平:如调侃翻成平铺陈述、犹豫翻成果断、讽刺丢失" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-tone-subtext",
+      "name": "用句式手段体现潜台词",
+      "category": ["语气与情绪", "潜台词"],
+      "source_text": "必要时可以通过把字句、被字句、断句、留白、语序变化等方式体现潜台词和隐藏信息，而不是机械对应原文语法结构。",
+      "gates": {
+        "positive": [
+          { "type": "llm", "description": "潜台词/隐藏信息通过把字句、被字句、断句、留白、语序变化等中文手段得到体现" }
+        ],
+        "negative": [
+          { "type": "llm", "description": "机械对应原文语法结构,导致潜台词丢失" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "should", "weight": 0.7 }
+    },
+    {
+      "id": "SUB-tone-wordplay",
+      "name": "双关/neta/隐喻尽量保留,不能兼顾时保剧情核心",
+      "category": ["语气与情绪", "双关与隐喻"],
+      "source_text": "如果原文存在双关、neta、隐喻或多重含义，应尽量在译文中保留类似效果。如果无法同时兼顾，应优先保留最符合剧情核心的含义。",
+      "gates": {
+        "positive": [
+          { "type": "llm", "description": "双关/neta/隐喻/多重含义在译文中有对应效果;无法兼顾时保留了最符合剧情核心的一层含义" }
+        ],
+        "negative": [
+          { "type": "llm", "description": "多重含义只译了表层且丢掉剧情核心含义" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "确实无法在译文内保留时,可配合 SUB-tone-annotation 加注。",
+      "strength": { "level": "should", "weight": 0.9 }
+    },
+    {
+      "id": "SUB-tone-annotation",
+      "name": "注释简短,不超过 40 字",
+      "category": ["语气与情绪", "注释"],
+      "source_text": "必要时允许增加简短注释，但注释不宜超过 40 字。",
+      "gates": {
+        "negative": [
+          { "type": "code", "description": "单条注释文本超过 40 字" },
+          { "type": "llm", "description": "非必要地添加注释(能在译文内解决却外挂注释)" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "should", "weight": 0.8 }
+    },
+    {
+      "id": "SUB-rhythm-one-message",
+      "name": "每行只表达一个核心信息",
+      "category": ["节奏与断句", "信息密度"],
+      "source_text": "字幕必须考虑阅读节奏与观看体验。每行原则上只表达一个核心信息",
+      "gates": {
+        "negative": [
+          { "type": "llm", "description": "单行字幕塞入两个以上核心信息" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "should", "weight": 0.8 }
+    },
+    {
+      "id": "SUB-rhythm-line-length",
+      "name": "单行最长不超过 25 个汉字",
+      "category": ["节奏与断句", "行长"],
+      "source_text": "最长不超过 25 个汉字",
+      "gates": {
+        "negative": [
+          { "type": "code", "description": "按汉字计数,单行字幕超过 25 个汉字", "pattern": "^.{26,}$", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "pattern 仅作粗线索(未区分汉字与西文/空格),精确判定需 code 按汉字计数。",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-rhythm-density",
+      "name": "字速 5 字/秒以内,一般不超 7 字/秒",
+      "category": ["节奏与断句", "字速"],
+      "source_text": "文本密度尽量控制在 5 字/秒以内，大多数情况下不要超过 7 字/秒。",
+      "gates": {
+        "positive": [
+          { "type": "code", "description": "按时间轴计算每条字幕的字数/显示时长 ≤5 字/秒" }
+        ],
+        "negative": [
+          { "type": "code", "description": "字速超过 7 字/秒(仅极少数情况可豁免,需复核)", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "需要时间轴数据;双阈值——5 字/秒是目标线,7 字/秒是硬线。",
+      "strength": { "level": "should", "weight": 0.8 }
+    },
+    {
+      "id": "SUB-rhythm-short-sentence",
+      "name": "句子不过长,优先短句",
+      "category": ["节奏与断句", "句长"],
+      "source_text": "句子不要过长，应优先短句。",
+      "gates": {
+        "negative": [
+          { "type": "nlp", "description": "出现可拆分而未拆分的长复句" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "should", "weight": 0.9 }
+    },
+    {
+      "id": "SUB-rhythm-cue-cut",
+      "name": "断句结合镜头、停顿、说话人与情绪节奏",
+      "category": ["节奏与断句", "断句依据"],
+      "source_text": "断句必须结合镜头切换、角色停顿、说话人变化和情绪节奏处理。",
+      "gates": {
+        "negative": [
+          { "type": "llm", "description": "断句跨越镜头切换/角色停顿/说话人变化,或与情绪节奏脱节" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "需对照视频画面/时间轴信息判定。",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-rhythm-speaker-split",
+      "name": "换人必换行,多人台词不同句,间隔远不合并",
+      "category": ["节奏与断句", "说话人切分"],
+      "source_text": "换人说话必须换行，多人台词不可放在同一句中，也不要把时间间隔很长的内容硬放在同一句里。",
+      "gates": {
+        "negative": [
+          { "type": "code", "description": "同一条字幕内包含两名以上说话人的台词", "confidence": "heuristic" },
+          { "type": "code", "description": "同一条字幕合并了时间间隔明显的两段内容", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-diction-word-order",
+      "name": "中文语序与中文逻辑,不随原文语序",
+      "category": ["中文语序与用词", "语序"],
+      "source_text": "翻译后的中文应符合中文语序和中文逻辑，不要被原文语序影响。",
+      "gates": {
+        "negative": [
+          { "type": "llm", "description": "语序追随原文,如状语生硬后置、定语从句直译成超长前置定语" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-diction-de-stacking",
+      "name": "避免「xx 的 xx 的 xx」堆叠",
+      "category": ["中文语序与用词", "的字堆叠"],
+      "source_text": "避免出现大量「xx 的 xx 的 xx」这类生硬结构，可根据情况省略弱修饰、调整句法，或使用更自然的表达方式。",
+      "gates": {
+        "negative": [
+          { "type": "regex", "description": "一句内出现三个及以上「的」的堆叠修饰", "pattern": "的[^的\\n]{1,8}的[^的\\n]{1,8}的", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": ["那个穿红裙子的长发女孩"],
+      "negative_examples": ["那个穿着红色的连衣裙的长头发的女孩"],
+      "notes": "",
+      "strength": { "level": "should", "weight": 0.8 }
+    },
+    {
+      "id": "SUB-diction-bookish",
+      "name": "减少「进行/对于/关于」等书面表达",
+      "category": ["中文语序与用词", "书面表达"],
+      "source_text": "尽量减少「进行 xx」「对于 xx」「关于 xx」等书面表达，避免冗余和翻译腔。",
+      "gates": {
+        "negative": [
+          { "type": "regex", "description": "台词中出现「进行 xx」「对于 xx」「关于 xx」式书面表达", "pattern": "进行[一-鿿]{1,4}|对于|关于", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": ["这件事我们得聊聊"],
+      "negative_examples": ["我们需要对于这件事进行讨论"],
+      "notes": "屏幕字(公告、告示类)中的书面表达可豁免。",
+      "strength": { "level": "should", "weight": 0.8 }
+    },
+    {
+      "id": "SUB-diction-interjection",
+      "name": "少用「啊、哈、哦、哎」等语气词",
+      "category": ["中文语序与用词", "语气词"],
+      "source_text": "少使用「啊、哈、哦、哎」等语气词，除非人物情绪确实需要体现。",
+      "gates": {
+        "negative": [
+          { "type": "regex", "description": "语气词出现且非情绪必需(命中后需复核该处情绪)", "pattern": "[啊哈哦哎]", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "人物情绪确实需要体现时豁免。",
+      "strength": { "level": "should", "weight": 0.7 }
+    },
+    {
+      "id": "SUB-punct-minimal",
+      "name": "少用标点,靠换行与节奏控制阅读感",
+      "category": ["标点符号", "总量控制"],
+      "source_text": "字幕中尽量减少标点符号的使用，通常通过换行与节奏控制阅读感。除屏幕字外，一般不要频繁使用逗号和句号。",
+      "gates": {
+        "negative": [
+          { "type": "code", "description": "非屏幕字字幕中逗号/句号出现频繁(如单条 ≥2 个)", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "屏幕字豁免。",
+      "strength": { "level": "should", "weight": 0.8 }
+    },
+    {
+      "id": "SUB-punct-no-terminal",
+      "name": "译文不出现句号、逗号或其他句末标点",
+      "category": ["标点符号", "句末标点"],
+      "source_text": "译文中不应该出现句号，逗号或其他句末标点",
+      "gates": {
+        "negative": [
+          { "type": "regex", "description": "译文台词中出现全角句号或逗号", "pattern": "[。，]", "confidence": "exact" },
+          { "type": "regex", "description": "译文台词中出现半角句点或逗号(排除数字/西文内的用法)", "pattern": "(?<![0-9A-Za-z])[,.](?![0-9A-Za-z])", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": ["我回来了"],
+      "negative_examples": ["我回来了。"],
+      "notes": "源文以加粗强调。既定例外(源文并存,未调和):①双语字幕以「。」作两语分隔符(SUB-bilingual-format);②屏幕字允许常规标点(SUB-punct-minimal)。问号、感叹号不属本条禁用范围,见 SUB-punct-interrobang。",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-punct-quotes",
+      "name": "引号统一「」或『』",
+      "category": ["标点符号", "引号"],
+      "source_text": "引号统一使用「」或『』。",
+      "gates": {
+        "negative": [
+          { "type": "regex", "description": "译文使用弯引号或直引号而非「」『』", "pattern": "[“”‘’\"]", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": ["他说了句「随便你」"],
+      "negative_examples": ["他说了句“随便你”"],
+      "notes": "双语字幕中原文一侧的英文引号/撇号豁免,故 pattern 标 heuristic。",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-punct-ellipsis",
+      "name": "省略号统一「…」",
+      "category": ["标点符号", "省略号"],
+      "source_text": "省略号统一使用「…」，不要使用「...」或「···」。",
+      "gates": {
+        "negative": [
+          { "type": "regex", "description": "使用三个句点「...」或间隔号堆叠「···」充当省略号", "pattern": "\\.{3}|···", "confidence": "exact" }
+        ]
+      },
+      "positive_examples": ["等等我…"],
+      "negative_examples": ["等等我...", "等等我···"],
+      "notes": "",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-punct-interrobang",
+      "name": "问叹谨慎使用,连用采用「?!」",
+      "category": ["标点符号", "问号与感叹号"],
+      "source_text": "问号与感叹号应谨慎使用，连用时采用中文习惯的「?!」。",
+      "gates": {
+        "negative": [
+          { "type": "regex", "description": "问叹连用顺序颠倒为「!?」", "pattern": "[!！][?？]", "confidence": "exact" },
+          { "type": "regex", "description": "问号/感叹号堆叠滥用", "pattern": "[?？!！]{3,}", "confidence": "heuristic" },
+          { "type": "llm", "description": "问号/感叹号使用不谨慎(情绪不需要处滥用)" }
+        ]
+      },
+      "positive_examples": ["什么?!"],
+      "negative_examples": ["什么!?", "什么??!!"],
+      "notes": "",
+      "strength": { "level": "should", "weight": 0.9 }
+    },
+    {
+      "id": "SUB-screen-text-prefix",
+      "name": "屏幕文字统一以「（」开头",
+      "category": ["屏幕文字与特殊情形", "屏幕文字"],
+      "source_text": "屏幕文字统一使用「（」开头。",
+      "gates": {
+        "positive": [
+          { "type": "regex", "description": "屏幕文字类字幕行以全角左括号开头(需先识别该行为屏幕字)", "pattern": "^（", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": ["（告示:前方施工 禁止通行"],
+      "negative_examples": ["告示:前方施工 禁止通行"],
+      "notes": "判定前提是区分台词与屏幕字,需 code/llm 配合。",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-screen-stutter",
+      "name": "明显结巴用「…」,轻微口吃不强行体现",
+      "category": ["屏幕文字与特殊情形", "结巴"],
+      "source_text": "如角色存在明显结巴，可适当使用「…」表现，但轻微口吃无需强行体现，因为声音本身已经能传达信息。",
+      "gates": {
+        "negative": [
+          { "type": "llm", "description": "轻微口吃被逐字强行体现,或明显结巴完全未体现" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "should", "weight": 0.7 }
+    },
+    {
+      "id": "SUB-screen-callback",
+      "name": "回忆/引用前文/名场面与前文译法一致",
+      "category": ["屏幕文字与特殊情形", "回忆与引用"],
+      "source_text": "如果出现回忆、引用前文台词或重复名场面，必须与前文译法保持一致。",
+      "gates": {
+        "negative": [
+          { "type": "code", "description": "同一台词在回忆/引用/重复处的译文与首次出现不一致(跨条比对)", "confidence": "heuristic" },
+          { "type": "llm", "description": "名场面重现处未沿用既有译法" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-terms-glossary",
+      "name": "先统一名词;名词表必须优先遵循",
+      "category": ["名词统一", "名词表"],
+      "source_text": "开始翻译前，必须整理并统一作品中的人名、地名、组织名、术语和专有名词。如已有名词表，必须优先遵循；如无，则应参考官方资料、原作设定、维基百科或通行译法。",
+      "gates": {
+        "positive": [
+          { "type": "code", "description": "存在统一的名词对照表,且译文中实体译名与之一致" }
+        ],
+        "negative": [
+          { "type": "llm", "description": "译名与既有名词表冲突,或无名词表时未参考官方资料/原作设定/维基百科/通行译法而自创译名" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-terms-consistency",
+      "name": "同作品相同名词与固定台词统一译法",
+      "category": ["名词统一", "前后一致"],
+      "source_text": "同一作品中的相同名词和固定台词应尽量统一译法。",
+      "gates": {
+        "negative": [
+          { "type": "code", "description": "同一实体或同一固定台词在不同字幕条中出现不同译法(跨条比对)", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "与《得到品控手册》审校规范的「译名绝对统一」同旨(F002 体例一致类)。",
+      "strength": { "level": "should", "weight": 0.9 }
+    },
+    {
+      "id": "SUB-terms-region-spelling",
+      "name": "注意地区拼写与术语规范差异",
+      "category": ["名词统一", "地区规范"],
+      "source_text": "涉及英语等语言时，还应注意不同地区拼写与术语规范，例如英式英语和美式英语的拼写差异、习惯表达差异以及文化背景差异。",
+      "gates": {
+        "negative": [
+          { "type": "llm", "description": "忽略源语言地区的拼写/术语/文化背景差异导致误译(如英式词按美式含义处理)" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "",
+      "strength": { "level": "should", "weight": 0.8 }
+    },
+    {
+      "id": "SUB-bilingual-format",
+      "name": "双语字幕用「原文。译文」或「译文。原文」,两侧长度协调",
+      "category": ["双语字幕"],
+      "source_text": "如果需要制作双语字幕，请使用「原文。译文」或「译文。原文」的形式，并尽量保持双语显示长度协调，不要让其中一侧明显过长。",
+      "gates": {
+        "positive": [
+          { "type": "code", "description": "双语字幕行符合「原文。译文」或「译文。原文」结构", "confidence": "heuristic" }
+        ],
+        "negative": [
+          { "type": "code", "description": "双语两侧显示长度悬殊(一侧明显过长)", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": ["I'm home。我回来了"],
+      "negative_examples": [],
+      "notes": "「。」在此作两语分隔符,是 SUB-punct-no-terminal 的既定例外(源文如此,未调和)。示例为整理补写。",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-output-clean",
+      "name": "输出直接可用,不带翻译说明与自我分析",
+      "category": ["输出要求", "纯净输出"],
+      "source_text": "最终输出必须适合直接作为字幕使用，具备良好的断句、自然的中文表达和稳定统一的风格。除非用户明确要求，否则不要输出翻译说明、自我分析或额外解释。",
+      "gates": {
+        "positive": [
+          { "type": "llm", "description": "输出可直接用作字幕:断句良好、中文自然、全片风格稳定统一" }
+        ],
+        "negative": [
+          { "type": "regex", "description": "输出中混入元话语(翻译说明/自我分析/额外解释)", "pattern": "^(翻译说明|说明|注[:：]|以下是|分析)", "confidence": "heuristic" }
+        ]
+      },
+      "positive_examples": [],
+      "negative_examples": [],
+      "notes": "用户明确要求说明时豁免。",
+      "strength": { "level": "must", "weight": 1.0 }
+    },
+    {
+      "id": "SUB-output-uncertain-marker",
+      "name": "无法确认处标注「※ 此处含义待确认」",
+      "category": ["输出要求", "不确定标注"],
+      "source_text": "如果存在无法确认的内容，应明确标注「※ 此处含义待确认」等提示，而不是自行编造。",
+      "gates": {
+        "positive": [
+          { "type": "regex", "description": "无法确认的内容处带有「※」类明确提示", "pattern": "※", "confidence": "heuristic" },
+          { "type": "llm", "description": "所有无法确认的内容均有明确标注而非编造" }
+        ]
+      },
+      "positive_examples": ["※ 此处含义待确认"],
+      "negative_examples": [],
+      "notes": "正例取自原文。与 SUB-context-no-fabrication 呼应:彼条管理解阶段,本条管输出格式。",
+      "strength": { "level": "must", "weight": 1.0 }
+    }
+  ]
+}
