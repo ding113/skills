@@ -1,6 +1,9 @@
 node_modules
 drafts
 article-writing-workspace
+translate-article-workspace
+translate-subtitle-workspace
+__pycache__/
 
 # macOS
 .DS_Store
